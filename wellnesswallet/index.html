@@ -51,7 +51,8 @@
           <div class="brand-logo">
             <a href="#">
               <!-- <img src="image/logo/logo-black.png" alt=""> -->
-              <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT</h1>
+              <h1 onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'home-home'});"
+                style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT</h1>
             </a>
           </div>
           <div class="menu-block-wrapper">
@@ -66,13 +67,16 @@
               </div>
               <ul class="site-menu-main">
                 <li class="nav-item">
-                  <a href="./team/" class="nav-link-item">Our Team</a>
+                  <a href="./team/" class="nav-link-item"
+                    onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'home-team'});">Our
+                    Team</a>
                 </li>
               </ul>
             </nav>
           </div>
           <div class="header-btn header-btn-l-14 ms-auto d-none d-xs-inline-flex">
-            <a target="_blank" class="btn btn trail-btn focus-reset" onclick="window.scrollTo(0, 10000000)">
+            <a target="_blank" class="btn btn trail-btn focus-reset"
+              onclick="window.scrollTo(0, 10000000); gtag('event', 'click', {'event_category': 'button', 'event_label': 'home-demo-nav'})">
               Request a Demo
             </a>
           </div>
@@ -96,7 +100,11 @@
               <p>Introducing our wellness solution that incentivizes healthy behavior through cash rewards! We know that
                 keeping elderly patients healthy can be challenging, so we're here to motivate them with cash rewards
                 for making positive choices.</p>
-              <a href="#" class="btn focus-reset" onclick="window.scrollTo(0, 10000000)">Request a Demo</a>
+              <!-- <div onclick="console.log('yo')"> -->
+              <a href="#" class="btn focus-reset"
+                onclick="window.scrollTo(0, 10000000); gtag('event', 'click', {'event_category': 'button', 'event_label': 'home-demo-body'})">Request
+                a Demo</a>
+              <!-- </div> -->
             </div>
           </div>
           <div class="col-xl-7 col-lg-5 col-md-8 " data-aos="fade-left" data-aos-duration="800" data-aos-once="true">
@@ -236,7 +244,9 @@
               <h2>
                 Request a Demo
               </h2>
-              <p>Email <a href="mailto:info@iht.tools">info@iht.tools</a> to request a demo.</p>
+              <p>Email <a href="mailto:info@iht.tools"
+                  onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'home-email'})">info@iht.tools</a>
+                to request a demo.</p>
             </div>
           </div>
         </div>

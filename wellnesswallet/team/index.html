@@ -49,7 +49,7 @@
         <nav class="navbar site-navbar">
           <!-- Brand Logo-->
           <div class="brand-logo">
-            <a href="../">
+            <a href="../" onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-home'})">
               <!-- <img src="image/logo/logo-black.png" alt=""> -->
               <h1 style="font-family: Rubik;" class="nav-link-item">IHT</h1>
             </a>
@@ -66,13 +66,15 @@
               </div>
               <ul class="site-menu-main">
                 <li class="nav-item">
-                  <a href="#" class="nav-link-item yobtn">Our Team</a>
+                  <a href="#" onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-team'})"
+                    class="nav-link-item yobtn">Our Team</a>
                 </li>
               </ul>
             </nav>
           </div>
           <div class="header-btn header-btn-l-14 ms-auto d-none d-xs-inline-flex">
-            <a target="_blank" class="btn btn trail-btn focus-reset" onclick="window.scrollTo(0, 10000000)">
+            <a target="_blank" class="btn btn trail-btn focus-reset"
+              onclick="window.scrollTo(0, 10000000); gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-demo-nav'})">
               Request a Demo
             </a>
           </div>
@@ -191,7 +193,9 @@
               <h2 style="color:#fff">
                 Request a Demo
               </h2>
-              <p>Email <a href="mailto:info@iht.tools">info@iht.tools</a> to request a demo.</p>
+              <p>Email <a href="mailto:info@iht.tools"
+                  onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-email'})">info@iht.tools</a>
+                to request a demo.</p>
             </div>
           </div>
         </div>
@@ -260,7 +264,7 @@
       }
 
       .mb-0 {
-        color:#466eb6 !important;
+        color: #466eb6 !important;
       }
 
       h5 {
