@@ -2101,7 +2101,6 @@ li.sub-menu--item.nav-item-has-children i {
   color: #466eb6;
   margin-top: 10px;
   border: 2px solid #466eb6;
-
 }
 
 .hero-area-l-14 .bg-shape-14 {
@@ -3019,9 +3018,9 @@ a {
   text-decoration: none;
 }
 
-.focus-reset:focus {
+.focus-reset:hover {
   box-shadow: none;
-  outline: none;
+  border: 2px solid #fff !important;
 }
 
 .z-index-1 {
