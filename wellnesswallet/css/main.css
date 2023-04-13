@@ -2100,6 +2100,8 @@ li.sub-menu--item.nav-item-has-children i {
   letter-spacing: -0.4px;
   color: #466eb6;
   margin-top: 10px;
+  border: 2px solid #466eb6;
+
 }
 
 .hero-area-l-14 .bg-shape-14 {
