@@ -4,3 +4,7 @@ css/.DS_Store
 .DS_Store
 node_modules/
 package-lock.json
+server.js
+test.http
+testAzure.html
+chatGPT.html

@@ -5,7 +5,9 @@ const serveStatic = require("serve-static");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(serveStatic(".")); // Add this line to serve static files from the current directory
+app.use(serveStatic("."));
+
+var token;
 
 app.post("/getAccessToken", async (req, res) => {
     try {
@@ -33,6 +35,7 @@ app.post("/getAccessToken", async (req, res) => {
             }
         );
 
+        token = response.data.access_token;
         res.json(response.data);
     } catch (error) {
         console.error("Error:", error.response.data);
@@ -40,7 +43,46 @@ app.post("/getAccessToken", async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3001;
+app.post("/create-questionnaire", async (req, res) => {
+    const questionnaireForm = {
+        resourceType: "Questionnaire",
+        title: "Fall Questions",
+        status: "draft",
+        item: [
+            {
+                linkId: "1",
+                text: "Have you fallen in the past year?",
+                type: "boolean",
+            },
+            {
+                linkId: "2",
+                text: "Have you talked to a doctor about falling in the past year?",
+                type: "boolean",
+            },
+        ],
+    };
+
+    const fhirServerUrl = "https://ogfiretest.azurehealthcareapis.com"; // Replace with your FHIR server URL
+
+    try {
+        const response = await axios.post(`${fhirServerUrl}/Questionnaire`, questionnaireForm, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        res.json(response);
+    } catch (error) {
+        console.error("Error creating questionnaire:", error.response ? error.response.data : error); // Log the error on the server-side
+        res.status(500).json({
+            message: "Error creating questionnaire",
+            error: error.response ? error.response.data : error,
+        });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
