@@ -2,3 +2,5 @@ plugins/.DS_Store
 image/.DS_Store
 css/.DS_Store
 .DS_Store
+node_modules/
+package-lock.json

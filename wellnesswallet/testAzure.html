@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Create a FHIR questionnaire</title>
+</head>
+
+<body>
+
+    <button onclick="getAccessToken()">access token</button>
+    <button onclick="submit()">Submit</button>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Replace <your-fhir-api-url> with your actual Azure FHIR API URL
+        const FHIR_API_URL = "https://ogfiretest.azurehealthcareapis.com";
+        var accessToken;
+        /*
+        
+        curl -X POST -H "Content-Type: application/x-www-form-urlencoded" 
+        -d 'client_id=5d812192-7cf1-4c0e-9639-5f77f1d03174&
+        scope=https%3A%2F%2Fogfiretest.azurehealthcareapis.com%2F.default&
+        client_secret=dEN8Q~U1h~PqWVRep3WPGRtc9nzXHh0MjUzQCcow&
+        grant_type=client_credentials' 
+        'https://login.microsoftonline.com/185231c3-f035-41fb-bbec-bfc5ae2df5c0/oauth2/v2.0/token'
+        
+        */
+
+        // Replace this function with one that acquires an access token
+        async function getAccessToken() {
+            $.ajax({
+                url: 'https://login.microsoftonline.com/185231c3-f035-41fb-bbec-bfc5ae2df5c0/oauth2/v2.0/token',
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    client_id: '5d812192-7cf1-4c0e-9639-5f77f1d03174',
+                    scope: 'https://ogfiretest.azurehealthcareapis.com/.default',
+                    client_secret: 'dEN8Q~U1h~PqWVRep3WPGRtc9nzXHh0MjUzQCcow',
+                    grant_type: 'client_credentials'
+                },
+                success: function (response) {
+                    console.log('Access token:', response.access_token);
+                    return response.access_token;
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                }
+            });
+        }
+
+        var questionnaireForm = {
+            resourceType: "Questionnaire",
+            title: "Fall Questions",
+            status: "draft",
+            item: [
+                {
+                    linkId: "1",
+                    text: "Have you fallen in the past year?",
+                    type: "boolean"
+                },
+                {
+                    linkId: "2",
+                    text: "Have you talked to a doctor about falling in the past year?",
+                    type: "boolean"
+                }
+            ]
+        }
+
+
+        async function submit() {
+
+            // Send a POST request to the server"s QuestionnaireResponse endpoint to create the resource
+            $.ajax({
+                url: `${FHIR_API_URL}/Questionnaire`,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(questionnaireForm),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Bearer " + accessToken);
+                },
+                // ...
+            });
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
