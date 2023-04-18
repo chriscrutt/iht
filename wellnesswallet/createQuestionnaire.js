@@ -1,4 +1,4 @@
-var fhirBaseUrl = "http://localhost:8080/fhir"; // Replace with your FHIR server base URL
+var fhirBaseUrl = "https://hapi.fhir.org/baseR4"; // Replace with your FHIR server base URL
 
 var questionnaire = {
     resourceType: "Questionnaire",

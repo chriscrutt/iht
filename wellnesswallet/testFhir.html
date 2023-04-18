@@ -2,92 +2,125 @@
 <html>
 
 <head>
-    <title>My FHIR-based questionnaire form</title>
+    <title>My Form</title>
+    <script src="https://player.vimeo.com/api/player.js"></script>
 </head>
 
 <body>
-    <h1>My FHIR-based questionnaire form</h1>
-    <form id="questionnaire-form">
-        <label for="question-1">Have you fallen in the past year?</label>
-        <input type="radio" name="question-1" value="yes">Yes<br>
-        <input type="radio" name="question-1" value="no">No<br>
-        <label for="question-2">Have you talked to a doctor about falling in the past year?</label>
-        <input type="radio" name="question-2" value="yes">Yes<br>
-        <input type="radio" name="question-2" value="no">No<br>
-        <button type="submit">Submit</button>
-    </form>
+    <div id="header">
+        <h1 id="greeting"></h1>
+        <h2>please answer the following questions.</h2>
+        <h3>(and get a free gift card upon completion)</h3>
+    </div>
+    <div id="main">
+        <form id="questionnaire-form">
+            <label for="q1">Have you fallen in the past year?</label>
+            <input type="radio" name="q1" value="yes" required>Yes<br>
+            <input type="radio" name="q1" value="no">No<br>
+            <label for="q2">Have you talked to a doctor about falling in the past year?</label>
+            <input type="radio" name="q2" value="yes" required>Yes<br>
+            <input type="radio" name="q2" value="no">No<br>
+            <div id="video">
+                <h1>Please watch this</h1>
+                <div id="player"></div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <script>
-        // Submit the form data as a QuestionnaireResponse resource to the FHIR server
-        $("#questionnaire-form").on("submit", function (e) {
-            e.preventDefault();
+        var options = {
+            id: '399315834',
+            width: 640,
+            height: 360,
+            autopause: true,
+            autoplay: false,
+            muted: false
+        };
 
-            // Construct the QuestionnaireResponse resource from the form data
-            var questionnaireResponse = {
-                resourceType: "QuestionnaireResponse",
-                questionnaire: "https://hapi.fhir.org/baseR4/Questionnaire/10060625",
-                id: "10060629",
-                status: "completed",
-                subject: {
-                    reference: "Patient/10060627"
-                },
-                item: [
-                    {
-                        linkId: "1",
-                        answer: [
-                            {
-                                valueCoding: {
-                                    code: $("input[name='question-1']:checked").val()
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        linkId: "2",
-                        answer: [
-                            {
-                                valueCoding: {
-                                    code: $("input[name='question-2']:checked").val()
-                                }
-                            }
-                        ]
-                    }
-                ]
-            };
+        var player = new Vimeo.Player('player', options);
 
-            // Send a POST request to the server"s QuestionnaireResponse endpoint to create the resource
-            $.ajax({
-                url: "https://hapi.fhir.org/baseR4/QuestionnaireResponse/10060629",
-                type: "PUT",
-                contentType: "application/json",
-                data: JSON.stringify(questionnaireResponse),
-                success: function (response) {
-                    console.log("Questionnaire response submitted successfully!");
-                },
-                error: function (error) {
-                    console.log("Error submitting questionnaire response: " + error.responseText);
-                }
-            });
-        });
+        const baseUrl = "https://hapi.fhir.org/baseR4";
+        const patientId = window.location.hash.substring(1);
+        const questionnaireId = 10147910;
 
-        // Get a list of all QuestionnaireResponse resources for a specific patient from the FHIR server
         $.ajax({
-            url: "https://hapi.fhir.org/baseR4/QuestionnaireResponse?subject=10060627",
+            url: baseUrl + "/Patient/" + patientId,
             type: "GET",
             success: function (response) {
-                console.log("QuestionnaireResponse resources:");
-                response.entry.forEach(function (entry) {
-                    console.log("Resource ID:", entry.resource.id);
-                    console.log("Question 1:", entry.resource.item[0].answer[0].valueCoding.code);
-                    console.log("Question 2:", entry.resource.item[1].answer[0].valueCoding.code);
-                });
+                const name = response.name[0].given[0];
+                document.getElementById('greeting').textContent = "Hi " + name + "!";
             },
             error: function (error) {
                 console.log("Error getting questionnaire responses:", error);
             }
         });
 
+
+        $("#questionnaire-form").on("submit", function (e) {
+            e.preventDefault();
+
+            player.getCurrentTime().then(function (seconds) {
+                player.getDuration().then(function (duration) {
+
+                    const questionnaireResponse = {
+                        resourceType: "QuestionnaireResponse",
+                        questionnaire: `Questionnaire/${questionnaireId}`,
+                        status: "completed",
+                        subject: {
+                            reference: `Patient/${patientId}`,
+                        },
+                        item: [
+                            {
+                                linkId: "1",
+                                answer: [
+                                    {
+                                        valueCoding: {
+                                            code: $("input[name='q1']:checked").val()
+                                        },
+                                    },
+                                ],
+                            },
+                            {
+                                linkId: "2",
+                                answer: [
+                                    {
+                                        valueCoding: {
+                                            code: $("input[name='q2']:checked").val()
+                                        },
+                                    },
+                                ],
+                            },
+                            {
+                                linkId: "3",
+                                answer: [
+                                    {
+                                        valueDecimal: seconds / duration,
+                                    },
+                                ],
+                            },
+                        ],
+                    };
+
+                    $.ajax({
+                        url: `${baseUrl}/QuestionnaireResponse`,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(questionnaireResponse),
+                        success: function (response) {
+                            console.log("Questionnaire response created:", response);
+                        },
+                        error: function (error) {
+                            console.log("Error creating questionnaire response:", error);
+                        },
+                    });
+
+                });
+            });
+        });
     </script>
 </body>
 
