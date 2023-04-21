@@ -1,127 +1,291 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>My Form</title>
-    <script src="https://player.vimeo.com/api/player.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Discover IHT's pro-active wellness solution that incentivizes healthy behavior in elderly patients through cash rewards. Request a demo to learn more about our user-friendly interface, versatile questionnaire, and effective follow-up and reward system.">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>IHT.tools</title>
+  <link rel="shortcut icon" href="image/favicon.png" type="image/x-icon">
+  <!-- Bootstrap , fonts & icons  -->
+  <link rel="stylesheet" href="./css/bootstrap.css">
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <!-- Plugin'stylesheets  -->
+  <link rel="stylesheet" href="./plugins/aos/aos.min.css">
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <!-- Vendor stylesheets  -->
+  <link rel="stylesheet" href="./css/main.css">
+  <!-- Custom stylesheet -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTYQ6V2CCM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-BTYQ6V2CCM');
+  </script>
 </head>
 
-<body>
-    <div id="header">
-        <h1 id="greeting"></h1>
-        <h2>please answer the following questions.</h2>
-        <h3>(and get a free gift card upon completion)</h3>
-    </div>
-    <div id="main">
-        <form id="questionnaire-form">
-            <label for="q1">Have you fallen in the past year?</label>
-            <input type="radio" name="q1" value="yes" required>Yes<br>
-            <input type="radio" name="q1" value="no">No<br>
-            <label for="q2">Have you talked to a doctor about falling in the past year?</label>
-            <input type="radio" name="q2" value="yes" required>Yes<br>
-            <input type="radio" name="q2" value="no">No<br>
-            <div id="video">
-                <h1>Please watch this</h1>
+<body data-theme-mode-panel-active data-theme="light" style="font-family: 'Mazzard H';">
+  <div class="site-wrapper overflow-hidden position-relative">
+    <!-- Site Header -->
+    <!-- Preloader -->
+    <!-- <div id="loading">
+    <div class="preloader">
+     <img src="./image/preloader.gif" alt="preloader">
+   </div>
+   </div>    -->
+    <!--Site Header Area -->
+    <header style="background-color: #466EB6;"
+      class="site-header site-header--menu-right landing-14-menu site-header--absolute site-header--sticky">
+      <div class="container">
+        <nav style=" height: 92px;" class="navbar site-navbar">
+          <!-- Brand Logo-->
+          <div class="brand-logo">
+            <a href="#">
+              <!-- <img src="image/logo/logo-black.png" alt=""> -->
+              <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT - Wellness Wallet</h1>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- navbar- -->
+    <!-- Hero Area -->
+    <div class="testFhir position-relative z-index-1 overflow-hidden">
+      <div class="container" style="text-align: center;">
+        <div class="row position-relative justify-content-center">
+          <div class="col-md-10 pr-0" style="width:auto;">
+            <form id="myForm" method="type">
+              <div id="questionnaire-form">
+                <div id="question">
+                  <p>Have you fallen in the past year?</p>
+                </div>
+                <div id="choices">
+                  <div class="btn" id="Yes" value="Yes" onclick="checkAnswer('yes')">Yes</div>
+                  <div class="btn" id="No" value="No" onclick="checkAnswer('no')">No</div>
+                </div>
+              </div>
+              <div id="video">
+                <h1 style="color: #466EB6;">Thank you for sharing.</h1>
+                <h3>Now, watch this quick video to learn more about fall prevention.</h3>
                 <div id="player"></div>
-            </div>
-            <button type="submit">Submit</button>
-        </form>
+                <button class="btn" type="submit">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        Incentive Health Technologies, LLC
+      </footer>
     </div>
+  </div>
+  <!-- Footer Area -->
+  <!-- Vendor Scripts -->
+  <script src="js/vendor.min.js"></script>
+  <script src="./plugins/aos/aos.min.js"></script>
+  <script src="./plugins/menu/menu.js"></script>
+  <!-- Activation Script -->
+  <script src="js/custom.js"></script>
+  <style>
+    .testFhir footer {
+      border-top: 0;
+    }
+
+    body {
+      background-image: url("./image/l4/background-1920x1080.png");
+    }
+
+    .btn:hover {
+      background: #466eb6 !important;
+      color: #fff !important;
+    }
+
+    .btn {
+      background: #fff !important;
+      border: 2px solid #466eb6 !important;
+      color: #466eb6 !important;
+      padding: 25px;
+      font-size: 1em;
+    }
+
+    p {
+      color: #466EB6;
+    }
+
+    * {
+      font-family: Rubik;
+      color: #466EB6;
+    }
+
+    #questionnaire-form {
+      width: 35vw;
+      height: 35vh;
+      font-size: 2em;
+    }
+
+    .testFhir {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding-top: 0;
+      background-color: #ffffff00;
+    }
+  </style>
+  <script>
+
+    var options = {
+      id: '399315834',
+      width: 750,
+      height: 450,
+      autopause: true,
+      autoplay: false,
+      muted: false
+    };
+
+    var player = new Vimeo.Player('player', options);
+    const baseUrl = "https://hapi.fhir.org/baseR4";
+    const patientId = 22;
+    const questionnaireId = 10147910;
+    const form = document.querySelector('#myForm');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      player.getCurrentTime().then(function (seconds) {
+        player.getDuration().then(function (duration) {
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+          answers = [];
+          for (let i = 0; i < questions.length; i++) {
+            answers.push(questions[i].answer);
+          }
+          answers.push(seconds / duration);
+          console.log(answers); // log the object containing all the answers to the console
 
-    <script>
-        var options = {
-            id: '399315834',
-            width: 640,
-            height: 360,
-            autopause: true,
-            autoplay: false,
-            muted: false
-        };
+          const questionnaireResponse = {
+            resourceType: "QuestionnaireResponse",
+            questionnaire: `Questionnaire/${questionnaireId}`,
+            status: "completed",
+            subject: {
+              reference: `Patient/${patientId}`,
+            },
+            item: [
+              {
+                linkId: "1",
+                answer: [
+                  {
+                    valueCoding: {
+                      code: answers[0]
+                    },
+                  },
+                ],
+              },
+              {
+                linkId: "2",
+                answer: [
+                  {
+                    valueCoding: {
+                      code: answers[1]
+                    },
+                  },
+                ],
+              },
+              {
+                linkId: "3",
+                answer: [
+                  {
+                    valueDecimal: answers[2]
+                  },
+                ],
+              },
+            ],
+          };
 
-        var player = new Vimeo.Player('player', options);
-
-        const baseUrl = "https://hapi.fhir.org/baseR4";
-        const patientId = 22;
-        const questionnaireId = 10147910;
-
-        $.ajax({
-            url: baseUrl + "/Patient/" + patientId,
-            type: "GET",
+          $.ajax({
+            url: `${baseUrl}/QuestionnaireResponse`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(questionnaireResponse),
             success: function (response) {
-                const name = response.name[0].given[0];
-                document.getElementById('greeting').textContent = "Hi " + name + "!";
+              console.log("Questionnaire response created:", response);
             },
             error: function (error) {
-                console.log("Error getting questionnaire responses:", error);
-            }
+              console.log("Error creating questionnaire response:", error);
+            },
+          });
         });
+      });
+    });
+
+    const question = document.getElementById("question");
+    const choiceA = document.getElementById("Yes");
+    const choiceB = document.getElementById("No");
+
+    // create our questions
+    let questions = [
+      {
+        question: "Have you fallen in the past year?",
+        choiceA: "Yes",
+        choiceB: "No",
+        answer: "",
+      },
+      {
+        question: "Have you talked to a doctor about falling in the past year?",
+        choiceA: "Yes",
+        choiceB: "No",
+        answer: "",
+      }
+
+    ];
+
+    // create some variables
+    const lastQuestion = questions.length - 1;
+    let runningQuestion = 0;
+
+    // render a question
+    function renderQuestion() {
+      let q = questions[runningQuestion];
+      question.innerHTML = "<p>" + q.question + "</p>";
+      choiceA.innerHTML = q.choiceA;
+      choiceB.innerHTML = q.choiceB;
+    }
+
+    function checkAnswer(answer) {
+      questions[runningQuestion].answer = answer;
+      if (runningQuestion < lastQuestion) {
+        runningQuestion++;
+        renderQuestion();
+      }
+      if (runningQuestion == lastQuestion) {
+
+        document.getElementById("Yes").addEventListener("click", func);
+        document.getElementById("No").addEventListener("click", func);
+
+      }
+    }
+
+    function func() {
+      document.getElementById("questionnaire-form").style.display = "none";
+      document.getElementById("video").style.display = "block";
 
 
-        $("#questionnaire-form").on("submit", function (e) {
-            e.preventDefault();
 
-            player.getCurrentTime().then(function (seconds) {
-                player.getDuration().then(function (duration) {
 
-                    const questionnaireResponse = {
-                        resourceType: "QuestionnaireResponse",
-                        questionnaire: `Questionnaire/${questionnaireId}`,
-                        status: "completed",
-                        subject: {
-                            reference: `Patient/${patientId}`,
-                        },
-                        item: [
-                            {
-                                linkId: "1",
-                                answer: [
-                                    {
-                                        valueCoding: {
-                                            code: $("input[name='q1']:checked").val()
-                                        },
-                                    },
-                                ],
-                            },
-                            {
-                                linkId: "2",
-                                answer: [
-                                    {
-                                        valueCoding: {
-                                            code: $("input[name='q2']:checked").val()
-                                        },
-                                    },
-                                ],
-                            },
-                            {
-                                linkId: "3",
-                                answer: [
-                                    {
-                                        valueDecimal: seconds / duration,
-                                    },
-                                ],
-                            },
-                        ],
-                    };
+    }
+    window.onload = (event) => {
+      renderQuestion();
+    };
 
-                    $.ajax({
-                        url: `${baseUrl}/QuestionnaireResponse`,
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(questionnaireResponse),
-                        success: function (response) {
-                            console.log("Questionnaire response created:", response);
-                        },
-                        error: function (error) {
-                            console.log("Error creating questionnaire response:", error);
-                        },
-                    });
-
-                });
-            });
-        });
-    </script>
+  </script>
 </body>
 
 </html>

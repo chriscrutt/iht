@@ -2117,6 +2117,107 @@ li.sub-menu--item.nav-item-has-children i {
   background-size: cover;
   background-position: center right;
 }
+.testFhir {
+  background-color: #466EB6;
+  width: 100%;
+  height: 100vh;
+  padding-top: 5rem;
+  position: relative;
+}
+.testFhir .content h1, .testFhir .content h3, .testFhir .content h5, #video h1 {
+  font-family: Rubik;
+  font-style: normal;
+  letter-spacing: 1px;
+  font-weight: 400;
+  color: #FFFFFF;
+}
+
+.testFhir .content h1{
+  line-height: 40px;
+}
+#questionnaire-form{
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    background-color: white;
+    height: 250px;
+    width : 560px;
+    font-size: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 5px 15px 0px;
+}
+#question{
+    width:auto;
+    margin: auto;
+    text-align: center;
+}
+#question p{
+    margin : 0;
+    padding : 10px;
+    font-size: 1.25em;
+}
+
+#choices{
+    width : auto;
+    text-align: center;
+}
+.choice{
+    display: inline-block;
+    width : 100px;
+    text-align: center;
+    border : 1px solid lightgrey;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+.choice:hover{
+    border : 2px solid lightgrey;
+}
+
+#progress{
+    width : 500px;
+    position: absolute;
+    bottom : 0px;
+    right : 0px;
+    padding:5px;
+    text-align: right;
+}
+.prog{
+    width : 25px;
+    height : 25px;
+    border: 1px solid #000;
+    display: inline-block;
+    border-radius: 50%;
+    margin-left : 5px;
+    margin-right : 5px;
+}
+#video {
+  display: none;
+}
+#video button{
+  border: 1px solid #FFF;
+  color: white;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1.25px;
+  background-color: #466EB6;
+  padding: 0.5rem;
+}
+
+@media (min-width: 576px) {
+  .hero-area-l-14 .content h1 {
+    font-size: 40px;
+    line-height: 46px;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-area-l-14 .content h1 {
+    font-size: 60px;
+    line-height: 66px;
+  }
+}
 
 @media (min-width: 992px) {
   .hero-area-l-14 .bg-shape-14 {
@@ -2998,6 +3099,17 @@ li.sub-menu--item.nav-item-has-children i {
 
 .footer-subs-form-l-12 .input-group .btn i {
   color: #fff;
+}
+.testFhir footer {
+  text-align:center; 
+  font-family: Karla; 
+  border-top: 1px solid #fff;
+  background-color: #466eb6; 
+  color:#fff;
+  padding: 0.25em;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 /* ---------------------------------
