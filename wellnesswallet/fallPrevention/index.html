@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- 
+  1. [x] add intro
+  2. [x] green button
+  3. [x] previous
+  4. [x] are you sure?
+  5. [x] "finish"
+  5. [ ] close
+  6. [ ] reward
+  7. [ ] progress bar
+  8. [x] set video to 0 and pause it if they choose to go back once they get there
+  9. [ ] yes/no buttons should stay in same spot
+  10.[ ] go back button should be differnt
+ -->
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,15 +35,16 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <!-- Vendor stylesheets  -->
   <link rel="stylesheet" href="../css/main.css">
-  <!-- Custom stylesheet -->
+  <!-- Sweet Alerts -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTYQ6V2CCM"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VMM3KZFGGE"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
-    gtag('config', 'G-BTYQ6V2CCM');
+    gtag('config', 'G-VMM3KZFGGE');
   </script>
 </head>
 
@@ -66,19 +81,29 @@
             <form id="myForm" method="type">
               <div id="questionnaire-form">
                 <div id="question">
-                  <p>Have you fallen in the past year?</p>
+                  <p>Do you have a problem with your balance?</p>
                 </div>
                 <div id="choices">
-                  <div class="btn" id="Yes" value="Yes" onclick="checkAnswer('yes')">Yes</div>
-                  <div class="btn" id="No" value="No" onclick="checkAnswer('no')">No</div>
+                  <div class="btn" id="Yes" value="Yes" onclick="checkAnswer('yes')"
+                    style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Yes</div>
+                  <div class="btn" id="No" value="No" onclick="checkAnswer('no')"
+                    style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">No</div>
                 </div>
               </div>
+
               <div id="video">
                 <h1 style="color: #466EB6;">Thank you for sharing.</h1>
                 <h3>Now, watch this quick video to learn more about fall prevention.</h3>
-                <div id="player"></div>
-                <button class="btn" type="submit">Submit</button>
+                <div id="player" style="display: block; padding-bottom: 1vh;">
+                  <video id="video1" style="height:50vh;" controls>
+                    <source src="../video/sixSteps.mp4" type="video/mp4">
+                    Your browser does not support HTML video.
+                  </video>
+                </div>
+                <button class="btn" type="submit"
+                  style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Finish</button>
               </div>
+              <div id="prevAnswer"></div>
             </form>
           </div>
         </div>
@@ -128,8 +153,8 @@
     }
 
     #questionnaire-form {
-      width: 35vw;
-      height: 35vh;
+      width: 40vw;
+      height: 40vh;
       font-size: 2em;
     }
 
@@ -142,97 +167,63 @@
       padding-top: 0;
       background-color: #ffffff00;
     }
+
+    .swal-title {
+      font-size: 7vh;
+    }
+
+    .swal-text {
+      font-size: 3vh;
+    }
   </style>
   <script>
 
-    var options = {
-      id: '399315834',
-      width: 750,
-      height: 450,
-      autopause: true,
-      autoplay: false,
-      muted: false
-    };
+    const player = document.getElementById("video1");
 
-    var player = new Vimeo.Player('player', options);
-    const baseUrl = "https://hapi.fhir.org/baseR4";
-    const patientId = 22;
-    const questionnaireId = 10147910;
     const form = document.querySelector('#myForm');
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      player.getCurrentTime().then(function (seconds) {
-        player.getDuration().then(function (duration) {
-
-
-          answers = [];
-          for (let i = 0; i < questions.length; i++) {
-            answers.push(questions[i].answer);
-          }
-          answers.push(seconds / duration);
-          console.log(answers); // log the object containing all the answers to the console
-
-          const questionnaireResponse = {
-            resourceType: "QuestionnaireResponse",
-            questionnaire: `Questionnaire/${questionnaireId}`,
-            status: "completed",
-            subject: {
-              reference: `Patient/${patientId}`,
-            },
-            item: [
-              {
-                linkId: "1",
-                answer: [
-                  {
-                    valueCoding: {
-                      code: answers[0]
-                    },
-                  },
-                ],
-              },
-              {
-                linkId: "2",
-                answer: [
-                  {
-                    valueCoding: {
-                      code: answers[1]
-                    },
-                  },
-                ],
-              },
-              {
-                linkId: "3",
-                answer: [
-                  {
-                    valueDecimal: answers[2]
-                  },
-                ],
-              },
-            ],
-          };
-
-          $.ajax({
-            url: `${baseUrl}/QuestionnaireResponse`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(questionnaireResponse),
-            success: function (response) {
-              console.log("Questionnaire response created:", response);
-            },
-            error: function (error) {
-              console.log("Error creating questionnaire response:", error);
-            },
+      let perc = player.currentTime / player.duration;
+      if (perc < 1) {
+        swal({
+          title: "Are you sure?",
+          text: `You have watched just ${Math.round(perc * 100)}% of the video if you continue you may not get the reward at the end. Do you want to continue?`,
+          icon: "warning",
+          buttons: ["No, continue watching", "Yes, submit"],
+          dangerMode: true,
+        })
+          .then((willDelete) => {
+            if (willDelete) {
+              swal("Poof! Your imaginary file has been deleted!", {
+                icon: "success",
+              });
+            } else {
+              swal("Your imaginary file is safe!");
+            }
           });
-        });
-      });
+      } else {
+        answers = [];
+        for (let i = 0; i < questions.length; i++) {
+          answers.push(questions[i].answer);
+        }
+        answers.push(perc);
+        console.log(answers); // log the object containing all the answers to the console
+      }
     });
 
     const question = document.getElementById("question");
     const choiceA = document.getElementById("Yes");
     const choiceB = document.getElementById("No");
+    const prev = document.getElementById("prevAnswer");
 
     // create our questions
     let questions = [
+      {
+        question: "Do you have a problem with your balance?",
+        choiceA: "Yes",
+        choiceB: "No",
+        answer: "",
+      },
       {
         question: "Have you fallen in the past year?",
         choiceA: "Yes",
@@ -249,39 +240,51 @@
     ];
 
     // create some variables
-    const lastQuestion = questions.length - 1;
-    let runningQuestion = 0;
+    const lastQuestion = questions.length;
+    var runningQuestion = 0;
 
     // render a question
     function renderQuestion() {
       let q = questions[runningQuestion];
-      question.innerHTML = "<p>" + q.question + "</p>";
+      question.innerHTML = "<p style=\"font-size:2em;\">" + q.question + "</p>";
       choiceA.innerHTML = q.choiceA;
       choiceB.innerHTML = q.choiceB;
+      if (runningQuestion > 0) {
+        prev.innerHTML = "<div class=\"btn\" id=\"prevAnswer\" onclick=\"prevAnswer()\" style=\"margin-top: 1vh;\">Go Back</div>";
+      } else {
+        prev.innerHTML = "<div id=\"prevAnswer\"></div>";
+      }
+    }
+
+    function prevAnswer() {
+      player.currentTime = 0;
+      player.pause();
+      if (runningQuestion != 0) {
+        runningQuestion--;
+        document.getElementById("questionnaire-form").style.display = "table-cell";
+        document.getElementById("video").style.display = "none";
+        renderQuestion();
+      }
     }
 
     function checkAnswer(answer) {
       questions[runningQuestion].answer = answer;
       if (runningQuestion < lastQuestion) {
         runningQuestion++;
-        renderQuestion();
       }
       if (runningQuestion == lastQuestion) {
-
-        document.getElementById("Yes").addEventListener("click", func);
-        document.getElementById("No").addEventListener("click", func);
-
+        func();
+      } else {
+        renderQuestion();
       }
     }
 
     function func() {
       document.getElementById("questionnaire-form").style.display = "none";
       document.getElementById("video").style.display = "block";
-
-
-
-
+      player.play();
     }
+
     window.onload = (event) => {
       renderQuestion();
     };
