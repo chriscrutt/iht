@@ -11,8 +11,9 @@
   6. [ ] reward
   7. [ ] progress bar
   8. [x] set video to 0 and pause it if they choose to go back once they get there
-  9. [ ] yes/no buttons should stay in same spot
-  10.[ ] go back button should be differnt
+ ̶ ̶9̶.̶ ̶[̶ ̶]̶ ̶y̶e̶s̶/̶n̶o̶ ̶b̶u̶t̶t̶o̶n̶s̶ ̶s̶h̶o̶u̶l̶d̶ ̶s̶t̶a̶y̶ ̶i̶n̶ ̶s̶a̶m̶e̶ ̶s̶p̶o̶t̶
+  10.[ ] go back button should in same spot and lower
+
  -->
 
 <head>
@@ -101,7 +102,7 @@
                   </video>
                 </div>
                 <button class="btn" type="submit"
-                  style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Finish</button>
+                  style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Continue</button>
               </div>
               <div id="prevAnswer"></div>
             </form>
@@ -185,6 +186,7 @@
       event.preventDefault();
       let perc = player.currentTime / player.duration;
       if (perc < 1) {
+        player.pause();
         swal({
           title: "Are you sure?",
           text: `You have watched just ${Math.round(perc * 100)}% of the video if you continue you may not get the reward at the end. Do you want to continue?`,
@@ -192,24 +194,26 @@
           buttons: ["No, continue watching", "Yes, submit"],
           dangerMode: true,
         })
-          .then((willDelete) => {
-            if (willDelete) {
-              swal("Poof! Your imaginary file has been deleted!", {
-                icon: "success",
-              });
+          .then((submit) => {
+            if (!submit) {
+              player.play();
             } else {
-              swal("Your imaginary file is safe!");
+              answer(perc);
             }
           });
       } else {
-        answers = [];
-        for (let i = 0; i < questions.length; i++) {
-          answers.push(questions[i].answer);
-        }
-        answers.push(perc);
-        console.log(answers); // log the object containing all the answers to the console
+        answer(perc);
       }
     });
+
+    function answer(percc) {
+      answers = [];
+      for (let i = 0; i < questions.length; i++) {
+        answers.push(questions[i].answer);
+      }
+      answers.push(percc);
+      console.log(answers); // log the object containing all the answers to the console
+    }
 
     const question = document.getElementById("question");
     const choiceA = document.getElementById("Yes");
@@ -250,7 +254,7 @@
       choiceA.innerHTML = q.choiceA;
       choiceB.innerHTML = q.choiceB;
       if (runningQuestion > 0) {
-        prev.innerHTML = "<div class=\"btn\" id=\"prevAnswer\" onclick=\"prevAnswer()\" style=\"margin-top: 1vh;\">Go Back</div>";
+        prev.innerHTML = "<div class=\"btn\" id=\"prevAnswer\" onclick=\"prevAnswer()\" style=\"margin-top: 1vh;position: fixed;bottom: 5vh;left: 45vw;right: 45vw;\">Go Back</div>";
       } else {
         prev.innerHTML = "<div id=\"prevAnswer\"></div>";
       }
