@@ -82,18 +82,18 @@
           <div class="col-md-10 pr-0" style="width:auto;">
             <form id="myForm" method="type">
               <div id="questionnaire-form">
-                <div id="question">
+                <div id="question" class="trans">
                   <p>Do you have a problem with your balance?</p>
                 </div>
                 <div id="choices">
-                  <div class="btn" id="Yes" value="Yes" onclick="checkAnswer('yes')"
+                  <div class="btn trans" id="Yes" value="Yes" onclick="checkAnswer('yes')"
                     style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Yes</div>
-                  <div class="btn" id="No" value="No" onclick="checkAnswer('no')"
+                  <div class="btn trans" id="No" value="No" onclick="checkAnswer('no')"
                     style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">No</div>
                 </div>
               </div>
 
-              <div id="video">
+              <div id="video" class="trans">
                 <h1 style="color: #466EB6;">Thank you for sharing.</h1>
                 <h3>Now, watch this quick video to learn more about fall prevention.</h3>
                 <div id="player" style="display: block; padding-bottom: 1vh;">
@@ -105,7 +105,8 @@
                 <button class="btn" type="submit"
                   style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Continue</button>
               </div>
-              <div id="prevAnswer"></div>
+              <div class="btn" id="prevAnswer" class="trans" onclick="prevAnswer()"
+                style="margin-top: 1vh;position: fixed;bottom: 5vh;left: 45vw;right: 45vw;">Go Back</div>
             </form>
           </div>
         </div>
@@ -177,6 +178,20 @@
     .swal-text {
       font-size: 3vh;
     }
+
+    .swal-button--cancel {
+      background-color: rgb(45, 184.5, 45);
+      color: #fff;
+    }
+
+    .swal-button--cancel:hover {
+      background-color: rgb(42.5, 174.25, 42.5) !important;
+    }
+
+    .trans {
+      transition: opacity 0.5s ease-in-out;
+      opacity: 0;
+    }
   </style>
   <script>
 
@@ -189,10 +204,10 @@
       if (perc < 1) {
         player.pause();
         swal({
-          title: "Are you sure?",
-          text: `You have watched just ${Math.round(perc * 100)}% of the video if you continue you may not get the reward at the end. Do you want to continue?`,
-          icon: "warning",
-          buttons: ["No, continue watching", "Yes, submit"],
+          title: "Resume Video?",
+          text: `You have only watched ${Math.round(perc * 100)}% of the video. If you continue, you might miss out on the reward at the end. Would you like to resume the video?`,
+          // icon: "warning",
+          buttons: ["Yes, Resume Video", "No, Move On"],
           dangerMode: true,
         })
           .then((submit) => {
@@ -248,26 +263,44 @@
     const lastQuestion = questions.length;
     var runningQuestion = 0;
 
-    // render a question
+    // Modify renderQuestion function
     function renderQuestion() {
-      let q = questions[runningQuestion];
-      question.innerHTML = "<p style=\"font-size:2em;\">" + q.question + "</p>";
-      choiceA.innerHTML = q.choiceA;
-      choiceB.innerHTML = q.choiceB;
-      if (runningQuestion > 0) {
-        prev.innerHTML = "<div class=\"btn\" id=\"prevAnswer\" onclick=\"prevAnswer()\" style=\"margin-top: 1vh;position: fixed;bottom: 5vh;left: 45vw;right: 45vw;\">Go Back</div>";
-      } else {
-        prev.innerHTML = "<div id=\"prevAnswer\"></div>";
-      }
+      question.style.opacity = 0;
+      choiceA.style.opacity = 0;
+      choiceB.style.opacity = 0;
+      setTimeout(function () {
+        let q = questions[runningQuestion];
+        question.innerHTML = "<p style=\"font-size:2em;\">" + q.question + "</p>";
+        choiceA.innerHTML = q.choiceA;
+        choiceB.innerHTML = q.choiceB;
+
+        if (runningQuestion > 0) {
+          prev.style.opacity = 1;
+          prev.style.cursor = "pointer";
+          question.style.opacity = 1;
+          choiceA.style.opacity = 1;
+          choiceB.style.opacity = 1;
+        } else {
+          prev.style.opacity = 0;
+          prev.style.cursor = "default";
+          question.style.opacity = 1;
+          choiceA.style.opacity = 1;
+          choiceB.style.opacity = 1;
+        }
+      }, 500);
     }
 
+    const vidBlock = document.getElementById("video");
+
     function prevAnswer() {
+
       player.currentTime = 0;
       player.pause();
       if (runningQuestion != 0) {
         runningQuestion--;
         document.getElementById("questionnaire-form").style.display = "table-cell";
-        document.getElementById("video").style.display = "none";
+        vidBlock.style.display = "none";
+        vidBlock.style.opacity = 0;
         renderQuestion();
       }
     }
@@ -278,15 +311,28 @@
         runningQuestion++;
       }
       if (runningQuestion == lastQuestion) {
-        func();
+        question.style.opacity = 0;
+        choiceA.style.opacity = 0;
+        choiceB.style.opacity = 0;
+        setTimeout(function () {
+          document.getElementById("questionnaire-form").style.display = "none";
+          setTimeout(function () {
+            vidBlock.style.display = "block";
+            setTimeout(function () {
+              vidBlock.style.opacity = 1;
+              player.play();
+            }, 250);
+          }, 250);
+        }, 500);
       } else {
         renderQuestion();
       }
+
     }
 
     function func() {
       document.getElementById("questionnaire-form").style.display = "none";
-      document.getElementById("video").style.display = "block";
+      vidBlock.style.display = "block";
       player.play();
     }
 
