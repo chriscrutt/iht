@@ -340,6 +340,36 @@
       renderQuestion();
     };
 
+    // Attach the event listener to the window object
+    window.addEventListener('beforeunload', function (e) {
+      // Cancel the event to prevent the page from refreshing/closing immediately
+      e.preventDefault();
+      // Chrome requires the returnValue property to be set
+      e.returnValue = '';
+
+      // Display the confirmation dialog
+      var confirmationMessage = 'Are you sure you want to leave this page?';
+      (e || window.event).returnValue = confirmationMessage; // For legacy browsers
+
+      // Return the confirmation message
+      return confirmationMessage;
+    });
+
+    // Attach the event listener to the window object
+    window.addEventListener('onbeforeunload', function (e) {
+      // Cancel the event to prevent the page from refreshing/closing immediately
+      e.preventDefault();
+      // Chrome requires the returnValue property to be set
+      e.returnValue = '';
+
+      // Display the confirmation dialog
+      var confirmationMessage = 'Are you sure you want to leave this page?';
+      (e || window.event).returnValue = confirmationMessage; // For legacy browsers
+
+      // Return the confirmation message
+      return confirmationMessage;
+    });
+
   </script>
 </body>
 
