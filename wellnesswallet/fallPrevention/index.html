@@ -81,7 +81,7 @@
         <div class="row position-relative justify-content-center">
           <div class="col-md-10 pr-0" style="width:auto;">
             <form id="myForm" method="type">
-              <div id="questionnaire-form">
+              <div id="questionnaire-form" class="trans">
                 <div id="question" class="trans">
                   <p>Do you have a problem with your balance?</p>
                 </div>
@@ -114,7 +114,7 @@
         </div>
       </div>
       <div style="height: 100vh;display:none;" id="end"
-        class="hero-area-l-14 position-relative z-index-1 overflow-hidden">
+        class="hero-area-l-14 position-relative z-index-1 overflow-hidden trans">
         <div class="container">
           <div class="row position-relative justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 aos-init aos-animate" data-aos="fade-right"
@@ -128,6 +128,7 @@
                   <h2 style="font-size: 2.9em;"><i>✔</i> Physical therapy programs</h2>
                   <h2 style="font-size: 2.9em;"><i>✔</i> Any medical conditions that might be causing it</h2>
                 </ul>
+                <button class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Continue</button>
               </div>
             </div>
           </div>
@@ -146,6 +147,13 @@
   <!-- Activation Script -->
   <script src="js/custom.js"></script>
   <style>
+    .center {
+      margin-top: 5vh !important;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
     ul h2 {
       font-weight: 200;
     }
@@ -224,7 +232,7 @@
 
     .trans {
       transition: opacity 0.5s ease-in-out;
-      opacity: 0;
+      /* opacity: 0; */
     }
   </style>
   <script>
