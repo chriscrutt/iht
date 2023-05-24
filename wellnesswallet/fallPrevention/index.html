@@ -330,40 +330,43 @@
     }
 
     const vidBlock = document.getElementById("video");
-    var videoShown = false;
 
     function prevAnswer() {
       document.getElementById("end").style.display = "none";
-      if (videoShown) {
-        videoShown = false;
+      player.pause();
+      if (runningQuestion != 0) {
         runningQuestion--;
-        document.getElementById("questionnaire-form").style.display = "table-cell";
-        vidBlock.style.display = "none";
-        vidBlock.style.opacity = 0;
+      }
+      if (runningQuestion < lastQuestion) {
         renderQuestion();
-      } else if (runningQuestion != 0) {
-        runningQuestion--;
         vidBlock.style.opacity = 0;
         setTimeout(function () {
           vidBlock.style.display = "none";
-          document.getElementById("questionnaire-form").style.display = "table-cell";
+          player.pause();
           player.currentTime = 0;
+          document.getElementById("questionnaire-form").style.display = "table-cell";
+          document.getElementById("questionnaire-form").style.opacity = 1;
+          // setTimeout(function () {
+          // }, 500);
+        }, 500);
+      } else if (runningQuestion == lastQuestion) {
+        document.getElementById("questionnaire-form").style.opacity = 0;
+        document.getElementById("end").style.opacity = 0;
+        setTimeout(function () {
+          document.getElementById("questionnaire-form").style.display = "none";
+          document.getElementById("end").style.display = "none";
+          player.currentTime = 0;
+          player.play();
+          vidBlock.style.display = "block";
+          vidBlock.style.opacity = 1;
           renderQuestion();
         }, 500);
-      } else if (runningQuestion >= lastQuestion) {
-        runningQuestion--;
-        vidBlock.style.display = "block";
-        document.getElementById("questionnaire-form").style.display = "none";
-        player.currentTime = 0;
       }
-      player.pause();
     }
 
     function checkAnswer(answer) {
       questions[runningQuestion].answer = answer;
-      if (runningQuestion <= lastQuestion) {
-        runningQuestion++;
-      }
+      runningQuestion++;
       if (runningQuestion == lastQuestion) {
         question.style.opacity = 0;
         choiceA.style.opacity = 0;
@@ -387,6 +390,7 @@
     function goToEnd() {
       vidBlock.style.display = "none";
       document.getElementById("end").style.display = "block";
+      document.getElementById("end").style.opacity = 1;
       runningQuestion++;
     }
 
