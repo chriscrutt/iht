@@ -12,9 +12,9 @@
   7. [ ] progress bar
   8. [x] set video to 0 and pause it if they choose to go back once they get there
  ̶ ̶9̶.̶ ̶[̶ ̶]̶ ̶y̶e̶s̶/̶n̶o̶ ̶b̶u̶t̶t̶o̶n̶s̶ ̶s̶h̶o̶u̶l̶d̶ ̶s̶t̶a̶y̶ ̶i̶n̶ ̶s̶a̶m̶e̶ ̶s̶p̶o̶t̶
-  10.[ ] go back button should in same spot and lower
+  10.[x] go back button should in same spot and lower
   11.[ ] put patient id in URL
-
+  12.[ ] bigger font and less text
  -->
 
 <head>
@@ -94,8 +94,8 @@
               </div>
 
               <div id="video" class="trans">
-                <h1 style="color: #466EB6;">Thank you for sharing.</h1>
-                <h3>Now, watch this quick video to learn more about fall prevention.</h3>
+                <h1 style="color: #466EB6; width: 50vw;">Now, watch this quick video to learn more about fall prevention.</h1>
+                <!-- <h3>Now, watch this quick video to learn more about fall prevention.</h3> -->
                 <div id="player" style="display: block; padding-bottom: 1vh;">
                   <video id="video1" style="height:50vh;" controls>
                     <source src="../video/sixSteps.mp4" type="video/mp4">
@@ -207,7 +207,7 @@
           title: "Resume Video?",
           text: `You have only watched ${Math.round(perc * 100)}% of the video. If you continue, you might miss out on the reward at the end. Would you like to resume the video?`,
           // icon: "warning",
-          buttons: ["Yes, Resume Video", "No, Move On"],
+          buttons: ["Resume Video", "Move On"],
           dangerMode: true,
         })
           .then((submit) => {
