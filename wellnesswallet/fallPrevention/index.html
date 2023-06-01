@@ -276,15 +276,15 @@
       // console.log(answers); // log the object containing all the answers to the console
       return answers
     }
-    var preventUnload = true;
     function finish() {
       console.log(answer(perc));
       swal({
-        title: "Good job!",
-        text: "You clicked the button!",
+        title: "Submitted!",
+        text: "Your reward will be added to your wallet in the next 3-5 days.",
         icon: "success",
       }).then((submit) => {
-        preventUnload = false;
+        window.removeEventListener('beforeunload', preventExit);
+        window.removeEventListener('beforeunload', preventExit);
         window.location.href = "https://iht.tools";
       });
 
@@ -422,7 +422,6 @@
     };
 
     function preventExit(e) {
-      if (preventUnload) {
         // Cancel the event to prevent the page from refreshing/closing immediately
         e.preventDefault();
         // Chrome requires the returnValue property to be set
@@ -434,14 +433,14 @@
 
         // Return the confirmation message
         return confirmationMessage;
-      }
+      
     }
 
     // Attach the event listener to the window object
-    window.addEventListener('beforeunload', preventExit(e));
+    window.addEventListener('beforeunload', preventExit);
 
     // Attach the event listener to the window object
-    window.addEventListener('onbeforeunload', preventExit(e));
+    window.addEventListener('onbeforeunload', preventExit);
 
   </script>
 </body>
