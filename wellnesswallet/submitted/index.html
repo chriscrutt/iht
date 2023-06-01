@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Discover IHT's pro-active wellness solution that incentivizes healthy behavior in elderly patients through cash rewards. Request a demo to learn more about our user-friendly interface, versatile questionnaire, and effective follow-up and reward system.">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IHT.tools</title>
+    <link rel="shortcut icon" href="image/favicon.png" type="image/x-icon">
+    <!-- Bootstrap , fonts & icons  -->
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Plugin'stylesheets  -->
+    <link rel="stylesheet" href="../plugins/aos/aos.min.css">
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Vendor stylesheets  -->
+    <link rel="stylesheet" href="../css/main.css">
+    <!-- Sweet Alerts -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VMM3KZFGGE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-VMM3KZFGGE');
+    </script>
+</head>
+
+<body data-theme-mode-panel-active data-theme="light" style="font-family: 'Mazzard H';">
+    <header style="background-color: #466EB6;"
+        class="site-header site-header--menu-right landing-14-menu site-header--absolute site-header--sticky">
+        <div class="container">
+            <nav style=" height: 92px;" class="navbar site-navbar">
+                <!-- Brand Logo-->
+                <div class="brand-logo">
+                    <a href="#">
+                        <!-- <img src="image/logo/logo-black.png" alt=""> -->
+                        <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT - Wellness Wallet</h1>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="site-wrapper overflow-hidden position-relative">
+        <div style="height: 100vh;padding-top: 0;" id="end" class="hero-area-l-14 position-relative z-index-1 overflow-hidden trans">
+            <div class="container">
+                <div class="row position-relative justify-content-center">
+                    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 aos-init aos-animate" data-aos="fade-right"
+                        data-aos-duration="800" data-aos-once="true" style="width: 50vw;">
+                        <div class="content">
+                            <h1 class="center1" style="color:#466EB6;font-size: 5em;margin-top: 30vh;">Submitted!</h1>
+                            <h2 class="center2" style="font-size: 3em;margin-top: 5vh;" class="tape-helper mb4">Your reward will be added to your wallet
+                                in the next 3-5 days.</h2>
+                            <!-- <ul>
+                                <h2 style="font-size: 2.9em;"><i>✔</i> Using a cane or walker</h2>
+                                <h2 style="font-size: 2.9em;"><i>✔</i> Physical therapy programs</h2>
+                                <h2 style="font-size: 2.9em;"><i>✔</i> Any medical conditions that might be causing it
+                                </h2>
+                            </ul>
+                            <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;"
+                                onclick="finish()">Submit</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Footer Area -->
+    <!-- Vendor Scripts -->
+    <script src="js/vendor.min.js"></script>
+    <script src="../plugins/aos/aos.min.js"></script>
+    <script src="../plugins/menu/menu.js"></script>
+    <!-- Activation Script -->
+    <script src="js/custom.js"></script>
+    <style>
+        /* .center1 {
+            margin-top: 5vh !important;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .center2 {
+            margin-top: 5vh !important;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        } */
+
+        ul h2 {
+            font-weight: 200;
+        }
+
+        h2 i {
+            background-color: #72e297;
+            color: #FFF;
+            font-size: 2.5rem;
+            padding: 5px 12px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .testFhir footer {
+            border-top: 0;
+        }
+
+        body {
+            background-image: url("../image/l4/background-1920x1080.png");
+        }
+
+        .btn:hover {
+            background: #466eb6 !important;
+            color: #fff !important;
+        }
+
+        .btn {
+            background: #fff !important;
+            border: 2px solid #466eb6 !important;
+            color: #466eb6 !important;
+            padding: 25px;
+            font-size: 1em;
+        }
+
+        p {
+            color: #466EB6;
+        }
+
+        * {
+            font-family: Rubik;
+            color: #466EB6;
+        }
+
+        #questionnaire-form {
+            width: 40vw;
+            height: 40vh;
+            font-size: 2em;
+        }
+
+        .testFhir {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding-top: 0;
+            background-color: #ffffff00;
+        }
+
+        .swal-title {
+            font-size: 7vh;
+        }
+
+        .swal-text {
+            font-size: 3vh;
+        }
+
+        .swal-button--cancel {
+            background-color: rgb(45, 184.5, 45);
+            color: #fff;
+        }
+
+        .swal-button--cancel:hover {
+            background-color: rgb(42.5, 174.25, 42.5) !important;
+        }
+
+        .trans {
+            transition: opacity 0.5s ease-in-out;
+            /* opacity: 0; */
+        }
+    </style>
+</body>
+<footer
+    style="text-align: center; font-family: Karla; padding: 5px; background-color: #466eb6; color: #fff; position: absolute; top: 100vh; transform: translateY(-100%); width: 100%;">
+    Incentive Health Technologies, LLC</footer>
+
+</html>

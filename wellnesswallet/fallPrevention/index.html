@@ -7,14 +7,14 @@
   3. [x] previous
   4. [x] are you sure?
   5. [x] "finish"
-  5. [ ] close
+  5. [x] close
   6. [ ] reward
   7. [ ] progress bar
   8. [x] set video to 0 and pause it if they choose to go back once they get there
  ̶ ̶9̶.̶ ̶[̶ ̶]̶ ̶y̶e̶s̶/̶n̶o̶ ̶b̶u̶t̶t̶o̶n̶s̶ ̶s̶h̶o̶u̶l̶d̶ ̶s̶t̶a̶y̶ ̶i̶n̶ ̶s̶a̶m̶e̶ ̶s̶p̶o̶t̶
   10.[x] go back button should in same spot and lower
-  11.[ ] put patient id in URL
-  12.[ ] bigger font and less text
+  11.[x] put patient id in URL
+  12.[x] bigger font and less text
  -->
 
 <head>
@@ -128,7 +128,8 @@
                   <h2 style="font-size: 2.9em;"><i>✔</i> Physical therapy programs</h2>
                   <h2 style="font-size: 2.9em;"><i>✔</i> Any medical conditions that might be causing it</h2>
                 </ul>
-                <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;" onclick="finish()">Submit</a>
+                <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;"
+                  onclick="finish()">Submit</a>
               </div>
             </div>
           </div>
@@ -275,10 +276,18 @@
       // console.log(answers); // log the object containing all the answers to the console
       return answers
     }
-
+    var preventUnload = true;
     function finish() {
       console.log(answer(perc));
-      window.location.href = "../submitted"
+      swal({
+        title: "Good job!",
+        text: "You clicked the button!",
+        icon: "success",
+      }).then((submit) => {
+        preventUnload = false;
+        window.location.href = "https://iht.tools";
+      });
+
     }
 
     const question = document.getElementById("question");
@@ -412,35 +421,27 @@
       renderQuestion();
     };
 
+    function preventExit(e) {
+      if (preventUnload) {
+        // Cancel the event to prevent the page from refreshing/closing immediately
+        e.preventDefault();
+        // Chrome requires the returnValue property to be set
+        e.returnValue = '';
+
+        // Display the confirmation dialog
+        var confirmationMessage = 'Are you sure you want to leave this page?';
+        (e || window.event).returnValue = confirmationMessage; // For legacy browsers
+
+        // Return the confirmation message
+        return confirmationMessage;
+      }
+    }
+
     // Attach the event listener to the window object
-    window.addEventListener('beforeunload', function (e) {
-      // Cancel the event to prevent the page from refreshing/closing immediately
-      e.preventDefault();
-      // Chrome requires the returnValue property to be set
-      e.returnValue = '';
-
-      // Display the confirmation dialog
-      var confirmationMessage = 'Are you sure you want to leave this page?';
-      (e || window.event).returnValue = confirmationMessage; // For legacy browsers
-
-      // Return the confirmation message
-      return confirmationMessage;
-    });
+    window.addEventListener('beforeunload', preventExit(e));
 
     // Attach the event listener to the window object
-    window.addEventListener('onbeforeunload', function (e) {
-      // Cancel the event to prevent the page from refreshing/closing immediately
-      e.preventDefault();
-      // Chrome requires the returnValue property to be set
-      e.returnValue = '';
-
-      // Display the confirmation dialog
-      var confirmationMessage = 'Are you sure you want to leave this page?';
-      (e || window.event).returnValue = confirmationMessage; // For legacy browsers
-
-      // Return the confirmation message
-      return confirmationMessage;
-    });
+    window.addEventListener('onbeforeunload', preventExit(e));
 
   </script>
 </body>
