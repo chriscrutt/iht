@@ -128,7 +128,7 @@
                   <h2 style="font-size: 2.9em;"><i>✔</i> Physical therapy programs</h2>
                   <h2 style="font-size: 2.9em;"><i>✔</i> Any medical conditions that might be causing it</h2>
                 </ul>
-                <button class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Continue</button>
+                <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;" onclick="finish()">Submit</a>
               </div>
             </div>
           </div>
@@ -238,11 +238,11 @@
   <script>
 
     const player = document.getElementById("video1");
-
+    var perc = 0;
     const form = document.querySelector('#myForm');
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      let perc = player.currentTime / player.duration;
+      perc = player.currentTime / player.duration;
       if (perc < 1) {
         player.pause();
         swal({
@@ -256,12 +256,12 @@
             if (!submit) {
               player.play();
             } else {
-              answer(perc);
+              // answer(perc);
               goToEnd();
             }
           });
       } else {
-        answer(perc);
+        // answer(perc);
         goToEnd();
       }
     });
@@ -272,7 +272,13 @@
         answers.push(questions[i].answer);
       }
       answers.push(percc);
-      console.log(answers); // log the object containing all the answers to the console
+      // console.log(answers); // log the object containing all the answers to the console
+      return answers
+    }
+
+    function finish() {
+      console.log(answer(perc));
+      window.location.href = "../submitted"
     }
 
     const question = document.getElementById("question");
