@@ -8,20 +8,19 @@
   4. [x] are you sure?
   5. [x] "finish"
   5. [x] close
-  6. [ ] reward
+  6. [x] reward
   7. [ ] progress bar
   8. [x] set video to 0 and pause it if they choose to go back once they get there
  ̶ ̶9̶.̶ ̶[̶ ̶]̶ ̶y̶e̶s̶/̶n̶o̶ ̶b̶u̶t̶t̶o̶n̶s̶ ̶s̶h̶o̶u̶l̶d̶ ̶s̶t̶a̶y̶ ̶i̶n̶ ̶s̶a̶m̶e̶ ̶s̶p̶o̶t̶
   10.[x] go back button should in same spot and lower
   11.[x] put patient id in URL
   12.[x] bigger font and less text
+  13.[ ] add three options of giftcards wallgreens cvs rite aid
  -->
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="Discover IHT's pro-active wellness solution that incentivizes healthy behavior in elderly patients through cash rewards. Request a demo to learn more about our user-friendly interface, versatile questionnaire, and effective follow-up and reward system.">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>IHT.tools</title>
   <link rel="shortcut icon" href="image/favicon.png" type="image/x-icon">
@@ -223,12 +222,12 @@
     }
 
     .swal-button--cancel {
-      background-color: rgb(45, 184.5, 45);
+      background-color: seagreen;
       color: #fff;
     }
 
     .swal-button--cancel:hover {
-      background-color: rgb(42.5, 174.25, 42.5) !important;
+      background-color: mediumseagreen !important;
     }
 
     .trans {
@@ -276,6 +275,7 @@
       // console.log(answers); // log the object containing all the answers to the console
       return answers
     }
+    
     function finish() {
       console.log(answer(perc));
       swal({
@@ -422,18 +422,18 @@
     };
 
     function preventExit(e) {
-        // Cancel the event to prevent the page from refreshing/closing immediately
-        e.preventDefault();
-        // Chrome requires the returnValue property to be set
-        e.returnValue = '';
+      // Cancel the event to prevent the page from refreshing/closing immediately
+      e.preventDefault();
+      // Chrome requires the returnValue property to be set
+      e.returnValue = '';
 
-        // Display the confirmation dialog
-        var confirmationMessage = 'Are you sure you want to leave this page?';
-        (e || window.event).returnValue = confirmationMessage; // For legacy browsers
+      // Display the confirmation dialog
+      var confirmationMessage = 'Are you sure you want to leave this page?';
+      (e || window.event).returnValue = confirmationMessage; // For legacy browsers
 
-        // Return the confirmation message
-        return confirmationMessage;
-      
+      // Return the confirmation message
+      return confirmationMessage;
+
     }
 
     // Attach the event listener to the window object

@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Discover IHT's pro-active wellness solution that incentivizes healthy behavior in elderly patients through cash rewards. Request a demo to learn more about our user-friendly interface, versatile questionnaire, and effective follow-up and reward system.">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>IHT.tools</title>
     <link rel="shortcut icon" href="image/favicon.png" type="image/x-icon">
@@ -49,30 +47,14 @@
             </nav>
         </div>
     </header>
-    <div class="site-wrapper overflow-hidden position-relative">
-        <div style="height: 100vh;padding-top: 0;" id="end" class="hero-area-l-14 position-relative z-index-1 overflow-hidden trans">
-            <div class="container">
-                <div class="row position-relative justify-content-center">
-                    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 aos-init aos-animate" data-aos="fade-right"
-                        data-aos-duration="800" data-aos-once="true" style="width: 50vw;">
-                        <div class="content">
-                            <h1 class="center1" style="color:#466EB6;font-size: 5em;margin-top: 30vh;">Submitted!</h1>
-                            <h2 class="center2" style="font-size: 3em;margin-top: 5vh;" class="tape-helper mb4">Your reward will be added to your wallet
-                                in the next 3-5 days.</h2>
-                            <!-- <ul>
-                                <h2 style="font-size: 2.9em;"><i>✔</i> Using a cane or walker</h2>
-                                <h2 style="font-size: 2.9em;"><i>✔</i> Physical therapy programs</h2>
-                                <h2 style="font-size: 2.9em;"><i>✔</i> Any medical conditions that might be causing it
-                                </h2>
-                            </ul>
-                            <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;"
-                                onclick="finish()">Submit</a> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="bods">
+        <h2 style="font-size: 3em;">Please select your $10 reward gift card</h2>
+        <div class="button-container">
+            <button class="btn" style="background-image: url('../image/l4/walgreens1.png') !important;"></button>
+            <button class="btn" style="background-image: url('../image/l4/riteAid.png') !important;"></button>
+            <button class="btn" style="background-image: url('../image/l4/target.png') !important;"></button>
         </div>
-
+        <button onclick="finish()" class="btn sub">Submit</button>
     </div>
     <!-- Footer Area -->
     <!-- Vendor Scripts -->
@@ -82,6 +64,42 @@
     <!-- Activation Script -->
     <script src="js/custom.js"></script>
     <style>
+        .bods {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button-container .btn:hover,
+        .button-container .btn.active {
+            background-color: rgba(0, 255, 0, 0.6) !important;
+            opacity: 0.8;
+        }
+
+        /* Center the buttons horizontally and vertically */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .button-container .btn {
+            height: 30vh;
+            width: 28vw;
+            margin: 2vw;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+        }
+
         /* .center1 {
             margin-top: 5vh !important;
             position: absolute;
@@ -117,10 +135,10 @@
             background-image: url("../image/l4/background-1920x1080.png");
         }
 
-        .btn:hover {
-            background: #466eb6 !important;
+        /* .btn:hover {
+            background: #f0f0f0 !important;
             color: #fff !important;
-        }
+        } */
 
         .btn {
             background: #fff !important;
@@ -176,7 +194,51 @@
             transition: opacity 0.5s ease-in-out;
             /* opacity: 0; */
         }
+
+        .sub {
+            width: 25vw !important;
+            border: 2px solid seagreen !important;
+            background-color: seagreen !important;
+            color: #fff !important;
+            font-size: 2em;
+        }
+
+        .sub:hover {
+            background-color: mediumseagreen !important;
+        }
     </style>
+    <script>
+        $(document).ready(function () {
+            $('.btn').click(function () {
+                // Remove 'active' class from all buttons
+                $('.btn').removeClass('active');
+                // Add 'active' class to the clicked button
+                $(this).addClass('active');
+            });
+        });
+
+        function finish() {
+            // Check if a reward option is selected
+            if ($('.btn.active').length === 0) {
+                swal({
+                    title: "Oops!",
+                    text: "Please select a reward option before submitting.",
+                    icon: "warning",
+                });
+                return; // Stop further execution
+            }
+
+            swal({
+                title: "Submitted!",
+                text: "Your reward will be added to your wallet in the next 3-5 days.",
+                icon: "success",
+            }).then((submit) => {
+                window.location.href = "https://iht.tools";
+            });
+        }
+
+
+    </script>
 </body>
 <footer
     style="text-align: center; font-family: Karla; padding: 5px; background-color: #466eb6; color: #fff; position: absolute; top: 100vh; transform: translateY(-100%); width: 100%;">
