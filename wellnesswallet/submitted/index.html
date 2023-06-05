@@ -222,7 +222,7 @@
             if ($('.btn.active').length === 0) {
                 swal({
                     title: "Oops!",
-                    text: "Please select a reward option before submitting.",
+                    text: "Please select an option before submitting.",
                     icon: "warning",
                 });
                 return; // Stop further execution
@@ -230,7 +230,7 @@
 
             swal({
                 title: "Submitted!",
-                text: "Your reward will be added to your wallet in the next 3-5 days.",
+                text: "Your gift card will be mailed to you in the next 3-5 days.",
                 icon: "success",
             }).then((submit) => {
                 window.location.href = "https://iht.tools";
