@@ -75,12 +75,12 @@
     </header>
     <!-- navbar- -->
     <!-- Hero Area -->
-    <div class="testFhir position-relative z-index-1 overflow-hidden">
+    <div class="testFhir position-relative z-index-1 overflow-hidden trans">
       <div class="container" style="text-align: center;">
         <div class="row position-relative justify-content-center">
           <div class="col-md-10 pr-0" style="width:auto;">
             <form id="myForm" method="type">
-              <div id="questionnaire-form" class="trans">
+              <div id="questionnaire-form" style="opacity: 0;" class="trans">
                 <div id="question" class="trans">
                   <p>Do you have a problem with your balance?</p>
                 </div>
@@ -128,7 +128,7 @@
                   <h2 style="font-size: 2.9em;"><i>✔</i> Any medical conditions that might be causing it</h2>
                 </ul>
                 <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;"
-                  href="../submitted/">Finish</a>
+                  onclick="finish()">Finish</a>
               </div>
             </div>
           </div>
@@ -278,16 +278,7 @@
 
     function finish() {
       console.log(answer(perc));
-      swal({
-        title: "Submitted!",
-        text: "Your reward will be added to your wallet in the next 3-5 days.",
-        icon: "success",
-      }).then((submit) => {
-        window.removeEventListener('beforeunload', preventExit);
-        window.removeEventListener('beforeunload', preventExit);
-        window.location.href = "https://iht.tools";
-      });
-
+        window.location.href = "../submitted";
     }
 
     const question = document.getElementById("question");
@@ -418,7 +409,8 @@
     }
 
     window.onload = (event) => {
-      renderQuestion();
+      // renderQuestion();
+      document.getElementById("questionnaire-form").style.opacity = 1
     };
 
     function preventExit(e) {
