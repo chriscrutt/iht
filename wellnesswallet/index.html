@@ -15,6 +15,7 @@
     rel="stylesheet">
   <!-- Plugin'stylesheets  -->
   <link rel="stylesheet" href="../plugins/aos/aos.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <!-- Vendor stylesheets  -->
   <link rel="stylesheet" href="../css/main.css">
   <!-- Custom stylesheet -->
@@ -62,11 +63,12 @@
           <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 " data-aos="fade-right" data-aos-duration="800"
             data-aos-once="true" style="width: 50%;">
             <div class="content">
-              <h1 style="color:#466EB6; font-size: 10vh;line-height: 10vh;">Hello Christopher!</h1>
+              <h1 id="greeting" style="color:#466EB6; font-size: 10vh;line-height: 10vh;">Hello!</h1>
               <p style="color:#466EB6; font-size: 5vh; line-height: 5vh;">Answer a few questions then watch a quick
                 video and get a $10 gift card sent to your home.</p>
               <!-- <div onclick="console.log('yo')"> -->
-              <a href="./fallPrevention/" id="getStarted" class="btn focus-reset" style="font-size: 5vh;border-radius:1vh;">Get
+              <a href="./fallPrevention/" id="getStarted" class="btn focus-reset"
+                style="font-size: 5vh;border-radius:1vh;">Get
                 Started</a> <!-- </div> -->
             </div>
           </div>
@@ -98,7 +100,23 @@
     }
   </style>
   <script>
+    const baseUrl = "https://hapi.fhir.org/baseR4";
+    var info = window.location.href.split('?');
+    info.shift();
     document.getElementById("getStarted").href += window.location.search;
+    $.ajax({
+      url: `${baseUrl}/Patient?_id=${info[1]}`,
+      type: "GET",
+      contentType: "application/json",
+      success: function (response) {
+        console.log(response);
+        document.getElementById("greeting").innerHTML = "Hello " + response.entry[0].resource.name[0].given[0] + "!";
+      },
+      error: function (error) {
+        console.log("Error:", error);
+      },
+    });
+
   </script>
   <!-- Footer Area -->
   <!-- Vendor Scripts -->
