@@ -66,7 +66,7 @@
               <p style="color:#466EB6; font-size: 5vh; line-height: 5vh;">Answer a few questions then watch a quick
                 video and get a $10 gift card sent to your home.</p>
               <!-- <div onclick="console.log('yo')"> -->
-              <a href="./fallPrevention/?12345678" class="btn focus-reset" style="font-size: 5vh;border-radius:1vh;">Get
+              <a href="./fallPrevention/" id="getStarted" class="btn focus-reset" style="font-size: 5vh;border-radius:1vh;">Get
                 Started</a> <!-- </div> -->
             </div>
           </div>
@@ -97,6 +97,9 @@
       /* color: limegreen !important; */
     }
   </style>
+  <script>
+    document.getElementById("getStarted").href += window.location.search;
+  </script>
   <!-- Footer Area -->
   <!-- Vendor Scripts -->
   <script src="../js/vendor.min.js"></script>

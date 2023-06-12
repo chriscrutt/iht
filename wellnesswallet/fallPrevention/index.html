@@ -277,8 +277,9 @@
     }
 
     function finish() {
-      console.log(answer(perc));
-        window.location.href = "../submitted";
+      let answers = answer(perc)
+      console.log(answers);
+      window.location.href = "../submitted/" + window.location.search + "?" + answers.join("?");
     }
 
     const question = document.getElementById("question");
