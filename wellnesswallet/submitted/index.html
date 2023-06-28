@@ -49,11 +49,11 @@
     <div class="bods">
         <h2 style="font-size: 3em;">Please select your $10 reward gift card</h2>
         <div class="button-container">
-            <button class="btn" style="background-image: url('../image/l4/walgreens1.png') !important;"
+            <button class="btn option" style="background-image: url('../image/l4/walgreens1.png') !important;"
                 data-code="walgreens"></button>
-            <button class="btn" style="background-image: url('../image/l4/riteAid.png') !important;"
+            <button class="btn option" style="background-image: url('../image/l4/riteAid.png') !important;"
                 data-code="riteAid"></button>
-            <button class="btn" style="background-image: url('../image/l4/target.png') !important;"
+            <button class="btn option" style="background-image: url('../image/l4/target.png') !important;"
                 data-code="target"></button>
 
         </div>
@@ -222,33 +222,14 @@
 
         function finish() {
             // Check if a reward option is selected
-            if ($('.btn.active').length === 0) {
+            if ($('.option.active').length === 0) {
                 swal({
                     title: "Oops!",
                     text: "Please select an option before submitting.",
                     icon: "warning",
                 });
                 return; // Stop further execution
-            }
-
-            // Retrieve the selected option's code
-            var rewardOption = $('.btn.active').data('code');
-
-            // Update the questionnaireResponse object
-            questionnaireResponse.item[4].answer[0].valueCoding.code = rewardOption;
-
-            $.ajax({
-                url: `${baseUrl}/QuestionnaireResponse`,
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(questionnaireResponse),
-                success: function (response) {
-                    console.log("Questionnaire response created:", response);
-                },
-                error: function (error) {
-                    console.log("Error creating questionnaire response:", error);
-                },
-            }).then((response) => {
+            } else {
                 swal({
                     title: "Submitted!",
                     text: "Your gift card will be mailed to you in the next 3-5 days.",
@@ -256,76 +237,8 @@
                 }).then((submit) => {
                     window.location.href = "https://www.prospectmedical.com/";
                 });
-            });
+            }
         }
-
-
-        const baseUrl = "https://hapi.fhir.org/baseR4";
-        var info = window.location.href.split('?');
-        info.shift();
-
-        // patient 10724852
-        // questionnaire 10725657
-
-        questionnaireResponse = {
-            "resourceType": "QuestionnaireResponse",
-            "questionnaire": "Questionnaire/" + info[0],
-            "status": "completed",
-            "subject": {
-                "reference": "Patient/" + info[1]
-            },
-            "item": [
-                {
-                    "linkId": "1",
-                    "answer": [
-                        {
-                            "valueCoding": {
-                                "code": info[2]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "linkId": "2",
-                    "answer": [
-                        {
-                            "valueCoding": {
-                                "code": info[3]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "linkId": "3",
-                    "answer": [
-                        {
-                            "valueCoding": {
-                                "code": info[4]
-                            }
-                        }
-                    ]
-                },
-                {
-                    "linkId": "4",
-                    "answer": [
-                        {
-                            "valueDecimal": info[5]
-                        }
-                    ]
-                },
-                {
-                    "linkId": "5",
-                    "answer": [
-                        {
-                            "valueCoding": {
-                                "code": "???"
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-
 
     </script>
 </body>
