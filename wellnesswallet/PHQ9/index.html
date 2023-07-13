@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- 
+  1. [x] add intro
+  2. [x] green button
+  3. [x] previous
+  4. [x] are you sure?
+  5. [x] "finish"
+  5. [x] close
+  6. [x] reward
+  7. [ ] progress bar
+  8. [x] set video to 0 and pause it if they choose to go back once they get there
+ ̶ ̶9̶.̶ ̶[̶ ̶]̶ ̶y̶e̶s̶/̶n̶o̶ ̶b̶u̶t̶t̶o̶n̶s̶ ̶s̶h̶o̶u̶l̶d̶ ̶s̶t̶a̶y̶ ̶i̶n̶ ̶s̶a̶m̶e̶ ̶s̶p̶o̶t̶
+  10.[x] go back button should in same spot and lower
+  11.[x] put patient id in URL
+  12.[x] bigger font and less text
+  13.[ ] add three options of giftcards wallgreens cvs rite aid
+ -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>IHT.tools</title>
+  <link rel="shortcut icon" href="image/favicon.png" type="image/x-icon">
+  <!-- Bootstrap , fonts & icons  -->
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <!-- Plugin'stylesheets  -->
+  <link rel="stylesheet" href="../plugins/aos/aos.min.css">
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- Vendor stylesheets  -->
+  <link rel="stylesheet" href="../css/main.css">
+  <!-- Sweet Alerts -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VMM3KZFGGE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-VMM3KZFGGE');
+  </script>
+</head>
+
+<body data-theme-mode-panel-active data-theme="light" style="font-family: 'Mazzard H';">
+  <div class="site-wrapper overflow-hidden position-relative">
+    <!-- Site Header -->
+    <!-- Preloader -->
+    <!-- <div id="loading">
+    <div class="preloader">
+     <img src="../image/preloader.gif" alt="preloader">
+   </div>
+   </div>    -->
+    <!--Site Header Area -->
+    <header style="background-color: #466EB6;"
+      class="site-header site-header--menu-right landing-14-menu site-header--absolute site-header--sticky">
+      <div class="container">
+        <nav style=" height: 92px;" class="navbar site-navbar">
+          <!-- Brand Logo-->
+          <div class="brand-logo">
+            <a href="#">
+              <!-- <img src="image/logo/logo-black.png" alt=""> -->
+              <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT - Wellness Wallet</h1>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- navbar- -->
+    <!-- Hero Area -->
+    <div class="testFhir position-relative z-index-1 overflow-hidden trans">
+      <div class="container" style="text-align: center;">
+        <div class="row position-relative justify-content-center">
+          <div class="col-md-10 pr-0" style="width:auto;">
+            <form id="myForm" method="type">
+              <div id="questionnaire-form" style="opacity: 0;" class="trans">
+                <div id="question" class="trans">
+                  <p>Over the past two weeks, how often have you been bothered by little interest or pleasure in doing
+                    things?</p>
+                </div>
+                <div id="choices">
+                  <div class="btn trans" id="zero" value="0" onclick="checkAnswer(0)"
+                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">Not at all</div>
+                  <div class="btn trans" id="one" value="1" onclick="checkAnswer(1)"
+                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">Several days</div>
+                  <div class="btn trans" id="two" value="2" onclick="checkAnswer(2)"
+                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">More than half the days</div>
+                  <div class="btn trans" id="three" value="3" onclick="checkAnswer(3)"
+                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">Nearly every day</div>
+                </div>
+              </div>
+
+              <div id="video" class="trans">
+                <h1 style="color: #466EB6; width: 50vw;">Now, watch this quick video to learn more about fall
+                  prevention.</h1>
+                <!-- <h3>Now, watch this quick video to learn more about fall prevention.</h3> -->
+                <div id="player" style="display: block; padding-bottom: 1vh;">
+                  <video id="video1" style="height:50vh;" controls>
+                    <source src="../video/brainGloomy.mp4" type="video/mp4">
+                    Your browser does not support HTML video.
+                  </video>
+                </div>
+                <button class="btn" type="submit"
+                  style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Continue</button>
+              </div>
+              <div class="btn" id="prevAnswer" class="trans" onclick="prevAnswer()"
+                style="margin-top: 1vh;position: fixed;bottom: 5vh;left: 45vw;right: 45vw;opacity:0;">Go
+                Back</div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div style="height: 100vh;display:none;" id="end"
+        class="hero-area-l-14 position-relative z-index-1 overflow-hidden trans">
+        <div class="container">
+          <div class="row position-relative justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 aos-init aos-animate" data-aos="fade-right"
+              data-aos-duration="800" data-aos-once="true" style="width: 75vw;">
+              <div class="content">
+                <h1 style="color:#466EB6;font-size: 5em;">Remember:</h1>
+                <h2 style="font-size: 3em;" class="tape-helper mb4">If you're feeling depressed, talk to your Doctor
+                  about the following:</h2>
+                <ul>
+                  <h2 style="font-size: 2.9em;"><i>✔</i> Taking prescription medication</h2>
+                  <h2 style="font-size: 2.9em;"><i>✔</i> Finding the right theripist for you</h2>
+                  <h2 style="font-size: 2.9em;"><i>✔</i> Going to a local support groups</h2>
+                </ul>
+                <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;"
+                  onclick="finish()">Finish</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer>
+        Incentive Health Technologies, LLC
+      </footer>
+    </div>
+  </div>
+  <!-- Footer Area -->
+  <!-- Vendor Scripts -->
+  <script src="js/vendor.min.js"></script>
+  <script src="../plugins/aos/aos.min.js"></script>
+  <script src="../plugins/menu/menu.js"></script>
+  <!-- Activation Script -->
+  <script src="js/custom.js"></script>
+  <style>
+    .center {
+      margin-top: 5vh !important;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    ul h2 {
+      font-weight: 200;
+    }
+
+    #choices .btn {
+      margin: 1%;
+    }
+
+    h2 i {
+      background-color: #72e297;
+      color: #FFF;
+      font-size: 2.5rem;
+      padding: 5px 12px;
+      margin-right: 10px;
+      border-radius: 50%;
+    }
+
+    .testFhir footer {
+      border-top: 0;
+    }
+
+    body {
+      background-image: url("../image/background.png");
+    }
+
+    .btn:hover {
+      background: #466eb6 !important;
+      color: #fff !important;
+    }
+
+    .btn {
+      background: #fff !important;
+      border: 2px solid #466eb6 !important;
+      color: #466eb6 !important;
+      padding: 25px;
+      font-size: 1em;
+    }
+
+    p {
+      color: #466EB6;
+    }
+
+    * {
+      font-family: Rubik;
+      color: #466EB6;
+    }
+
+    #questionnaire-form {
+      width: 70vw;
+      height: 40vh;
+      font-size: 1.7em;
+    }
+
+    .testFhir {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding-top: 0;
+      background-color: #ffffff00;
+    }
+
+    .swal-title {
+      font-size: 7vh;
+    }
+
+    .swal-text {
+      font-size: 3vh;
+    }
+
+    .swal-button--cancel {
+      background-color: seagreen;
+      color: #fff;
+    }
+
+    .swal-button--cancel:hover {
+      background-color: mediumseagreen !important;
+    }
+
+    .trans {
+      transition: opacity 0.5s ease-in-out;
+      /* opacity: 0; */
+    }
+  </style>
+  <script>
+
+    const player = document.getElementById("video1");
+    var perc = 0;
+    const form = document.querySelector('#myForm');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      perc = player.currentTime / player.duration;
+      if (perc < 1) {
+        player.pause();
+        swal({
+          title: "Resume Video?",
+          text: `You have only watched ${Math.round(perc * 100)}% of the video. If you continue, you might miss out on the reward at the end. Would you like to resume the video?`,
+          // icon: "warning",
+          buttons: ["Resume Video", "Move On"],
+          dangerMode: true,
+        })
+          .then((submit) => {
+            if (!submit) {
+              player.play();
+            } else {
+              // answer(perc);
+              goToEnd();
+            }
+          });
+      } else {
+        // answer(perc);
+        goToEnd();
+      }
+    });
+
+    function answer(percc) {
+      answers = [];
+      for (let i = 0; i < questions.length; i++) {
+        answers.push(questions[i].answer);
+      }
+      answers.push(percc);
+      // console.log(answers); // log the object containing all the answers to the console
+      return answers
+    }
+
+    function finish() {
+      let answers = answer(perc)
+      console.log(answers);
+      window.location.href = "../submitted/" //+ window.location.search + "?" + answers.join("?");
+    }
+
+    const question = document.getElementById("question");
+    const choice0 = document.getElementById("zero");
+    const choice1 = document.getElementById("one");
+    const choice2 = document.getElementById("two");
+    const choice3 = document.getElementById("three");
+    const prev = document.getElementById("prevAnswer");
+
+    // create our questions
+    let questions = [
+      {
+        question: "Over the past two weeks, how often have you been bothered by little interest or pleasure in doing things?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by feeling down, depressed, or hopeless?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by trouble falling or staying asleep, or sleeping too much?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by feeling tired or having little energy?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by poor appetite or overeating?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by feeling bad about yourself or that you are a failure or have let yourself or your family down?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by trouble concentrating on things, such as reading the newspaper or watching television?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by moving or speaking so slowly that other people could have noticed? Or the opposite—being so fidgety or restless that you have been moving around a lot more than usual?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }, {
+        question: "Over the past two weeks, how often have you been bothered by thoughts that you would be better off dead, or of hurting yourself in some way?",
+        choice0: "Not at all",
+        choice1: "Several days",
+        choice2: "More than half the days",
+        choice3: "Nearly every day",
+        answer: "",
+      }
+
+    ];
+
+    // create some variables
+    const lastQuestion = questions.length;
+    var runningQuestion = 0;
+
+    // Modify renderQuestion function
+    function renderQuestion() {
+      question.style.opacity = 0;
+      choice0.style.opacity = 0;
+      choice1.style.opacity = 0;
+      choice2.style.opacity = 0;
+      choice3.style.opacity = 0;
+      prev.style.display = "flex";
+      setTimeout(function () {
+        let q = questions[runningQuestion];
+        question.innerHTML = "<p style=\"font-size:1.8em;\">" + q.question + "</p>";
+        choice0.innerHTML = q.choice0;
+        choice1.innerHTML = q.choice1;
+        choice2.innerHTML = q.choice2;
+        choice3.innerHTML = q.choice3;
+
+        if (runningQuestion > 0) {
+          prev.style.opacity = 1;
+          prev.style.cursor = "pointer";
+          question.style.opacity = 1;
+          choice0.style.opacity = 1;
+          choice1.style.opacity = 1;
+          choice2.style.opacity = 1;
+          choice3.style.opacity = 1;
+        } else {
+          prev.style.opacity = 0;
+          question.style.opacity = 1;
+          choice0.style.opacity = 1;
+          choice1.style.opacity = 1;
+          choice2.style.opacity = 1;
+          choice3.style.opacity = 1;
+          setTimeout(function () {
+            prev.style.display = "none";
+          }, 500);
+        }
+      }, 500);
+    }
+
+    const vidBlock = document.getElementById("video");
+
+    function prevAnswer() {
+      document.getElementById("end").style.display = "none";
+      player.pause();
+      if (runningQuestion != 0) {
+        runningQuestion--;
+      }
+      if (runningQuestion < lastQuestion) {
+        renderQuestion();
+        vidBlock.style.opacity = 0;
+        setTimeout(function () {
+          vidBlock.style.display = "none";
+          player.pause();
+          player.currentTime = 0;
+          document.getElementById("questionnaire-form").style.display = "table-cell";
+          document.getElementById("questionnaire-form").style.opacity = 1;
+          // setTimeout(function () {
+          // }, 500);
+        }, 500);
+      } else if (runningQuestion == lastQuestion) {
+        document.getElementById("questionnaire-form").style.opacity = 0;
+        document.getElementById("end").style.opacity = 0;
+        setTimeout(function () {
+          document.getElementById("questionnaire-form").style.display = "none";
+          document.getElementById("end").style.display = "none";
+          player.currentTime = 0;
+          player.play();
+          vidBlock.style.display = "block";
+          vidBlock.style.opacity = 1;
+          renderQuestion();
+        }, 500);
+      }
+    }
+
+    function checkAnswer(answer) {
+      questions[runningQuestion].answer = answer;
+      runningQuestion++;
+      if (runningQuestion == lastQuestion) {
+        question.style.opacity = 0;
+        choice0.style.opacity = 0;
+        choice1.style.opacity = 0;
+        choice2.style.opacity = 0;
+        choice3.style.opacity = 0;
+        videoShown = true;
+        setTimeout(function () {
+          document.getElementById("questionnaire-form").style.display = "none";
+          setTimeout(function () {
+            vidBlock.style.display = "block";
+            setTimeout(function () {
+              vidBlock.style.opacity = 1;
+              player.play();
+            }, 250);
+          }, 250);
+        }, 500);
+      } else if (runningQuestion < lastQuestion) {
+        renderQuestion();
+      }
+    }
+
+    function goToEnd() {
+      vidBlock.style.display = "none";
+      document.getElementById("end").style.display = "block";
+      document.getElementById("end").style.opacity = 1;
+      runningQuestion++;
+    }
+
+    window.onload = (event) => {
+      // renderQuestion();
+      document.getElementById("questionnaire-form").style.opacity = 1
+    };
+
+  </script>
+</body>
+
+</html>
