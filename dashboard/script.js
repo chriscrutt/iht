@@ -1,4 +1,4 @@
-function switchTab(tabId, mainTabId, secondaryTabId) {
+function switchTab(event, mainTabId, secondaryTabId) {
     var tabs = document.getElementsByClassName("content");
     for (var i = 0; i < tabs.length; i++) {
         tabs[i].classList.add("hidden");
@@ -18,7 +18,17 @@ function switchTab(tabId, mainTabId, secondaryTabId) {
 
     var secondaryTabLinks = document.querySelectorAll(".secondary-navbar a");
     for (var i = 0; i < secondaryTabLinks.length; i++) {
-        secondaryTabLinks[i].classList.remove("selected");
+        secondaryTabLinks[i].classList.remove("selectedSub");
+    }
+    let clickedId = event.target.id;
+    document.querySelectorAll(`[id*="${clickedId.slice(-3)}-1"]`)[0].classList.add("selectedSub");
+
+    if (clickedId.slice(-1) == "1") {
+        document.getElementById("content1").classList.remove("hidden");
+    } else if (clickedId.slice(-1) == "2") {
+        document.getElementById("content4").classList.remove("hidden");
+    } else {
+        document.getElementById("content7").classList.remove("hidden");
     }
 
     return false;
@@ -33,9 +43,9 @@ function switchContent(contentId, tabId) {
 
     var secondaryTabs = document.querySelectorAll(".secondary-navbar a");
     for (var i = 0; i < secondaryTabs.length; i++) {
-        secondaryTabs[i].classList.remove("selected");
+        secondaryTabs[i].classList.remove("selectedSub");
     }
-    document.getElementById(tabId).classList.add("selected");
+    document.getElementById(tabId).classList.add("selectedSub");
 
     return false;
 }

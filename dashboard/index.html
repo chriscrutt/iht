@@ -12,13 +12,13 @@
 
 <body>
     <div class="navbar">
-        <a id="mainTab1" class="selected" href="#" onclick="switchTab('tab1', 'mainTab1', 'secondaryTab1')">Mental
+        <a id="mainTab1" class="selected" href="#" onclick="switchTab(event, 'mainTab1', 'secondaryTab1')">Mental
             Health Assessments</a>
-        <a id="mainTab2" href="#" onclick="switchTab('tab2', 'mainTab2', 'secondaryTab2')">HEDIS-Related Assessments</a>
-        <a id="mainTab3" href="#" onclick="switchTab('tab3', 'mainTab3', 'secondaryTab3')">Incentive Programs</a>
+        <a id="mainTab2" href="#" onclick="switchTab(event, 'mainTab2', 'secondaryTab2')">HEDIS-Related Assessments</a>
+        <a id="mainTab3" href="#" onclick="switchTab(event, 'mainTab3', 'secondaryTab3')">Incentive Programs</a>
     </div>
     <div id="secondaryTab1" class="secondary-navbar">
-        <a id="tab1-1" href="#" onclick="switchContent('content1', 'tab1-1'); drawChart();">1</a>
+        <a id="tab1-1" class="selectedSub" href="#" onclick="switchContent('content1', 'tab1-1'); drawChart();">1</a>
         <a id="tab1-2" href="#" onclick="switchContent('content2', 'tab1-2')">2</a>
         <a id="tab1-3" href="#" onclick="switchContent('content3', 'tab1-3')">3</a>
     </div>
@@ -32,7 +32,7 @@
         <a id="tab3-2" href="#" onclick="switchContent('content8', 'tab3-2')">8</a>
         <a id="tab3-3" href="#" onclick="switchContent('content9', 'tab3-3')">9</a>
     </div>
-    <div id="content1" class="content hidden">Content for tab 1</div>
+    <div id="content1" class="content">Content for tab 1</div>
     <div id="content2" class="content hidden">Content for tab 2</div>
     <div id="content3" class="content hidden">Content for tab 3</div>
     <div id="content4" class="content hidden">Content for tab 4</div>
