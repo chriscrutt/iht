@@ -89,10 +89,19 @@ function drawChart() {
             plugins: {
                 legend: {
                     position: "top",
+                    labels: {
+                        font: {
+                            size: 16, // Adjust the legend font size as desired
+                        },
+                    },
                 },
                 title: {
                     display: true,
                     text: "PHQ-9 Responses",
+                    font: {
+                        size: 24, // Adjust the title font size as desired
+                        weight: "bold", // Optionally adjust font weight
+                    },
                 },
             },
         },
@@ -103,388 +112,190 @@ function patientList() {
     const tableHTML = `
     <table id="data-table">
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>Patient ID</th>
-        <th>Age</th>
-        <th>Score</th>
-      </tr>
+        <tr>
+            <th>Name</th>
+            <th>Patient ID</th>
+            <th>Age</th>
+            <th>Score</th>
+        </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Mary Johnson</td>
-        <td>123456791</td>
-        <td>55</td>
-        <td>10</td>
-      </tr>
-      <tr>
-        <td>Robert Lee</td>
-        <td>123456792</td>
-        <td>61</td>
-        <td>22</td>
-      </tr>
-      <tr>
-        <td>Emily Chen</td>
-        <td>123456793</td>
-        <td>45</td>
-        <td>8</td>
-      </tr>
-      <tr>
-        <td>Michael Brown</td>
-        <td>123456794</td>
-        <td>39</td>
-        <td>5</td>
-      </tr>
-      <tr>
-        <td>Sarah Wilson</td>
-        <td>123456795</td>
-        <td>50</td>
-        <td>12</td>
-      </tr>
-      <tr>
-        <td>David Martin</td>
-        <td>123456796</td>
-        <td>63</td>
-        <td>17</td>
-      </tr>
-      <tr>
-        <td>Linda Anderson</td>
-        <td>123456797</td>
-        <td>69</td>
-        <td>19</td>
-      </tr>
-      <tr>
-        <td>William Taylor</td>
-        <td>123456798</td>
-        <td>78</td>
-        <td>24</td>
-      </tr>
-      <tr>
-        <td>Ava Lewis</td>
-        <td>123456799</td>
-        <td>34</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>James Clark</td>
-        <td>123456700</td>
-        <td>56</td>
-        <td>13</td>
-      </tr>
-      <tr>
-        <td>Sophia Martinez</td>
-        <td>123456701</td>
-        <td>41</td>
-        <td>7</td>
-      </tr>
-      <tr>
-        <td>Joseph Hernandez</td>
-        <td>123456702</td>
-        <td>59</td>
-        <td>18</td>
-      </tr>
-      <tr>
-        <td>Olivia Nelson</td>
-        <td>123456703</td>
-        <td>48</td>
-        <td>11</td>
-      </tr>
-      <tr>
-        <td>John Doe</td>
-        <td>123456704</td>
-        <td>32</td>
-        <td>2</td>
-      </tr>
-      <tr>
-        <td>Emma Adams</td>
-        <td>123456705</td>
-        <td>29</td>
-        <td>1</td>
-      </tr>
-      <tr>
-        <td>Michaela King</td>
-        <td>123456706</td>
-        <td>60</td>
-        <td>16</td>
-      </tr>
-      <tr>
-        <td>Alexander Turner</td>
-        <td>123456707</td>
-        <td>64</td>
-        <td>21</td>
-      </tr>
-      <tr>
-        <td>Grace Miller</td>
-        <td>123456708</td>
-        <td>52</td>
-        <td>9</td>
-      </tr>
-      <tr>
-        <td>Ethan Parker</td>
-        <td>123456709</td>
-        <td>46</td>
-        <td>6</td>
-      </tr>
-      <tr>
-        <td>Chloe Brooks</td>
-        <td>123456710</td>
-        <td>37</td>
-        <td>4</td>
-      </tr>
-      <tr>
-        <td>Andrew Scott</td>
-        <td>123456711</td>
-        <td>44</td>
-        <td>7</td>
-      </tr>
-      <tr>
-        <td>Zoe Adams</td>
-        <td>123456712</td>
-        <td>57</td>
-        <td>12</td>
-      </tr>
-      <tr>
-        <td>Mason Sanchez</td>
-        <td>123456713</td>
-        <td>51</td>
-        <td>10</td>
-      </tr>
-      <tr>
-        <td>Leah Allen</td>
-        <td>123456714</td>
-        <td>49</td>
-        <td>9</td>
-      </tr>
-      <tr>
-        <td>William Turner</td>
-        <td>123456715</td>
-        <td>62</td>
-        <td>16</td>
-      </tr>
-      <tr>
-        <td>Abigail Foster</td>
-        <td>123456716</td>
-        <td>47</td>
-        <td>8</td>
-      </tr>
-      <tr>
-        <td>Lucas Simmons</td>
-        <td>123456717</td>
-        <td>36</td>
-        <td>5</td>
-      </tr>
-      <tr>
-        <td>Ella Watson</td>
-        <td>123456718</td>
-        <td>53</td>
-        <td>11</td>
-      </tr>
-      <tr>
-        <td>Oliver Carter</td>
-        <td>123456719</td>
-        <td>31</td>
-        <td>2</td>
-      </tr>
+        <tr>
+            <td>Mary Johnson</td>
+            <td>123456791</td>
+            <td>55</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <td>Robert Lee</td>
+            <td>123456792</td>
+            <td>61</td>
+            <td>22</td>
+        </tr>
+        <tr>
+            <td>Emily Chen</td>
+            <td>123456793</td>
+            <td>45</td>
+            <td>8</td>
+        </tr>
+        <tr>
+            <td>Michael Brown</td>
+            <td>123456794</td>
+            <td>39</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>Sarah Wilson</td>
+            <td>123456795</td>
+            <td>50</td>
+            <td>12</td>
+        </tr>
+        <tr>
+            <td>David Martin</td>
+            <td>123456796</td>
+            <td>63</td>
+            <td>17</td>
+        </tr>
+        <tr>
+            <td>Linda Anderson</td>
+            <td>123456797</td>
+            <td>69</td>
+            <td>19</td>
+        </tr>
+        <tr>
+            <td>William Taylor</td>
+            <td>123456798</td>
+            <td>78</td>
+            <td>24</td>
+        </tr>
+        <tr>
+            <td>Ava Lewis</td>
+            <td>123456799</td>
+            <td>34</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>James Clark</td>
+            <td>123456700</td>
+            <td>56</td>
+            <td>13</td>
+        </tr>
+        <tr>
+            <td>Sophia Martinez</td>
+            <td>123456701</td>
+            <td>41</td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td>Joseph Hernandez</td>
+            <td>123456702</td>
+            <td>59</td>
+            <td>18</td>
+        </tr>
+        <tr>
+            <td>Olivia Nelson</td>
+            <td>123456703</td>
+            <td>48</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td>John Doe</td>
+            <td>123456704</td>
+            <td>32</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>Emma Adams</td>
+            <td>123456705</td>
+            <td>29</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Michaela King</td>
+            <td>123456706</td>
+            <td>60</td>
+            <td>16</td>
+        </tr>
+        <tr>
+            <td>Alexander Turner</td>
+            <td>123456707</td>
+            <td>64</td>
+            <td>21</td>
+        </tr>
+        <tr>
+            <td>Grace Miller</td>
+            <td>123456708</td>
+            <td>52</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>Ethan Parker</td>
+            <td>123456709</td>
+            <td>46</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td>Chloe Brooks</td>
+            <td>123456710</td>
+            <td>37</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Andrew Scott</td>
+            <td>123456711</td>
+            <td>44</td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td>Zoe Adams</td>
+            <td>123456712</td>
+            <td>57</td>
+            <td>12</td>
+        </tr>
+        <tr>
+            <td>Mason Sanchez</td>
+            <td>123456713</td>
+            <td>51</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <td>Leah Allen</td>
+            <td>123456714</td>
+            <td>49</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>William Turner</td>
+            <td>123456715</td>
+            <td>62</td>
+            <td>16</td>
+        </tr>
+        <tr>
+            <td>Abigail Foster</td>
+            <td>123456716</td>
+            <td>47</td>
+            <td>8</td>
+        </tr>
+        <tr>
+            <td>Lucas Simmons</td>
+            <td>123456717</td>
+            <td>36</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>Ella Watson</td>
+            <td>123456718</td>
+            <td>53</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td>Oliver Carter</td>
+            <td>123456719</td>
+            <td>31</td>
+            <td>2</td>
+        </tr>
     </tbody>
-  </table>
-  <table id="data-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Patient ID</th>
-      <th>Age</th>
-      <th>Score</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>John Doe</td>
-      <td>123456789</td>
-      <td>72</td>
-      <td>15</td>
-    </tr>
-    <tr>
-      <td>Jane Smith</td>
-      <td>123456790</td>
-      <td>68</td>
-      <td>26</td>
-    </tr>
-    <tr>
-      <td>Mary Johnson</td>
-      <td>123456791</td>
-      <td>55</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <td>Robert Lee</td>
-      <td>123456792</td>
-      <td>61</td>
-      <td>22</td>
-    </tr>
-    <tr>
-      <td>Emily Chen</td>
-      <td>123456793</td>
-      <td>45</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Michael Brown</td>
-      <td>123456794</td>
-      <td>39</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>Sarah Wilson</td>
-      <td>123456795</td>
-      <td>50</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <td>David Martin</td>
-      <td>123456796</td>
-      <td>63</td>
-      <td>17</td>
-    </tr>
-    <tr>
-      <td>Linda Anderson</td>
-      <td>123456797</td>
-      <td>69</td>
-      <td>19</td>
-    </tr>
-    <tr>
-      <td>William Taylor</td>
-      <td>123456798</td>
-      <td>78</td>
-      <td>24</td>
-    </tr>
-    <tr>
-      <td>Ava Lewis</td>
-      <td>123456799</td>
-      <td>34</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>James Clark</td>
-      <td>123456700</td>
-      <td>56</td>
-      <td>13</td>
-    </tr>
-    <tr>
-      <td>Sophia Martinez</td>
-      <td>123456701</td>
-      <td>41</td>
-      <td>7</td>
-    </tr>
-    <tr>
-      <td>Joseph Hernandez</td>
-      <td>123456702</td>
-      <td>59</td>
-      <td>18</td>
-    </tr>
-    <tr>
-      <td>Olivia Nelson</td>
-      <td>123456703</td>
-      <td>48</td>
-      <td>11</td>
-    </tr>
-    <tr>
-      <td>John Doe</td>
-      <td>123456704</td>
-      <td>32</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <td>Emma Adams</td>
-      <td>123456705</td>
-      <td>29</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>Michaela King</td>
-      <td>123456706</td>
-      <td>60</td>
-      <td>16</td>
-    </tr>
-    <tr>
-      <td>Alexander Turner</td>
-      <td>123456707</td>
-      <td>64</td>
-      <td>21</td>
-    </tr>
-    <tr>
-      <td>Grace Miller</td>
-      <td>123456708</td>
-      <td>52</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <td>Ethan Parker</td>
-      <td>123456709</td>
-      <td>46</td>
-      <td>6</td>
-    </tr>
-    <tr>
-      <td>Chloe Brooks</td>
-      <td>123456710</td>
-      <td>37</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>Andrew Scott</td>
-      <td>123456711</td>
-      <td>44</td>
-      <td>7</td>
-    </tr>
-    <tr>
-      <td>Zoe Adams</td>
-      <td>123456712</td>
-      <td>57</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <td>Mason Sanchez</td>
-      <td>123456713</td>
-      <td>51</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <td>Leah Allen</td>
-      <td>123456714</td>
-      <td>49</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <td>William Turner</td>
-      <td>123456715</td>
-      <td>62</td>
-      <td>16</td>
-    </tr>
-    <tr>
-      <td>Abigail Foster</td>
-      <td>123456716</td>
-      <td>47</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <td>Lucas Simmons</td>
-      <td>123456717</td>
-      <td>36</td>
-      <td>5</td>
-    </tr>
-    <tr>
-      <td>Ella Watson</td>
-      <td>123456718</td>
-      <td>53</td>
-      <td>11</td>
-    </tr>
-    <tr>
-      <td>Oliver Carter</td>
-      <td>123456719</td>
-      <td>31</td>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
+    </table>
   
     `;
 

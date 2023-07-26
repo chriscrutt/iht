@@ -110,3 +110,15 @@ th {
 tr:nth-child(even) {
     background-color: #eeeeee;
 }
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: 2.5em;
+}
+
+button {
+  font-size: 2em;
+}
