@@ -82,12 +82,11 @@ button:hover {
     cursor: pointer;
 }
 
-.swal-modal {
-    background-color: rgba(63, 255, 106, 0.69);
+.swal2-modal {
     border: 3px solid white;
     /* padding-left: 30vw; */
-    height: 50vh;
-    width: 50vw;
+    height: 80vh;
+    width: 80vw;
 }
 
 body.swal2-height-auto {
@@ -112,13 +111,13 @@ tr:nth-child(even) {
 }
 
 h1 {
-  font-size: 3em;
+    font-size: 3em;
 }
 
 h2 {
-  font-size: 2.5em;
+    font-size: 2.5em;
 }
 
 button {
-  font-size: 2em;
+    font-size: 2em;
 }
