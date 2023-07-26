@@ -1,46 +1,60 @@
-/* Reset some default styles */
-body, h1, h2, h3, h4, p, ul, li {
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif;
+    margin: 0;
 }
 
-header {
-  background-color: #333;
-  padding: 10px;
+.navbar {
+    font-size: 2.5em;
 }
 
-nav ul {
-  list-style: none;
+.secondary-navbar {
+    font-size: 2em;
 }
 
-nav ul li {
-  display: inline;
-  margin-right: 20px;
+.navbar,
+.secondary-navbar {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f8f9fa;
+    /* padding: 20px 0; */
+    /* border-bottom: 1px solid #ccc; */
 }
 
-nav ul li:last-child {
-  margin-right: 0;
+.navbar a,
+.secondary-navbar a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    /* border-radius: 5px; */
+    width: 100%;
+    padding: 1vh 0;
+    text-align: center;
 }
 
-nav ul li a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 16px;
+.navbar a.selected,
+.secondary-navbar a.selected {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
 }
 
-nav ul li a:hover {
-  border-bottom: 2px solid #fff;
-  padding-bottom: 5px;
+.content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-main {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
+.hidden {
+  display: none;
 }
 
-/* You can add more styling here to customize the look of your website */
+.show {
+  display: block;
+}
+
+#chart_div {
+    width: "100%";
+    height: "100%";
+}
