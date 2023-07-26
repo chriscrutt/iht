@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your Website Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin:0;
+        }
+
+        .navbar {
+            font-size: 2.5em;
+        }
+
+        .secondary-navbar {
+            font-size: 2em;
+        }
+
+        .navbar,
+        .secondary-navbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8f9fa;
+            /* padding: 20px 0; */
+            /* border-bottom: 1px solid #ccc; */
+        }
+
+        .navbar a,
+        .secondary-navbar a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            /* border-radius: 5px; */
+            width: 100%;
+            padding: 1vh 0;
+            text-align: center;
+        }
+
+        .navbar a.selected,
+        .secondary-navbar a.selected {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #chart_div {
+            width: '100%';
+            height: '100%';
+        }
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+    </script>
+</head>
+
+<body>
+    <div class="navbar">
+        <a id="mainTab1" class="selected" href="#" onclick="switchTab('tab1', 'mainTab1', 'secondaryTab1')">Mental Health Assessments</a>
+        <a id="mainTab2" href="#" onclick="switchTab('tab2', 'mainTab2', 'secondaryTab2')">HEDIS-Related Assessments</a>
+        <a id="mainTab3" href="#" onclick="switchTab('tab3', 'mainTab3', 'secondaryTab3')">Incentive Programs</a>
+    </div>
+    <div id="secondaryTab1" class="secondary-navbar">
+        <a href="#" onclick="drawChart()">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+    </div>
+    <div id="secondaryTab2" class="secondary-navbar hidden">
+        <a href="#">4</a>
+        <a href="#">5</a>
+        <a href="#">6</a>
+    </div>
+    <div id="secondaryTab3" class="secondary-navbar hidden">
+        <a href="#">7</a>
+        <a href="#">8</a>
+        <a href="#">9</a>
+    </div>
+    <div class="content">
+        <div id="tab1" class="tab">
+            Content for Mental Health Assessments
+            <div id="chart_div" style="width: 100vw;"></div>
+        </div>
+        <div id="tab2" class="tab hidden">Content for HEDIS-Related Assessments</div>
+        <div id="tab3" class="tab hidden">Content for Incentive Programs</div>
+    </div>
+    <script>
+        function switchTab(tabId, mainTabId, secondaryTabId) {
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.add('hidden');
+            }
+            document.getElementById(tabId).classList.remove('hidden');
+
+            var mainTabs = document.getElementsByClassName('navbar')[0].getElementsByTagName('a');
+            for (var i = 0; i < mainTabs.length; i++) {
+                mainTabs[i].classList.remove('selected');
+            }
+            document.getElementById(mainTabId).classList.add('selected');
+
+            var secondaryTabs = document.getElementsByClassName('secondary-navbar');
+            for (var i = 0; i < secondaryTabs.length; i++) {
+                secondaryTabs[i].classList.add('hidden');
+            }
+            document.getElementById(secondaryTabId).classList.remove('hidden');
+
+            return false;
+        }
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Task', 'Hours per Day'],
+                ['Work',     11],
+                ['Eat',      2],
+                ['Commute',  2],
+                ['Watch TV', 2],
+                ['Sleep',    7]
+            ]);
+
+            var options = {
+                title: 'My Daily Activities',
+                pieHole: 0.4,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+
+</html>
