@@ -51,22 +51,52 @@ function switchContent(contentId, tabId) {
 }
 
 function drawChart() {
-    var data = google.visualization.arrayToDataTable([
-        ["Task", "Hours per Day"],
-        ["Work", 11],
-        ["Eat", 2],
-        ["Commute", 2],
-        ["Watch TV", 2],
-        ["Sleep", 7],
-    ]);
-
-    var options = {
-        title: "My Daily Activities",
-        pieHole: 0.4,
-    };
-
-    var chart = new google.visualization.PieChart(document.getElementById("chart_div"));
-    chart.draw(data, options);
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var myChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: [
+                "20-27 (severe)",
+                "15-19 (moderately severe)",
+                "10-14 (moderate)",
+                "5-9 (mild)",
+                "0-4 (minimal)",
+            ],
+            datasets: [
+                {
+                    data: [11, 2, 2, 2, 7],
+                    backgroundColor: [
+                        "rgba(255, 99, 132, 0.2)",
+                        "rgba(255, 206, 86, 0.2)",
+                        "rgba(54, 162, 235, 0.2)",
+                        "rgba(75, 192, 192, 0.2)",
+                        "rgba(153, 102, 255, 0.2)",
+                    ],
+                    borderColor: [
+                        "rgba(255, 99, 132, 1)",
+                        "rgba(255, 206, 86, 1)",
+                        "rgba(54, 162, 235, 1)",
+                        "rgba(75, 192, 192, 1)",
+                        "rgba(153, 102, 255, 1)",
+                    ],
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            // cutout: '80%',  // for doughnut visualization
+            plugins: {
+                legend: {
+                    position: "top",
+                },
+                title: {
+                    display: true,
+                    text: "My Daily Activities",
+                },
+            },
+        },
+    });
 }
 
 window.onload = drawChart;

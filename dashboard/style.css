@@ -1,6 +1,7 @@
-body {
+html, body {
     font-family: Arial, sans-serif;
     margin: 0;
+    height: 100%;
 }
 
 .navbar {
@@ -51,17 +52,23 @@ body {
     /* max-width: 960px; */
     /* margin: 0 auto; */
     /* padding: 20px; */
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
 }
 
 .hidden {
   display: none;
 }
 
-.show {
-  display: block;
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-/* #chart_div {
+/* #myChart {
     width: "50%";
     height: "100%";
 } */

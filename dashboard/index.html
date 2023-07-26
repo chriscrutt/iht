@@ -4,46 +4,57 @@
 <head>
     <title>Your Website Title</title>
     <link rel="stylesheet" href="style.css">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['corechart'] });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-    <div class="navbar">
-        <a id="mainTab1" class="selected" href="#" onclick="switchTab(event, 'mainTab1', 'secondaryTab1')">Mental
-            Health Assessments</a>
-        <a id="mainTab2" href="#" onclick="switchTab(event, 'mainTab2', 'secondaryTab2')">HEDIS-Related Assessments</a>
-        <a id="mainTab3" href="#" onclick="switchTab(event, 'mainTab3', 'secondaryTab3')">Incentive Programs</a>
+    <div class="container">
+        <div>
+            <div class="navbar">
+                <a id="mainTab1" class="selected" href="#"
+                    onclick="switchTab(event, 'mainTab1', 'secondaryTab1')">Mental
+                    Health Assessments</a>
+                <a id="mainTab2" href="#" onclick="switchTab(event, 'mainTab2', 'secondaryTab2')">HEDIS-Related
+                    Assessments</a>
+                <a id="mainTab3" href="#" onclick="switchTab(event, 'mainTab3', 'secondaryTab3')">Incentive Programs</a>
+            </div>
+            <div id="secondaryTab1" class="secondary-navbar">
+                <a id="tab1-1" class="selectedSub" href="#" onclick="switchContent('content1', 'tab1-1')">1</a>
+                <a id="tab1-2" href="#" onclick="switchContent('content2', 'tab1-2')">2</a>
+                <a id="tab1-3" href="#" onclick="switchContent('content3', 'tab1-3')">3</a>
+            </div>
+            <div id="secondaryTab2" class="secondary-navbar hidden">
+                <a id="tab2-1" href="#" onclick="switchContent('content4', 'tab2-1')">4</a>
+                <a id="tab2-2" href="#" onclick="switchContent('content5', 'tab2-2')">5</a>
+                <a id="tab2-3" href="#" onclick="switchContent('content6', 'tab2-3')">6</a>
+            </div>
+            <div id="secondaryTab3" class="secondary-navbar hidden">
+                <a id="tab3-1" href="#" onclick="switchContent('content7', 'tab3-1')">7</a>
+                <a id="tab3-2" href="#" onclick="switchContent('content8', 'tab3-2')">8</a>
+                <a id="tab3-3" href="#" onclick="switchContent('content9', 'tab3-3')">9</a>
+            </div>
+        </div>
+        <!-- <div style="height: 100%;"> -->
+            <div id="content1" class="content">
+                <div class="info">
+                <h1>Total Responses:</h1>
+                <h2>123,456</h2>
+                <br>
+                <h1>Actionable:</h1>
+                <h2>23,456</h2>
+                </div>
+                <canvas id="myChart" style="max-width: 50vw; max-height: 70vh;"></canvas>
+            </div>
+            <div id="content2" class="content hidden">Content for tab 2</div>
+            <div id="content3" class="content hidden">Content for tab 3</div>
+            <div id="content4" class="content hidden">Content for tab 4</div>
+            <div id="content5" class="content hidden">Content for tab 5</div>
+            <div id="content6" class="content hidden">Content for tab 6</div>
+            <div id="content7" class="content hidden">Content for tab 7</div>
+            <div id="content8" class="content hidden">Content for tab 8</div>
+            <div id="content9" class="content hidden">Content for tab 9</div>
+        <!-- </div> -->
     </div>
-    <div id="secondaryTab1" class="secondary-navbar">
-        <a id="tab1-1" class="selectedSub" href="#" onclick="switchContent('content1', 'tab1-1')">1</a>
-        <a id="tab1-2" href="#" onclick="switchContent('content2', 'tab1-2')">2</a>
-        <a id="tab1-3" href="#" onclick="switchContent('content3', 'tab1-3')">3</a>
-    </div>
-    <div id="secondaryTab2" class="secondary-navbar hidden">
-        <a id="tab2-1" href="#" onclick="switchContent('content4', 'tab2-1')">4</a>
-        <a id="tab2-2" href="#" onclick="switchContent('content5', 'tab2-2')">5</a>
-        <a id="tab2-3" href="#" onclick="switchContent('content6', 'tab2-3')">6</a>
-    </div>
-    <div id="secondaryTab3" class="secondary-navbar hidden">
-        <a id="tab3-1" href="#" onclick="switchContent('content7', 'tab3-1')">7</a>
-        <a id="tab3-2" href="#" onclick="switchContent('content8', 'tab3-2')">8</a>
-        <a id="tab3-3" href="#" onclick="switchContent('content9', 'tab3-3')">9</a>
-    </div>
-    <div id="content1" class="content">
-        Content for tab 1
-        <div id="chart_div" style="height: 70vh; width: 50vw;"></div>
-    </div>
-    <div id="content2" class="content hidden">Content for tab 2</div>
-    <div id="content3" class="content hidden">Content for tab 3</div>
-    <div id="content4" class="content hidden">Content for tab 4</div>
-    <div id="content5" class="content hidden">Content for tab 5</div>
-    <div id="content6" class="content hidden">Content for tab 6</div>
-    <div id="content7" class="content hidden">Content for tab 7</div>
-    <div id="content8" class="content hidden">Content for tab 8</div>
-    <div id="content9" class="content hidden">Content for tab 9</div>
     <script src="script.js"></script>
 </body>
 
