@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     font-family: Arial, sans-serif;
     margin: 0;
     height: 100%;
@@ -59,16 +60,53 @@ html, body {
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
 .container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-/* #myChart {
-    width: "50%";
-    height: "100%";
-} */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0055af;
+    cursor: pointer;
+}
+
+.swal-modal {
+    background-color: rgba(63, 255, 106, 0.69);
+    border: 3px solid white;
+    /* padding-left: 30vw; */
+    height: 50vh;
+    width: 50vw;
+}
+
+body.swal2-height-auto {
+    height: 100% !important;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #eeeeee;
+}

@@ -3,7 +3,6 @@
 
 <head>
     <title>Your Website Title</title>
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -26,8 +25,10 @@
             </div>
             <div id="secondaryTab2" class="secondary-navbar hidden">
                 <a id="tab2-1" href="#" onclick="switchContent('content4', 'tab2-1')">Breast Cancer Screening</a>
-                <a id="tab2-2" href="#" onclick="/*switchContent('content5', 'tab2-2')*/">Colorectal Cancer Screening</a>
-                <a id="tab2-3" href="#" onclick="/*switchContent('content6', 'tab2-3')*/">Comprehensive Diabetes Care</a>
+                <a id="tab2-2" href="#" onclick="/*switchContent('content5', 'tab2-2')*/">Colorectal Cancer
+                    Screening</a>
+                <a id="tab2-3" href="#" onclick="/*switchContent('content6', 'tab2-3')*/">Comprehensive Diabetes
+                    Care</a>
                 <a style="width: 25%;" id="tab2-4" href="#">(+)</a>
 
             </div>
@@ -46,20 +47,44 @@
                 <br>
                 <h1>Actionable:</h1>
                 <h2>23,456</h2>
+                <br>
+                <button onclick="patientList()">Patient List:</button>
             </div>
-            <canvas id="myChart" style="max-width: 50vw; max-height: 70vh;"></canvas>
+            <canvas id="myChart" style="max-width: 50vw; max-height: 80vh;"></canvas>
         </div>
         <div id="content2" class="content hidden">Content for tab 2</div>
         <div id="content3" class="content hidden">Content for tab 3</div>
-        <div id="content4" class="content hidden">Content for tab 4</div>
+        <div id="content4" class="content hidden">
+            <div class="info">
+                <h1>Total Responses:</h1>
+                <h2>123,456</h2>
+                <br>
+                <h1>Actionable:</h1>
+                <h2>23,456</h2>
+            </div>
+            <canvas id="myChart" style="max-width: 50vw; max-height: 80vh;"></canvas>
+        </div>
         <div id="content5" class="content hidden">Content for tab 5</div>
         <div id="content6" class="content hidden">Content for tab 6</div>
-        <div id="content7" class="content hidden">Content for tab 7</div>
+        <div id="content7" class="content hidden">
+            <div class="info">
+                <h1>Total Responses:</h1>
+                <h2>123,456</h2>
+                <br>
+                <h1>Actionable:</h1>
+                <h2>23,456</h2>
+            </div>
+            <canvas id="myChart" style="max-width: 50vw; max-height: 80vh;"></canvas>
+        </div>
         <div id="content8" class="content hidden">Content for tab 8</div>
         <div id="content9" class="content hidden">Content for tab 9</div>
         <!-- </div> -->
     </div>
+    <!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+
 </body>
 
 </html>
