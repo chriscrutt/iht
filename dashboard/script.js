@@ -64,7 +64,7 @@ function drawChart() {
             ],
             datasets: [
                 {
-                    data: [11, 2, 2, 2, 7],
+                    data: [23456, 12345, 15432, 35678, 36545],
                     backgroundColor: [
                         "rgba(255, 99, 132, 0.2)",
                         "rgba(255, 206, 86, 0.2)",
@@ -92,7 +92,7 @@ function drawChart() {
                 },
                 title: {
                     display: true,
-                    text: "My Daily Activities",
+                    text: "PHQ-9 Responses",
                 },
             },
         },
