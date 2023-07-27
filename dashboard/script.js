@@ -1367,7 +1367,7 @@ function drawFallChart() {
                 },
                 title: {
                     display: true,
-                    text: "Actionable Responses",
+                    text: "Patient Risk Levels",
                     font: {
                         size: 24, // Adjust the title font size as desired
                         weight: "bold", // Optionally adjust font weight
