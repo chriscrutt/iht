@@ -121,7 +121,10 @@
             <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 aos-init aos-animate" data-aos="fade-right"
               data-aos-duration="800" data-aos-once="true" style="width: 75vw;">
               <div class="content">
-                <h1 style="color:#466EB6;font-size: 5em;">Remember:</h1>
+                <div id="crisisHelp" class="crisis" tabindex="-1" style="display: none;">If you're having thoughts of hurting yourself,
+                  call or text <a href="tel:988">988</a> (Suicide &amp; Crisis Lifeline). If you're in danger, call
+                  <a href="tel:911">911</a>.</div>
+                <h1 id="rememberHeading" style="color:#466EB6;font-size: 5em;">Remember:</h1>
                 <h2 style="font-size: 3em;" class="tape-helper mb4">If you're feeling depressed, talk to your doctor
                   about the following:</h2>
                 <ul>
@@ -235,6 +238,40 @@
     .trans {
       transition: opacity 0.5s ease-in-out;
       /* opacity: 0; */
+    }
+
+    /* Crisis information for question 9 (thoughts of self-harm). These screens are exactly one
+       window tall and can't scroll, so the note has fixed sizes that keep the answers and the
+       Finish button on screen. */
+    #question p.crisis,
+    #end .crisis {
+      background: #fff;
+      border: 3px solid #466eb6;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 19px;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    #question p.crisis {
+      margin: 6px auto 0;
+    }
+
+    #end .crisis {
+      margin: 0 0 8px;
+    }
+
+    /* goToEnd() moves focus here so the note is read out; the box itself is the visible cue. */
+    #crisisHelp:focus {
+      outline: none;
+    }
+
+    .crisis a {
+      /* The page's blue (5.04:1 on white); Bootstrap's lighter link blue is only 3.55:1. */
+      color: inherit;
+      font-weight: 700;
+      text-decoration: underline;
     }
   </style>
   <script>
@@ -351,6 +388,7 @@
         answer: "",
       }, {
         question: "Over the past two weeks, how often have you been bothered by thoughts that you would be better off dead, or of hurting yourself in some way?",
+        note: "If you're having thoughts of hurting yourself, call or text <a href=\"tel:988\">988</a> (Suicide &amp; Crisis Lifeline). If you're in danger, call <a href=\"tel:911\">911</a>.",
         choice0: "Not at all",
         choice1: "Several days",
         choice2: "More than half the days",
@@ -374,7 +412,9 @@
       prev.style.display = "flex";
       setTimeout(function () {
         let q = questions[runningQuestion];
-        question.innerHTML = "<p style=\"font-size:1.8em;\">" + q.question + "</p>";
+        // A question with a crisis note is shown a little smaller, to make room for the note.
+        question.innerHTML = "<p style=\"font-size:" + (q.note ? "1.35em" : "1.8em") + ";\">" + q.question + "</p>" +
+          (q.note ? "<p class=\"crisis\">" + q.note + "</p>" : "");
         choice0.innerHTML = q.choice0;
         choice1.innerHTML = q.choice1;
         choice2.innerHTML = q.choice2;
@@ -464,8 +504,19 @@
 
     function goToEnd() {
       vidBlock.style.display = "none";
+      // Question 9 asks about thoughts of self-harm. For any answer but "Not at all", show the
+      // crisis line in place of the "Remember:" heading, so the Finish button stays on screen.
+      var needsHelp = questions[8].answer > 0;
+      var help = document.getElementById("crisisHelp");
+      help.style.display = needsHelp ? "block" : "none";
+      document.getElementById("rememberHeading").style.display = needsHelp ? "none" : "block";
       document.getElementById("end").style.display = "block";
       document.getElementById("end").style.opacity = 1;
+      if (needsHelp) {
+        // Move focus to the note, so screen readers read it and Tab reaches its links.
+        // Otherwise focus can stay stuck on the closed "Resume Video?" prompt.
+        help.focus({ preventScroll: true });
+      }
       runningQuestion++;
     }
 
