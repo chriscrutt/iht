@@ -867,6 +867,8 @@ div#loading img {
   .site-header .menu-block {
     position: fixed;
     width: 320px;
+    /* Leave a strip of dimmed page to tap on very narrow screens. */
+    max-width: calc(100vw - 40px);
     background-color: #ffffff;
     left: 0;
     top: 0;
@@ -875,9 +877,14 @@ div#loading img {
     transform: translate(-100%);
     transition: all 0.5s ease;
     z-index: 1099;
+    /* Keeps the closed menu's links out of the tab order. */
+    visibility: hidden;
   }
   .site-header .menu-block.active {
     transform: translate(0%);
+    visibility: visible;
+    /* Show it at once when opening, so focus can move into it. */
+    transition: all 0.5s ease, visibility 0s;
   }
   .site-menu-main > li {
     line-height: 1;
@@ -944,7 +951,7 @@ div#loading img {
     cursor: pointer;
     line-height: 50px;
     text-align: center;
-    color: #FFFFFF000;
+    color: #212529;
     font-size: 25px;
   }
   .site-header .menu-block .site-menu-main {
@@ -1041,8 +1048,10 @@ div#loading img {
   }
 }
 
-.menu-block.active .nav-link-item {
-  color: #466eb6 !important;
+@media (max-width: 991px) {
+  .site-header .menu-block.active .nav-link-item {
+    color: #466eb6 !important;
+  }
 }
 
 @media (min-width: 480px) {

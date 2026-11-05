@@ -2,71 +2,138 @@
  * Mobile menu for the site header. Below 992px wide, the CSS hides the menu
  * links and shows the hamburger (.mobile-menu-trigger) instead. This file
  * makes the hamburger work: it slides .menu-block in from the left and dims
- * the page with .menu-overlay. The close button, a tap on the dimmed page or
- * the Escape key closes it again.
+ * the page with .menu-overlay. The close button, a tap on the dimmed page,
+ * Escape, picking a link or tabbing out of the menu closes it again.
  *
  * demo/ loads this file but has no menu, so it does nothing there.
+ * It's plain ES5 so it also runs on older phones and tablets.
  */
 (function () {
   "use strict";
+
+  // Must match the mobile breakpoint in css/main.css.
+  var MOBILE_QUERY = "(max-width: 991px)";
+
+  // Older browsers only give key codes, or older key names ("Esc", "Spacebar").
+  var KEYS = {
+    enter: { names: ["Enter"], code: 13 },
+    space: { names: [" ", "Spacebar"], code: 32 },
+    escape: { names: ["Escape", "Esc"], code: 27 }
+  };
+
+  function isKey(event, key) {
+    return KEYS[key].names.indexOf(event.key) !== -1 || event.keyCode === KEYS[key].code;
+  }
+
+  function isMobileLayout() {
+    if (window.matchMedia) {
+      return window.matchMedia(MOBILE_QUERY).matches;
+    }
+    return window.innerWidth < 992;
+  }
+
+  // The trigger and the close button are <div>s, so make them work as buttons.
+  function makeButton(element, label, action) {
+    element.setAttribute("role", "button");
+    element.setAttribute("tabindex", "0");
+    element.setAttribute("aria-label", label);
+    element.addEventListener("click", function () {
+      action(false);
+    });
+    element.addEventListener("keydown", function (event) {
+      if (isKey(event, "enter") || isKey(event, "space")) {
+        event.preventDefault();
+        action(true);
+      }
+    });
+  }
 
   function init() {
     var trigger = document.querySelector(".mobile-menu-trigger");
     var menu = document.querySelector(".menu-block");
     var overlay = document.querySelector(".menu-overlay");
-    if (!trigger || !menu || !overlay) {
+    if (!trigger || !menu || !overlay || trigger.getAttribute("data-menu-ready")) {
       return;
     }
+    trigger.setAttribute("data-menu-ready", "true");
     var closeButton = menu.querySelector(".mobile-menu-close");
 
     function isOpen() {
       return menu.classList.contains("active");
     }
 
-    function setOpen(open) {
-      if (open) {
-        menu.classList.add("active");
-        overlay.classList.add("active");
-      } else {
-        menu.classList.remove("active");
-        overlay.classList.remove("active");
+    function open(fromKeyboard) {
+      menu.classList.add("active");
+      overlay.classList.add("active");
+      trigger.setAttribute("aria-expanded", "true");
+      // Keyboard users start inside the menu instead of behind the overlay.
+      if (fromKeyboard && closeButton) {
+        closeButton.focus({ preventScroll: true });
       }
-      trigger.setAttribute("aria-expanded", open ? "true" : "false");
     }
 
-    // The trigger is a <div>, so make it reachable and usable from the keyboard.
-    trigger.setAttribute("role", "button");
-    trigger.setAttribute("tabindex", "0");
-    trigger.setAttribute("aria-label", "Menu");
-    trigger.setAttribute("aria-expanded", "false");
+    // focusIsLeaving: focus is already on its way out of the menu, so don't pull it back.
+    function close(focusIsLeaving) {
+      var returnFocus = !focusIsLeaving && menu.contains(document.activeElement);
+      menu.classList.remove("active");
+      overlay.classList.remove("active");
+      trigger.setAttribute("aria-expanded", "false");
+      if (returnFocus) {
+        trigger.focus({ preventScroll: true });
+      }
+    }
 
-    trigger.addEventListener("click", function () {
-      setOpen(!isOpen());
-    });
-    trigger.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        setOpen(!isOpen());
+    makeButton(trigger, "Menu", function (fromKeyboard) {
+      if (isOpen()) {
+        close();
+      } else {
+        open(fromKeyboard);
       }
     });
-    overlay.addEventListener("click", function () {
-      setOpen(false);
-    });
+    trigger.setAttribute("aria-expanded", "false");
+    if (menu.id) {
+      trigger.setAttribute("aria-controls", menu.id);
+    }
     if (closeButton) {
-      closeButton.addEventListener("click", function () {
-        setOpen(false);
+      makeButton(closeButton, "Close menu", function () {
+        close();
       });
     }
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape" && isOpen()) {
-        setOpen(false);
+    overlay.addEventListener("click", function () {
+      close();
+    });
+
+    // Picking a link closes the menu. On the team page, "Our Team" only jumps to the top.
+    menu.addEventListener("click", function (event) {
+      for (var node = event.target; node && node !== menu; node = node.parentNode) {
+        if (node.tagName === "A") {
+          close();
+          return;
+        }
       }
     });
-    // From 992px up the links show in the header, so close the menu if the
-    // window gets that wide while it is open.
+    // Tabbing out of the open menu closes it, so focus never ends up behind the overlay.
+    menu.addEventListener("focusout", function (event) {
+      var next = event.relatedTarget;
+      if (isOpen() && next && next !== trigger && !menu.contains(next)) {
+        close(true);
+      }
+    });
+    document.addEventListener("keydown", function (event) {
+      if (isOpen() && isKey(event, "escape")) {
+        close();
+      }
+    });
+    // From 992px up the links show in the header, so the menu has to close.
     window.addEventListener("resize", function () {
-      if (window.innerWidth > 991 && isOpen()) {
-        setOpen(false);
+      if (isOpen() && !isMobileLayout()) {
+        close();
+      }
+    });
+    // Don't come back to an open menu after pressing Back.
+    window.addEventListener("pagehide", function () {
+      if (isOpen()) {
+        close();
       }
     });
   }
