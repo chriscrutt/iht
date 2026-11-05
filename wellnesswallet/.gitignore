@@ -1,0 +1,13 @@
+plugins/.DS_Store
+image/.DS_Store
+css/.DS_Store
+.DS_Store
+node_modules/
+package-lock.json
+server.js
+test.http
+testAzure.html
+chatGPT.html
+test.zip
+test.html
+fallPrevention/indexFhir.html
