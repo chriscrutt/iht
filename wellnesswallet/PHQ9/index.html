@@ -401,6 +401,9 @@
     // create some variables
     const lastQuestion = questions.length;
     var runningQuestion = 0;
+    // True from an answer until the next question is drawn. A double-click would
+    // otherwise answer the next question too, before it's even on screen.
+    var switching = false;
 
     // Modify renderQuestion function
     function renderQuestion() {
@@ -412,6 +415,11 @@
       prev.style.display = "flex";
       setTimeout(function () {
         let q = questions[runningQuestion];
+        // Go Back from the end screen asks for the question after the last one: nothing to draw.
+        if (!q) {
+          return;
+        }
+        switching = false;
         // A question with a crisis note is shown a little smaller, to make room for the note.
         question.innerHTML = "<p style=\"font-size:" + (q.note ? "1.35em" : "1.8em") + ";\">" + q.question + "</p>" +
           (q.note ? "<p class=\"crisis\">" + q.note + "</p>" : "");
@@ -478,6 +486,10 @@
     }
 
     function checkAnswer(answer) {
+      if (switching) {
+        return;
+      }
+      switching = true;
       questions[runningQuestion].answer = answer;
       runningQuestion++;
       if (runningQuestion == lastQuestion) {
