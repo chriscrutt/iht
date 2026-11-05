@@ -43,7 +43,10 @@
     element.addEventListener("keydown", function (event) {
       if (isKey(event, "enter") || isKey(event, "space")) {
         event.preventDefault();
-        action(true);
+        // A held key repeats; act only on the first press.
+        if (!event.repeat) {
+          action(true);
+        }
       }
     });
   }
@@ -112,10 +115,13 @@
         }
       }
     });
-    // Tabbing out of the open menu closes it, so focus never ends up behind the overlay.
-    menu.addEventListener("focusout", function (event) {
-      var next = event.relatedTarget;
-      if (isOpen() && next && next !== trigger && !menu.contains(next)) {
+    // Focus landing anywhere outside the open menu, the hamburger included, closes it,
+    // so keyboard focus never ends up behind the overlay. The exception is the window
+    // getting focus back after a switch to another app or tab: that hands focus back
+    // to the hamburger with no relatedTarget, and shouldn't close a menu opened by tap.
+    document.addEventListener("focusin", function (event) {
+      var returningToTrigger = event.target === trigger && !event.relatedTarget;
+      if (isOpen() && !returningToTrigger && !menu.contains(event.target)) {
         close(true);
       }
     });
@@ -130,10 +136,14 @@
         close();
       }
     });
-    // Don't come back to an open menu after pressing Back.
+    // Don't come back to an open menu after pressing Back. Close it without the
+    // slide, or the restored page would play the closing animation.
     window.addEventListener("pagehide", function () {
       if (isOpen()) {
+        menu.style.transition = overlay.style.transition = "none";
         close();
+        void menu.offsetWidth; // apply the closed state before transitions come back
+        menu.style.transition = overlay.style.transition = "";
       }
     });
   }
