@@ -89,7 +89,8 @@ button:hover {
     width: 80vw;
 }
 
-body.swal2-height-auto {
+/* "html" outranks SweetAlert2's own body.swal2-height-auto rule, which it injects after this file. */
+html body.swal2-height-auto {
     height: 100% !important;
 }
 

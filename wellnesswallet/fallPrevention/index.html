@@ -32,7 +32,6 @@
     rel="stylesheet">
   <!-- Plugin'stylesheets  -->
   <link rel="stylesheet" href="../plugins/aos/aos.min.css">
-  <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <!-- Vendor stylesheets  -->
   <link rel="stylesheet" href="../css/main.css">
@@ -120,7 +119,7 @@
               data-aos-duration="800" data-aos-once="true" style="width: 75vw;">
               <div class="content">
                 <h1 style="color:#466EB6;font-size: 5em;">Remember:</h1>
-                <h2 style="font-size: 3em;" class="tape-helper mb4">If you feel you're at risk, talk to your Doctor
+                <h2 style="font-size: 3em;" class="tape-helper mb4">If you feel you're at risk, talk to your doctor
                   about the following:</h2>
                 <ul>
                   <h2 style="font-size: 2.9em;"><i>✔</i> Using a cane or walker</h2>
@@ -141,11 +140,7 @@
   </div>
   <!-- Footer Area -->
   <!-- Vendor Scripts -->
-  <script src="js/vendor.min.js"></script>
   <script src="../plugins/aos/aos.min.js"></script>
-  <script src="../plugins/menu/menu.js"></script>
-  <!-- Activation Script -->
-  <script src="js/custom.js"></script>
   <style>
     .center {
       margin-top: 5vh !important;
@@ -313,6 +308,9 @@
     // create some variables
     const lastQuestion = questions.length;
     var runningQuestion = 0;
+    // True from an answer until the next question is drawn. A double-click would
+    // otherwise answer the next question too, before it's even on screen.
+    var switching = false;
 
     // Modify renderQuestion function
     function renderQuestion() {
@@ -322,6 +320,11 @@
       prev.style.display = "flex";
       setTimeout(function () {
         let q = questions[runningQuestion];
+        // Go Back from the end screen asks for the question after the last one: nothing to draw.
+        if (!q) {
+          return;
+        }
+        switching = false;
         question.innerHTML = "<p style=\"font-size:2em;\">" + q.question + "</p>";
         choiceA.innerHTML = q.choiceA;
         choiceB.innerHTML = q.choiceB;
@@ -380,6 +383,10 @@
     }
 
     function checkAnswer(answer) {
+      if (switching) {
+        return;
+      }
+      switching = true;
       questions[runningQuestion].answer = answer;
       runningQuestion++;
       if (runningQuestion == lastQuestion) {

@@ -36,7 +36,7 @@ $(document).ready(function() {
         ) {
             $(".site-header--sticky.scrolling").addClass("reveal-header");
         } else {
-            $(".site-header--sticky.scrolling").removeClass("reveal-header");
+            $(".site-header--sticky").removeClass("reveal-header");
         }
     }
 
