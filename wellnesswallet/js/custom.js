@@ -25,7 +25,7 @@ $(document).ready(function () {
         if (document.body.scrollTop > 700 || document.documentElement.scrollTop > 700) {
             $(".site-header--sticky.scrolling").addClass("reveal-header");
         } else {
-            $(".site-header--sticky.scrolling").removeClass("reveal-header");
+            $(".site-header--sticky").removeClass("reveal-header");
         }
     }
 
