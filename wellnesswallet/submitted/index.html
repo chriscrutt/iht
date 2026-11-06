@@ -205,6 +205,64 @@
         .sub:hover {
             background-color: mediumseagreen !important;
         }
+
+        /* Phones, tablets and zoomed-in laptops. The desktop sizes don't match this.
+           The rules above centre one window-high screen, so a narrow or short window
+           pushed content past the left edge, where it can't be scrolled to, or under
+           the header. Here the page grows and scrolls down instead. */
+        @media (max-width: 991.98px), (max-height: 599.98px) {
+            html {
+                display: block;
+            }
+
+            body {
+                height: auto;
+                min-height: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bods {
+                flex: 1 0 auto;
+                justify-content: center;
+                /* clear the 92px header */
+                padding: calc(92px + 1rem) 1rem 1rem;
+            }
+
+            /* !important because these override inline styles */
+            .bods h2 {
+                font-size: clamp(1.75rem, min(0.5rem + 6.5vw, 9vh), 3em) !important;
+                text-align: center;
+                text-wrap: balance;
+            }
+
+            footer {
+                position: static !important;
+                transform: none !important;
+            }
+        }
+
+        /* Phones: three cards side by side don't fit (each .btn has a 130px
+           min-width), so stack them. */
+        @media (max-width: 599.98px) {
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .button-container .btn {
+                width: min(100%, 20rem);
+                min-width: 0;
+                height: clamp(6.5rem, 17vh, 10rem);
+                margin: 0.5rem 0;
+            }
+
+            .sub {
+                width: min(100%, 20rem) !important;
+                margin-top: 0.5rem;
+            }
+        }
     </style>
     <script>
         $(document).ready(function () {
