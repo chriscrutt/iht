@@ -1,0 +1,1262 @@
+/*
+ * iht.tools shared theme.
+ *
+ * Every page loads this one file, with a path relative to its own folder:
+ *   css/theme.css         the home page
+ *   ../css/theme.css      team/, demo/, dashboard/ and wellnesswallet/
+ *   ../../css/theme.css   the Wellness Wallet subpages
+ * Pages that still load template CSS (bootstrap.css, wellnesswallet/css/main.css) load this
+ * after it.
+ *
+ * Nothing here applies until a page opts in:
+ *   <body class="iht">                 site pages (home, team, dashboard)
+ *   <body class="iht iht--patient">    patient pages (Wellness Wallet and demo/)
+ * Every rule is scoped to body.iht, body.iht--patient or an iht- class.
+ *
+ * Colour is vocabulary: blue is IHT and "go on", red means a person needs follow-up, green
+ * means a reward or done. Nothing else is coloured.
+ *
+ * The components, their markup and the patient type-size floors are written up in
+ * COMPONENTS.md, which travels with the rollout notes.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&display=swap");
+
+/* ---------- 1. Tokens ---------- */
+
+body.iht {
+  /* Colour */
+  --iht-blue: #466eb6;       /* the brand, the bar, filled buttons, links, answer outlines. White on it 5.0:1 */
+  --iht-blue-deep: #34589c;  /* hover and pressed */
+  --iht-ink: #1c2d50;        /* all text on light grounds, 13.4:1 */
+  --iht-ink-muted: #4a5b7d;  /* secondary text and quiet outlines, 6.8:1 */
+  --iht-mist: #edf1f8;       /* pale bands and stripes */
+  --iht-rule: #c4d1ea;       /* borders */
+  --iht-followup: #b42318;   /* needs follow-up, and nothing else. 6.6:1 */
+  --iht-reward: #1e7b4f;     /* reward or done, and nothing else. White on it 5.3:1 */
+  --iht-reward-deep: #17623f;
+
+  /* Ordinal data ramp, pale to dark = less to more severe (the dashboard's charts) */
+  --iht-data-1: #c4d1ea;
+  --iht-data-2: #8aa5dc;
+  --iht-data-3: #466eb6;
+  --iht-data-4: #1c2d50;
+
+  /* Type */
+  --iht-display: "Archivo", "Arial Black", system-ui, sans-serif;  /* the instrument face */
+  --iht-text: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Layout */
+  --iht-max: 75rem;          /* the 1200px page grid */
+  --iht-gutter: 2.5rem;
+  /* The bar's height. It grows with the browser's font size, but only so far, so a larger
+     default font doesn't eat the window. The quiz layout maths read it. */
+  --iht-header-h: min(4.5rem, 56px + 2.5vw);   /* 72px at the default font */
+  --iht-radius-control: 6px;
+  --iht-radius-answer: 16px;
+  --iht-radius-band: 12px;
+
+  /* Focus ring colour: Ink on light grounds; the blue regions set it to white. */
+  --focus: var(--iht-ink);
+}
+
+@media (max-width: 991.98px) {
+  body.iht {
+    --iht-gutter: min(1rem, 20px);
+    --iht-header-h: min(4rem, 48px + 6vw);     /* 64px at the default font */
+  }
+}
+
+/* ---------- 2. Base ---------- */
+
+body.iht {
+  margin: 0;
+  background: #fff;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.iht *,
+body.iht *::before,
+body.iht *::after {
+  box-sizing: border-box;
+}
+
+body.iht img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Links */
+body.iht a {
+  color: var(--iht-blue);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+body.iht a:hover {
+  color: var(--iht-blue-deep);
+}
+
+/* Focus: a 3px ring for keyboard focus, never removed. */
+body.iht :focus {
+  outline: none;
+}
+
+body.iht :focus-visible,
+body.iht .btn:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+/* The skip link's target takes focus without drawing a ring round the whole page. */
+body.iht main[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+/* Skip link: the first thing in the page, shown when it gets focus. */
+.iht-skip {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1100;
+  padding: 0.625rem 1rem;
+  border-radius: var(--iht-radius-control);
+  background: #fff;
+  color: var(--iht-ink);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+body.iht .iht-skip {
+  --focus: #fff;
+  color: var(--iht-ink);
+}
+
+body.iht .iht-skip:focus,
+body.iht .iht-skip:focus-visible {
+  transform: none;
+}
+
+/* The page grid */
+.iht-wrap {
+  max-width: var(--iht-max);
+  margin: 0 auto;
+  padding: 0 var(--iht-gutter);
+}
+
+/* ---------- 3. Header: one component on every page ---------- */
+
+.iht-header {
+  --focus: #fff;
+  position: relative;
+  z-index: 50;
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+.iht-header--sticky {
+  position: sticky;
+  top: 0;
+}
+
+.iht-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: var(--iht-max);
+  height: var(--iht-header-h);
+  margin: 0 auto;
+  padding: 0 var(--iht-gutter);
+}
+
+/* The brand: a link to the top on site pages, a plain heading on patient pages. */
+.iht-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 44px;
+  margin: 0;
+  border-radius: var(--iht-radius-control);
+  color: #fff;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+body.iht .iht-brand,
+body.iht .iht-brand:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* The wordmark: Archivo at its widest and heaviest. */
+.iht-wordmark {
+  margin: 0;
+  color: #fff;
+  font-family: var(--iht-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+/* Patient pages: "IHT | Wellness Wallet". */
+.iht-brand__app {
+  padding-left: 0.875rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.6);
+  color: #fff;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+/* Site menu, from 992px up: the links sit in the bar. */
+.iht-header .menu-block-wrapper {
+  margin-left: auto;
+}
+
+.iht-header .site-menu-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.iht-header .nav-item {
+  margin: 0;
+}
+
+.iht-header .nav-link-item {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.875rem;
+  border-radius: var(--iht-radius-control);
+  color: #fff;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+body.iht .iht-header .nav-link-item:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.iht-header [aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
+/* "Request a Demo": a white button in the bar, the filled button in the phone menu. */
+body.iht .iht-header .iht-nav-cta {
+  margin-left: 0.25rem;
+  padding: 0.5rem 1.125rem;
+  border: 2px solid #fff;
+  background: #fff;
+  color: var(--iht-blue);
+}
+
+body.iht .iht-header .iht-nav-cta:hover {
+  border-color: var(--iht-mist);
+  background: var(--iht-mist);
+  color: var(--iht-ink);
+  text-decoration: none;
+}
+
+.iht-header .mobile-menu-head,
+.iht-header .menu-overlay,
+.iht-header .mobile-menu-trigger {
+  display: none;
+}
+
+/* Below 992px: only the wordmark and the menu button are in the bar. menu.js opens the menu
+   (.menu-block) from the right, next to its button, over a dimmed page (.menu-overlay). */
+@media (max-width: 991.98px) {
+  .iht-header .menu-block-wrapper {
+    margin-left: 0;
+  }
+
+  .iht-header .mobile-menu-trigger {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-left: auto;
+    margin-right: -4px;
+    border-radius: var(--iht-radius-control);
+    cursor: pointer;
+  }
+
+  .iht-header .mobile-menu-trigger span,
+  .iht-header .mobile-menu-trigger span::before,
+  .iht-header .mobile-menu-trigger span::after {
+    display: block;
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .iht-header .mobile-menu-trigger span {
+    position: relative;
+  }
+
+  .iht-header .mobile-menu-trigger span::before,
+  .iht-header .mobile-menu-trigger span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .iht-header .mobile-menu-trigger span::before {
+    top: -8px;
+  }
+
+  .iht-header .mobile-menu-trigger span::after {
+    top: 8px;
+  }
+
+  .iht-header .menu-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(28, 45, 80, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+
+  .iht-header .menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease;
+  }
+
+  .iht-header .menu-block {
+    --focus: var(--iht-ink);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    width: min(20rem, 86vw);
+    overflow-y: auto;
+    background: #fff;
+    color: var(--iht-ink);
+    box-shadow: -16px 0 40px rgba(28, 45, 80, 0.28);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.25s ease, visibility 0s linear 0.25s;
+  }
+
+  .iht-header .menu-block.active {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.25s ease;
+  }
+
+  /* The open menu starts with its own strip of header blue, so it reads as part of the bar. */
+  .iht-header .mobile-menu-head {
+    --focus: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: var(--iht-header-h);
+    padding: 0 var(--iht-gutter);
+    background: var(--iht-blue);
+  }
+
+  .iht-header .mobile-menu-close {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-right: -4px;
+    border-radius: var(--iht-radius-control);
+    color: #fff;
+    font-size: 2.25rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .iht-header .site-menu-main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 0;
+  }
+
+  .iht-header .menu-block .nav-item + .nav-item {
+    border-top: 2px solid var(--iht-mist);
+  }
+
+  .iht-header .menu-block .nav-link-item,
+  body.iht .iht-header .menu-block .nav-link-item:hover {
+    width: 100%;
+    min-height: 56px;
+    padding: 0.5rem var(--iht-gutter);
+    border-radius: 0;
+    color: var(--iht-ink);
+    font-size: 1.375rem;
+  }
+
+  /* The rows span the panel, so their focus ring is drawn inside them. */
+  body.iht .iht-header .menu-block .nav-link-item:not(.iht-nav-cta):focus-visible {
+    outline-offset: -3px;
+  }
+
+  /* In the menu, "Request a Demo" is the one filled button, under "Our Team". */
+  .iht-header .menu-block .nav-item.iht-nav-item--cta {
+    padding: 1rem var(--iht-gutter) 0.5rem;
+    border-top: 0;
+  }
+
+  body.iht .iht-header .menu-block .iht-nav-cta,
+  body.iht .iht-header .menu-block .iht-nav-cta:hover {
+    justify-content: center;
+    margin: 0;
+    padding: 0.625rem 1rem;
+    border: 2px solid var(--iht-blue);
+    border-radius: var(--iht-radius-control);
+    background: var(--iht-blue);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  body.iht .iht-header .menu-block .iht-nav-cta:hover {
+    border-color: var(--iht-blue-deep);
+    background: var(--iht-blue-deep);
+  }
+
+  /* The bar can't wrap, so its text is capped by the width too: a larger browser font can't
+     push it off the side. */
+  .iht-wordmark {
+    font-size: min(1.5rem, 7vw);
+  }
+
+  .iht-brand {
+    gap: min(0.875rem, 3.6vw);
+  }
+
+  .iht-brand__app {
+    padding-left: min(0.875rem, 3.6vw);
+    font-size: min(1.25rem, 5.2vw);
+  }
+}
+
+/* Patient header: laid over the screen, as the old bar was; fixed from 992px up, so the quiz
+   maths hold while a screen scrolls. */
+.iht-header--patient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+@media (min-width: 992px) {
+  .iht-header--patient {
+    position: fixed;
+  }
+}
+
+/* ---------- 4. Buttons ---------- */
+
+.iht-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.75rem 1.375rem;
+  border: 2px solid transparent;
+  border-radius: var(--iht-radius-control);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+body.iht .iht-btn:hover {
+  text-decoration: none;
+}
+
+/* Filled blue: go on. */
+body.iht .iht-btn--primary {
+  border-color: var(--iht-blue);
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+body.iht .iht-btn--primary:hover {
+  border-color: var(--iht-blue-deep);
+  background: var(--iht-blue-deep);
+  color: #fff;
+}
+
+/* White, on a blue band. */
+body.iht .iht-btn--onblue {
+  border-color: #fff;
+  background: #fff;
+  color: var(--iht-blue);
+}
+
+body.iht .iht-btn--onblue:hover {
+  border-color: var(--iht-mist);
+  background: var(--iht-mist);
+  color: var(--iht-ink);
+}
+
+/* ---------- 5. Site pages: home and team ---------- */
+
+/* The blue hero band (home) and title band (team). */
+.iht-hero {
+  --focus: #fff;
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+.iht-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 3rem;
+  align-items: end;
+  padding-top: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.iht-hero__text {
+  padding-bottom: clamp(3rem, 7vw, 5.5rem);
+}
+
+/* The one bold thing: the instrument face, wide and heavy. */
+.iht-display {
+  margin: 0 0 1.5rem;
+  color: inherit;
+  font-family: var(--iht-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  /* Capped by the width too: "Wellness" can't wrap. */
+  font-size: min(clamp(2.625rem, 1.2rem + 4.6vw, 4.75rem), 14vw);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+
+.iht-lede {
+  max-width: 34rem;
+  margin: 0 0 2rem;
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem);
+  line-height: 1.6;
+}
+
+.iht-hero .iht-btn {
+  min-height: 52px;
+  padding: 0.75rem 1.75rem;
+  font-size: 1.125rem;
+}
+
+/* The illustration stands on the band's lower edge. */
+.iht-hero__art {
+  align-self: end;
+  margin: 0;
+}
+
+.iht-hero__art img {
+  display: block;
+  width: 100%;
+}
+
+/* Team: a compact title band. */
+.iht-hero--title .iht-display {
+  margin: 0;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+/* Long words in headings break with a hyphen rather than push past a narrow screen. */
+.iht-h2,
+.iht-spec dt,
+.iht-person h3 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.iht-h2 {
+  margin: 0 0 1.25rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 112.5%;
+  font-weight: 700;
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+/* A picture beside a short text: "Not Just Rewards", and the Request a Demo block. */
+.iht-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+
+.iht-split p {
+  max-width: 32rem;
+  margin: 0;
+  font-size: 1.1875rem;
+  line-height: 1.65;
+}
+
+.iht-split__art {
+  margin: 0;
+}
+
+.iht-split__art img {
+  display: block;
+  width: 100%;
+}
+
+/* The Request a Demo block. Its id is the target of every "Request a Demo" link. */
+.iht-demo {
+  scroll-margin-top: var(--iht-header-h);
+}
+
+.iht-email {
+  font-weight: 700;
+}
+
+/* The home features as a striped term/description table, like the dashboard's patient list.
+   Not numbered: they aren't a sequence. */
+.iht-spec {
+  margin: 0;
+  border-radius: var(--iht-radius-band);
+  overflow: hidden;
+}
+
+.iht-spec__row {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 1rem 3rem;
+  padding: 1.75rem 2rem;
+}
+
+.iht-spec__row:nth-child(odd) {
+  background: var(--iht-mist);
+}
+
+.iht-spec dt {
+  margin: 0;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 112.5%;
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+.iht-spec dd {
+  max-width: 36rem;
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+/* Team: people in two columns. Circles are for people only. */
+.iht-people {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: clamp(2rem, 5vw, 4.5rem);
+  padding-top: clamp(1.5rem, 4vw, 3rem);
+}
+
+.iht-person {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  padding: 2rem 0;
+  border-bottom: 2px solid var(--iht-mist);
+}
+
+.iht-person img {
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.iht-person h3 {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 112.5%;
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+.iht-person p {
+  max-width: 34rem;
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  /* Only a word too long for a phone with a large default font breaks. */
+  overflow-wrap: break-word;
+}
+
+/* Footer: the company name on Ink, and the illustration credit on pages that use them. */
+.iht-footer {
+  --focus: #fff;
+  padding: 1.5rem 0;
+  background: var(--iht-ink);
+  color: #fff;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.iht-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+}
+
+body.iht .iht-footer a {
+  color: #fff;
+}
+
+body.iht .iht-footer a:hover {
+  color: var(--iht-mist);
+}
+
+@media (max-width: 991.98px) {
+  .iht-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .iht-hero__text {
+    padding-bottom: 0;
+  }
+
+  .iht-hero__art {
+    justify-self: center;
+    max-width: 34rem;
+  }
+
+  .iht-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Text first on phones; the picture follows. */
+  .iht-split__art {
+    order: 2;
+    max-width: 28rem;
+  }
+
+  .iht-people {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .iht-spec {
+    margin-inline: calc(-1 * var(--iht-gutter) / 2);
+  }
+
+  .iht-spec__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    padding: 1.375rem 1.25rem;
+  }
+
+  .iht-spec dt {
+    font-size: 1.25rem;
+  }
+
+  .iht-footer__inner {
+    flex-direction: column;
+  }
+}
+
+/* Phones: smaller photos, capped by the width so a larger default font leaves room for
+   the text. */
+@media (max-width: 479.98px) {
+  .iht-person {
+    grid-template-columns: min(4.5rem, 20vw) minmax(0, 1fr);
+    gap: min(1rem, 4vw);
+  }
+
+  .iht-person img {
+    width: min(4.5rem, 20vw);
+    height: min(4.5rem, 20vw);
+  }
+}
+
+/* ---------- 6. Patient pages (Wellness Wallet, demo/) ----------
+   These pages keep bootstrap.css and wellnesswallet/css/main.css underneath, and each keeps
+   its own layout maths at the end of its <style> block. This section is the look and the type
+   sizes shared by both quizzes. Large print: no size here is below what the pages showed
+   before (see COMPONENTS.md for the measured floors). */
+
+body.iht--patient {
+  /* Go Back's height. The quizzes' --back-height reads it. Capped, so a larger default font
+     doesn't turn it into a wall at the bottom of a phone. */
+  --iht-back-h: min(3.5rem, 72px);
+  background: #fff;
+}
+
+/* The question: the reading face, heavy, in Ink. Its size comes from renderQuestion()
+   (2em, or 1.8em on PHQ-9) of #questionnaire-form, whose size each page sets. */
+.iht--patient #question p {
+  margin: 0;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.iht--patient #questionnaire-form {
+  background: transparent;
+}
+
+/* The answers sit in a row with a gap, and wrap when they must. */
+.iht--patient #choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: max(0.5em, 12px);
+  margin-top: 0.5rem;
+}
+
+/* Answers are outlined: a choice, not a step. Their size is --iht-answer-size of the form's
+   size (2em, as before; PHQ-9 sets 1.8em). The !important values beat main.css's
+   ".btn:hover { background: #466eb6 !important }". */
+.iht--patient #choices .btn {
+  flex: 0 1 auto;
+  height: auto;
+  min-width: min(2.75em, calc(50% - 0.5rem));
+  min-height: 48px;
+  margin: 0;
+  padding: 0.2em 0.35em;
+  border: 3px solid var(--iht-blue) !important;
+  border-radius: var(--iht-radius-answer);
+  background: #fff !important;
+  color: var(--iht-blue) !important;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: var(--iht-answer-size, 2em);
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-align: center;
+  box-shadow: none;
+  cursor: pointer;
+  transition: opacity 0.5s ease-in-out, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hover never looks like a choice: the next question's answer can be under the pointer.
+   With a mouse the ring only darkens; touch screens get nothing (they keep :hover after a
+   tap). Only a press fills it. */
+@media (hover: hover) {
+  .iht--patient #choices .btn:hover {
+    border-color: var(--iht-ink) !important;
+  }
+}
+
+.iht--patient #choices .btn:active {
+  border-color: var(--iht-blue-deep) !important;
+  background: var(--iht-blue-deep) !important;
+  color: #fff !important;
+}
+
+/* Go Back: a quiet outlined pill. Its place (centred at the foot of the quiz, above the
+   footer) is in each quiz's own layout block. */
+.iht--patient #prevAnswer {
+  height: var(--iht-back-h);
+  min-width: 0;
+  padding: 0 1.4em;
+  border: 2px solid var(--iht-ink-muted) !important;
+  border-radius: 999px;
+  background: #fff !important;
+  color: var(--iht-ink) !important;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: min(1.25rem, 32px);
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: opacity 0.5s ease-in-out, background-color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .iht--patient #prevAnswer:hover {
+    border-color: var(--iht-ink) !important;
+    background: var(--iht-mist) !important;
+  }
+}
+
+/* From 768px up the end screen's text is a left-aligned column, so there Go Back lines up
+   under Finish instead of sitting alone in the middle. --iht-end-col is that column's width:
+   the quizzes' 75vw, capped by Bootstrap's .container (720px below 992px, 1320px at most).
+   (goToEnd() shows #end with style="display: block".) */
+body.iht--patient {
+  --iht-end-col: min(75vw, 1320px);
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  body.iht--patient {
+    --iht-end-col: min(75vw, 720px);
+  }
+}
+
+@media (min-width: 768px) {
+  .iht--patient .testFhir:has(> #end[style*="display: block"]) #prevAnswer {
+    left: calc(50% - var(--iht-end-col) / 2 + 12px);
+    right: auto;
+    margin: 0;
+  }
+}
+
+/* The video screen */
+.iht--patient #video h1 {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.iht--patient #video1 {
+  border-radius: var(--iht-radius-band);
+  background: var(--iht-ink);
+}
+
+/* Moving on is a filled pill: blue to continue, green to finish. */
+.iht--patient #video .btn,
+.iht--patient #end .content .btn {
+  position: static;
+  height: auto;
+  min-width: 0;
+  margin: 0;
+  border: 0 !important;
+  border-radius: 999px;
+  color: #fff !important;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-align: center;
+  transform: none;
+  cursor: pointer;
+}
+
+/* Continue: 2rem (32px), as before, but never wider than a phone. */
+.iht--patient #video .btn {
+  min-height: min(4rem, 72px);
+  padding: 0.3em min(1.1em, 4vw);
+  background: var(--iht-blue) !important;
+  font-size: min(2rem, 16vw);
+}
+
+@media (hover: hover) {
+  .iht--patient #video .btn:hover {
+    background: var(--iht-blue-deep) !important;
+  }
+}
+
+/* End screen: "Remember:" in the instrument face, a check list, then Finish under it.
+   Sizes are in em of #end .content: 1rem on desktop; on phones its size follows the width. */
+.iht--patient #end .content {
+  color: var(--iht-ink);
+}
+
+@media (max-width: 767.98px) {
+  /* Capped by the width too, so a larger default font can't push "Remember:", which can't
+     wrap, off the sides. */
+  .iht--patient #end .content {
+    font-size: min(clamp(0.6875rem, 3.2vw, 0.8125rem), max(3.2vw, 11px));
+  }
+}
+
+.iht--patient #end .content h1 {
+  margin: 0 0 0.2em;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  /* 5em (80px); capped by the window, so the one word always fits its 75vw column. */
+  font-size: min(5em, 10vw);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+
+/* Narrower windows: the same size in the face's normal width, which is 20% narrower. */
+@media (max-width: 991.98px) {
+  .iht--patient #end .content h1 {
+    font-stretch: 100%;
+    font-size: min(5em, 12.5vw);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .iht--patient #end .content h1 {
+    font-size: 5em;
+  }
+}
+
+.iht--patient #end .content h2 {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  letter-spacing: 0;
+}
+
+.iht--patient #end .content > h2 {
+  margin: 0 0 0.3em;
+  font-weight: 700;
+  font-size: 3em;
+  line-height: 1.15;
+}
+
+.iht--patient #end .content ul {
+  margin: 0 0 1.25em;
+  padding: 0;
+  list-style: none;
+}
+
+.iht--patient #end .content ul h2 {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35em;
+  margin: 0;
+  padding: 0.1em 0;
+  border-top: 2px solid var(--iht-mist);
+  font-weight: 400;
+  font-size: 2.9em;
+  line-height: 1.2;
+}
+
+.iht--patient #end .content ul h2:last-child {
+  border-bottom: 2px solid var(--iht-mist);
+}
+
+/* The check: white on Reward green, drawn in CSS. The ✔ in the markup stays for screen
+   readers but is pushed out of sight, because a phone may draw it as a colour emoji. */
+.iht--patient #end .content ul h2 i {
+  position: relative;
+  flex: none;
+  display: block;
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0.05em 0 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--iht-reward);
+  color: #fff;
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1;
+  text-indent: 200%;
+  white-space: nowrap;
+}
+
+.iht--patient #end .content ul h2 i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 0.27em;
+  height: 0.52em;
+  border: solid #fff;
+  border-width: 0 0.11em 0.11em 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Finish: green, done. 2em, as before; the whole column on phones. */
+.iht--patient #end .content .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(3.5rem, 64px);
+  padding: 0.35em 1.5em;
+  background: var(--iht-reward) !important;
+  font-size: 2em;
+}
+
+@media (hover: hover) {
+  .iht--patient #end .content .btn:hover {
+    background: var(--iht-reward-deep) !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .iht--patient #end .content .btn {
+    width: 100%;
+  }
+}
+
+/* PHQ-9's crisis note (question 9, and the end screen's #crisisHelp): Follow-up red, the one
+   colour that means "needs follow-up". Its size and spacing stay in the PHQ-9 page. */
+.iht--patient .crisis {
+  border: 3px solid var(--iht-followup);
+  border-left-width: 10px;
+  border-radius: var(--iht-radius-band);
+  background: #fff;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 400;
+  text-align: left;
+}
+
+body.iht--patient .crisis a {
+  color: var(--iht-followup);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+/* The quiz footer (main.css fixes it to the bottom; the quizzes put it at the foot of the
+   page). One line, capped, so a larger font doesn't make it a band over the answers or Go
+   Back. */
+.iht--patient .testFhir footer {
+  padding: 0.3em 1rem;
+  border-top: 0;
+  background: var(--iht-ink);
+  color: #fff;
+  font-family: var(--iht-text);
+  font-size: min(1rem, 20px, 4.6vw);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* The "Resume Video?" prompt (sweetalert 1). Resume Video (its cancel button) is green, the
+   reward; Move On is blue. The type follows the window's height, as before, but never gets
+   smaller than it was on small windows. */
+.iht--patient .swal-modal {
+  border-radius: var(--iht-radius-band);
+  font-family: var(--iht-text);
+}
+
+.iht--patient .swal-title {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: max(7vh, 1.75rem);
+  line-height: 1.15;
+}
+
+.iht--patient .swal-text {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-size: max(3vh, 1rem);
+  line-height: 1.3;
+  text-align: center;
+}
+
+.iht--patient .swal-footer {
+  text-align: center;
+}
+
+/* Capped, so with a larger default font both buttons still fit a phone's dialog. */
+.iht--patient .swal-button {
+  min-height: min(3.5rem, 56px);
+  padding: 0 min(1.5rem, 18px);
+  border-radius: 999px;
+  color: #fff;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: min(1.25rem, 20px);
+}
+
+.iht--patient .swal-button:focus {
+  box-shadow: none;
+}
+
+.iht--patient .swal-button--cancel,
+.iht--patient .swal-button--cancel:not([disabled]):hover,
+.iht--patient .swal-button--cancel:not([disabled]):active {
+  background-color: var(--iht-reward);
+  color: #fff;
+}
+
+.iht--patient .swal-button--danger,
+.iht--patient .swal-button--confirm {
+  background-color: var(--iht-blue);
+}
+
+@media (hover: hover) {
+  .iht--patient .swal-button--cancel:not([disabled]):hover {
+    background-color: var(--iht-reward-deep);
+  }
+
+  .iht--patient .swal-button--danger:not([disabled]):hover,
+  .iht--patient .swal-button--confirm:not([disabled]):hover {
+    background-color: var(--iht-blue-deep);
+  }
+}
+
+/* ---------- 7. Motion ----------
+   No fade-ins. The quiz fades between screens, and the dashboard's charts draw in; both stop
+   under reduced motion. */
+
+/* "Request a Demo" links to #request-a-demo; with motion allowed the page glides there. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(> body.iht) {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(> body.iht) {
+    scroll-behavior: auto;
+  }
+
+  body.iht *,
+  body.iht *::before,
+  body.iht *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- 8. Stage 2 ----------
+   One block per page group, so the later edits merge without conflicts. Keep each group's
+   rules between its own markers. */
+
+/* === stage 2: dashboard (start) === */
+
+/* === stage 2: dashboard (end) === */
+
+/* === stage 2: PHQ-9 and demo (start) === */
+
+/* === stage 2: PHQ-9 and demo (end) === */
+
+/* === stage 2: start page and submitted (start) === */
+
+/* === stage 2: start page and submitted (end) === */
