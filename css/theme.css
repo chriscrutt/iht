@@ -1321,4 +1321,27 @@ body.iht--patient .crisis a {
 
 /* === stage 2: start page and submitted (start) === */
 
+/* Patient actions are pills: Get Started on the start page, Submit on the gift-card page. */
+body.iht .iht-btn--pill {
+  border-radius: 999px;
+}
+
+/* The start page's and the gift-card page's footer: the Ink band, slim, as on the quizzes. Its
+   size is capped like theirs, so a larger default font doesn't make it a wall. */
+.iht-footer.iht-footer--slim {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 1.5em;
+  padding: 0.35em 1rem;
+  font-size: min(1rem, 20px, 4.6vw);
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* main.css takes the underline off every link; the credit keeps it. */
+body.iht .iht-footer--slim a {
+  text-decoration: underline;
+}
+
 /* === stage 2: start page and submitted (end) === */
