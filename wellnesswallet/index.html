@@ -97,6 +97,81 @@
       background-color: mediumseagreen !important;
       /* color: limegreen !important; */
     }
+
+    /* Phones, portrait tablets and zoomed-in laptops. The two-column hero above is one window
+       tall, can't scroll and sizes its type in vh, so on narrow or portrait screens its text runs
+       off the bottom. Here the text goes above the picture, the type is sized mostly by the
+       width, and the header, hero and footer follow one another so the page can scroll.
+       !important is needed to beat the inline styles and main.css's own !important rules. */
+    @media (max-width: 991.98px), (orientation: portrait) {
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        min-height: 100svh;
+      }
+
+      .site-wrapper {
+        flex: 1 0 auto;
+      }
+
+      header.site-header.site-header--sticky {
+        position: relative !important;
+        transform: none !important;
+      }
+
+      .site-header .site-navbar {
+        height: auto !important;
+        min-height: 92px;
+      }
+
+      .hero-area-l-14 {
+        height: auto !important;
+        padding-top: 2rem;
+        padding-bottom: 2.5rem;
+      }
+
+      .hero-area-l-14 .content {
+        padding-top: 0;
+      }
+
+      .hero-area-l-14 .row > div {
+        width: 100% !important;
+      }
+
+      /* "Christopher!" can't wrap, so the width caps the size even when the browser's default
+         font size is larger than usual. */
+      #greeting {
+        font-size: min(clamp(2.5rem, 12vw, 10vh), 13vw) !important;
+        line-height: 1.1 !important;
+        letter-spacing: -.04em;
+      }
+
+      .hero-area-l-14 .content p {
+        font-size: clamp(1.375rem, 6.5vw, 5vh) !important;
+        line-height: 1.25 !important;
+      }
+
+      .hero-area-l-14 .content .btn {
+        font-size: clamp(1.5rem, 7vw, 5vh) !important;
+        line-height: 1.2;
+        height: auto;
+        padding: .35em .8em;
+        border-radius: .2em !important;
+      }
+
+      .banner-image-l-14 {
+        position: static !important;
+        max-width: 34rem;
+        margin: 0 auto;
+        padding-top: 2.5rem;
+      }
+
+      footer {
+        position: static !important;
+        transform: none !important;
+      }
+    }
   </style>
   <!-- Footer Area -->
   <!-- Vendor Scripts -->

@@ -74,7 +74,7 @@
     </header>
     <!-- navbar- -->
     <!-- Hero Area -->
-    <div class="testFhir position-relative z-index-1 overflow-hidden trans">
+    <div class="testFhir position-relative z-index-1 trans">
       <div class="container" style="text-align: center;">
         <div class="row position-relative justify-content-center">
           <div class="col-md-10 pr-0" style="width:auto;">
@@ -97,9 +97,9 @@
               </div>
 
               <div id="video" class="trans">
-                <h1 style="color: #466EB6; width: 50vw;">Now, watch this quick video to learn more about depression.</h1>
+                <h1 style="color: #466EB6;">Now, watch this quick video to learn more about depression.</h1>
                 <div id="player" style="display: block; padding-bottom: 1vh;">
-                  <video id="video1" style="height:50vh;" controls>
+                  <video id="video1" controls>
                     <source src="../video/brainGloomy.mp4" type="video/mp4">
                     Your browser does not support HTML video.
                   </video>
@@ -107,19 +107,19 @@
                 <button class="btn" type="submit"
                   style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Continue</button>
               </div>
-              <div class="btn" id="prevAnswer" class="trans" onclick="prevAnswer()"
-                style="margin-top: 1vh;position: fixed;bottom: 5vh;left: 45vw;right: 45vw;opacity:0;">Go
+              <!-- Hidden until renderQuestion() shows it from question 2 on. Invisible, it would still
+                   catch taps meant for question 1's answers. -->
+              <div class="btn" id="prevAnswer" class="trans" onclick="prevAnswer()" style="opacity:0;display:none;">Go
                 Back</div>
             </form>
           </div>
         </div>
       </div>
-      <div style="height: 100vh;display:none;" id="end"
-        class="hero-area-l-14 position-relative z-index-1 overflow-hidden trans">
+      <div style="display:none;" id="end" class="hero-area-l-14 position-relative z-index-1 trans">
         <div class="container">
           <div class="row position-relative justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 aos-init aos-animate" data-aos="fade-right"
-              data-aos-duration="800" data-aos-once="true" style="width: 75vw;">
+              data-aos-duration="800" data-aos-once="true">
               <div class="content">
                 <div id="crisisHelp" class="crisis" tabindex="-1" style="display: none;">If you're having thoughts of hurting yourself,
                   call or text <a href="tel:988">988</a> (Suicide &amp; Crisis Lifeline). If you're in danger, call
@@ -213,7 +213,9 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      /* At least one window tall, and taller (the page scrolls) when a screen doesn't fit. */
+      min-height: 100vh;
+      height: auto;
       padding-top: 0;
       background-color: #ffffff00;
     }
@@ -240,9 +242,8 @@
       /* opacity: 0; */
     }
 
-    /* Crisis information for question 9 (thoughts of self-harm). These screens are exactly one
-       window tall and can't scroll, so the note has fixed sizes that keep the answers and the
-       Finish button on screen. */
+    /* Crisis information for question 9 (thoughts of self-harm). The note has fixed sizes that
+       keep question 9's answers and the end screen's Finish button within a laptop window. */
     #question p.crisis,
     #end .crisis {
       background: #fff;
@@ -272,6 +273,173 @@
       color: inherit;
       font-weight: 700;
       text-decoration: underline;
+    }
+
+    /* Keep every screen clear of the header and the Go Back button.
+       Questions and the video are centred in the window, as before, between two empty flex
+       items of the same height: the room that the header and Go Back need. A screen that fits
+       stays exactly where it was. One that doesn't makes the page grow and scroll. */
+    .testFhir {
+      --back-bottom: 5vh;   /* Go Back's distance from the bottom of the window */
+      --back-height: 54px;  /* its 25px padding and 2px border, top and bottom */
+      --room-top: 82px;     /* the 92px header, less the 10px of padding above each question */
+      /* Less the 1% (of the 70vw form) margin under the last row of answers, and less 1.5px:
+         Go Back's 2px top border already touched the last answers in some laptop windows. */
+      --room-bottom: calc(var(--back-bottom) + var(--back-height) - 0.7vw - 1.5px);
+      --room: max(var(--room-top), var(--room-bottom));
+    }
+
+    .testFhir::before,
+    .testFhir::after {
+      content: "";
+      flex: none;
+      height: var(--room);
+    }
+
+    #prevAnswer {
+      position: fixed;
+      bottom: var(--back-bottom);
+      left: 45vw;
+      right: 45vw;
+      /* Above the footer, which grows over Go Back when the browser's font size is raised. */
+      z-index: 7;
+    }
+
+    /* The footer stays on top of buttons (main.css gives them z-index 5) that scroll under it. */
+    .testFhir footer {
+      z-index: 6;
+    }
+
+    #video h1 {
+      width: 50vw;
+    }
+
+    #video1 {
+      height: 50vh;
+    }
+
+    /* The end screen keeps its own room (below), so it sits over the two empty items and
+       starts at the top of the window, as before. */
+    #end {
+      margin-top: calc(-1 * var(--room));
+      margin-bottom: calc(-1 * var(--room));
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    #end > .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    #end > .container::before {
+      content: "";
+      flex: none;
+      height: 110px;
+    }
+
+    /* Room for Go Back below Finish. */
+    #end > .container::after {
+      content: "";
+      flex: none;
+      height: calc(var(--back-bottom) + var(--back-height) + 10px);
+    }
+
+    #end .col-xl-5 {
+      width: 75vw;
+    }
+
+    /* Finish is placed 5vh below the list and moved up by half its 60px height (see .center). */
+    #end .content {
+      padding-bottom: calc(5vh + 30px);
+    }
+
+    @media (min-width: 992px) {
+      /* 225px down, as before, but higher when Go Back would otherwise cover Finish. */
+      #end > .container::before {
+        flex: 1 0 0;
+        height: auto;
+        min-height: 110px;
+        max-height: 225px;
+      }
+    }
+
+    /* Smaller windows: phones, tablets, and short or zoomed-in laptop windows. */
+    @media (max-width: 1279px), (max-height: 767px) {
+      .testFhir {
+        --back-bottom: max(5vh, 40px);  /* clear of the 32px footer */
+        --room-top: 100px;              /* a little space under the header */
+        --room-bottom: calc(var(--back-bottom) + var(--back-height) + 12px);
+      }
+
+      /* Centred: 45vw from each side would leave it narrower than its 130px minimum width. */
+      #prevAnswer {
+        left: 0;
+        right: 0;
+        width: max-content;
+        margin: 0 auto;
+      }
+
+      /* The whole width, not Bootstrap's 540px or 720px. */
+      .testFhir > .container {
+        max-width: none;
+      }
+
+      /* Wide enough for "More than half the days" on one line, but within the screen; and
+         smaller type on narrow screens. */
+      #questionnaire-form {
+        width: min(max(70vw, 40rem), 100vw - 3rem);
+        font-size: min(1.7em, 3.7vw);
+      }
+
+      /* Big enough to tap. */
+      #choices .btn {
+        min-height: 3rem;
+      }
+
+      /* The "Resume Video?" prompt's type follows the window's height: keep it readable. */
+      .swal-title {
+        font-size: max(7vh, 1.75rem);
+      }
+
+      .swal-text {
+        font-size: max(3vh, 1rem);
+      }
+    }
+
+    /* Portrait screens: the video fits the width rather than half the height. */
+    @media (max-aspect-ratio: 1/1) {
+      #video1 {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* Phones up to 767px wide (upright, or sideways on smaller phones): the full width of the
+       screen, and smaller type. */
+    @media (max-width: 767px) {
+      #video h1 {
+        width: auto;
+      }
+
+      #end .col-xl-5 {
+        width: 100%;
+      }
+
+      /* Capped by the width too, so a larger default font doesn't push "Remember:", which
+         can't wrap, off the sides. At the default font size the cap changes nothing. */
+      #end .content {
+        font-size: min(clamp(0.6875rem, 3.2vw, 0.8125rem), max(3.2vw, 11px));
+      }
+
+      #end .content h1 {
+        line-height: 1.1;
+      }
+
+      h2 i {
+        font-size: 1.75rem;
+      }
     }
   </style>
   <script>
@@ -407,6 +575,8 @@
 
     // Modify renderQuestion function
     function renderQuestion() {
+      // A screen can be taller than a small window, so show each new one from the top.
+      window.scrollTo(0, 0);
       question.style.opacity = 0;
       choice0.style.opacity = 0;
       choice1.style.opacity = 0;
@@ -444,7 +614,10 @@
           choice2.style.opacity = 1;
           choice3.style.opacity = 1;
           setTimeout(function () {
-            prev.style.display = "none";
+            // Not if question 1 has been answered again in the meantime.
+            if (runningQuestion == 0) {
+              prev.style.display = "none";
+            }
           }, 500);
         }
       }, 500);
@@ -453,6 +626,11 @@
     const vidBlock = document.getElementById("video");
 
     function prevAnswer() {
+      // Ignore Go Back while it's invisible. Just after question 1 is answered it's in place
+      // but still transparent, so the second click of a double-click could land on it.
+      if (prev.style.opacity === "0") {
+        return;
+      }
       document.getElementById("end").style.display = "none";
       player.pause();
       if (runningQuestion != 0) {
@@ -493,6 +671,7 @@
       questions[runningQuestion].answer = answer;
       runningQuestion++;
       if (runningQuestion == lastQuestion) {
+        window.scrollTo(0, 0);
         question.style.opacity = 0;
         choice0.style.opacity = 0;
         choice1.style.opacity = 0;
@@ -515,6 +694,7 @@
     }
 
     function goToEnd() {
+      window.scrollTo(0, 0);
       vidBlock.style.display = "none";
       // Question 9 asks about thoughts of self-harm. For any answer but "Not at all", show the
       // crisis line in place of the "Remember:" heading, so the Finish button stays on screen.
