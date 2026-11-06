@@ -9,15 +9,11 @@
     <link rel="shortcut icon" href="../image/favicon.png" type="image/x-icon">
     <!-- Bootstrap , fonts & icons  -->
     <link rel="stylesheet" href="../css/bootstrap.css">
-    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-    <!-- Plugin'stylesheets  -->
-    <link rel="stylesheet" href="../plugins/aos/aos.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- Vendor stylesheets  -->
     <link rel="stylesheet" href="../css/main.css">
+    <!-- The shared theme, after the template CSS so it wins. It loads its own fonts. -->
+    <link rel="stylesheet" href="../../css/theme.css">
     <!-- Sweet Alerts -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- Google tag (gtag.js) -->
@@ -31,236 +27,212 @@
     </script>
 </head>
 
-<body data-theme-mode-panel-active data-theme="light" style="font-family: 'Mazzard H';">
-    <header style="background-color: #466EB6;"
-        class="site-header site-header--menu-right landing-14-menu site-header--absolute site-header--sticky">
-        <div class="container">
-            <nav style=" height: 92px;" class="navbar site-navbar">
-                <!-- Brand Logo-->
-                <div class="brand-logo">
-                    <a href="#">
-                        <!-- <img src="image/logo/logo-black.png" alt=""> -->
-                        <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT - Wellness Wallet</h1>
-                    </a>
-                </div>
-            </nav>
+<body class="iht iht--patient" data-theme-mode-panel-active data-theme="light">
+    <!-- The shared header, patient version: the wordmark and "Wellness Wallet", no links. -->
+    <header class="iht-header iht-header--patient">
+        <div class="iht-header__inner">
+            <h1 class="iht-brand"><span class="iht-wordmark">IHT</span> <span class="iht-brand__app">Wellness Wallet</span></h1>
         </div>
     </header>
     <div class="bods">
-        <h2 style="font-size: 3em;">Please select your $10 reward gift card</h2>
+        <h2>Please select your $10 reward gift card</h2>
         <div class="button-container">
-            <button class="btn option" style="background-image: url('../image/walgreens.png') !important;"
+            <button class="option" style="background-image: url('../image/walgreens.png');"
                 data-code="walgreens"></button>
-            <button class="btn option" style="background-image: url('../image/riteAid.png') !important;"
+            <button class="option" style="background-image: url('../image/riteAid.png');"
                 data-code="riteAid"></button>
-            <button class="btn option" style="background-image: url('../image/target.png') !important;"
+            <button class="option" style="background-image: url('../image/target.png');"
                 data-code="target"></button>
 
         </div>
-        <button onclick="finish()" class="btn sub">Submit</button>
+        <button onclick="finish()" class="iht-btn iht-btn--primary iht-btn--pill sub">Submit</button>
     </div>
-    <!-- Footer Area -->
-    <!-- Vendor Scripts -->
-    <script src="../plugins/aos/aos.min.js"></script>
+    <footer class="iht-footer iht-footer--slim">
+        <span>Incentive Health Technologies, LLC</span>
+    </footer>
     <style>
+        /* The look (type, colours, the header, Submit, the dialogs) is in ../../css/theme.css. This
+           is the page's layout, the gift cards and the dialogs' icons.
+
+           The header, the page and the footer follow one another. The page fills the window and
+           centres its content between the header and the footer; when a narrow or short window,
+           or a larger default font, makes it taller, it grows and scrolls instead of cutting
+           anything off. Below 992px the header is laid over the top of the page and from 992px
+           it's fixed (theme.css), so the page starts below it. */
+        body.iht--patient {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100svh;
+        }
+
         .bods {
+            flex: 1 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .button-container .btn:hover,
-        .button-container .btn.active {
-            background-color: rgba(0, 255, 0, 0.6) !important;
-            opacity: 0.8;
-        }
-
-        /* Center the buttons horizontally and vertically */
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            align-items: center;
             justify-content: center;
+            /* clear the header */
+            padding: calc(var(--iht-header-h) + 1rem) 1rem 1rem;
+        }
+
+        .bods h2 {
+            margin: 0 0 0.45em;
+            color: var(--iht-ink);
+            font-family: var(--iht-text);
+            font-weight: 700;
+            font-size: 3em;
+            line-height: 1.15;
+            text-align: center;
+            text-wrap: balance;
         }
 
         .button-container {
             display: flex;
             justify-content: center;
+            gap: 4vw;
         }
 
-        .button-container .btn {
-            height: 30vh;
+        /* The cards are choices, drawn like the quizzes' answers: a blue ring, 16px corners, white.
+           The logo sits inside the padding, so it never touches the ring or the corners. */
+        .button-container .option {
+            position: relative;
+            flex: none;
             width: 28vw;
-            margin: 2vw;
-            background-size: contain !important;
-            background-repeat: no-repeat !important;
-            background-position: center !important;
+            height: 30vh;
+            margin: 0;
+            padding: 20px;
+            border: 3px solid var(--iht-blue);
+            border-radius: var(--iht-radius-answer);
+            background-color: #fff;
+            background-origin: content-box;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* .center1 {
-            margin-top: 5vh !important;
+        /* A mouse over a card only darkens its ring; it never looks chosen. */
+        @media (hover: hover) {
+            .button-container .option:hover {
+                border-color: var(--iht-ink);
+            }
+        }
+
+        /* The chosen card: a ring twice as thick (the padding gives back the difference, so the
+           logo stays put), Mist behind the logo and a blue tick in the corner. */
+        .button-container .option.active,
+        .button-container .option.active:hover {
+            padding: 17px;
+            border: 6px solid var(--iht-blue);
+            background-color: var(--iht-mist);
+        }
+
+        .button-container .option.active::after {
+            content: "";
             position: absolute;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .center2 {
-            margin-top: 5vh !important;
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        } */
-
-        ul h2 {
-            font-weight: 200;
-        }
-
-        h2 i {
-            background-color: #72e297;
-            color: #FFF;
-            font-size: 2.5rem;
-            padding: 5px 12px;
-            margin-right: 10px;
+            top: 6px;
+            right: 6px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
+            background: var(--iht-blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 70% no-repeat;
         }
 
-        .testFhir footer {
-            border-top: 0;
-        }
-
-        body {
-            background-image: url("../image/background.png");
-        }
-
-        /* .btn:hover {
-            background: #f0f0f0 !important;
-            color: #fff !important;
-        } */
-
-        .btn {
-            background: #fff !important;
-            border: 2px solid #466eb6 !important;
-            color: #466eb6 !important;
-            padding: 25px;
-            font-size: 1em;
-        }
-
-        p {
-            color: #466EB6;
-        }
-
-        * {
-            font-family: Rubik;
-            color: #466EB6;
-        }
-
-        #questionnaire-form {
-            width: 40vw;
-            height: 40vh;
-            font-size: 2em;
-        }
-
-        .testFhir {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding-top: 0;
-            background-color: #ffffff00;
-        }
-
-        .swal-title {
-            font-size: 7vh;
-        }
-
-        .swal-text {
-            font-size: 3vh;
-        }
-
-        .swal-button--cancel {
-            background-color: rgb(45, 184.5, 45);
-            color: #fff;
-        }
-
-        .swal-button--cancel:hover {
-            background-color: rgb(42.5, 174.25, 42.5) !important;
-        }
-
-        .trans {
-            transition: opacity 0.5s ease-in-out;
-            /* opacity: 0; */
-        }
-
+        /* Go on: the filled blue pill (theme.css), at master's 2em and 25vw. */
         .sub {
-            width: 25vw !important;
-            border: 2px solid seagreen !important;
-            background-color: seagreen !important;
-            color: #fff !important;
+            width: 25vw;
+            min-height: max(3.5rem, 7vh);
+            margin-top: 3vh;
+            padding: 0.25em 1em;
             font-size: 2em;
+            line-height: 1.15;
+            text-align: center;
         }
 
-        .sub:hover {
-            background-color: mediumseagreen !important;
+        /* "Oops!" (no card chosen) and "Submitted!" (a card chosen): the theme draws them like the
+           quizzes' "Resume Video?". Their icons take the theme's colours and keep still: the
+           tick is green, done; the "!" is blue. */
+        .iht--patient .swal-icon--success {
+            border-color: var(--iht-reward);
         }
 
-        /* Phones, tablets and zoomed-in laptops. The desktop sizes don't match this.
-           The rules above centre one window-high screen, so a narrow or short window
-           pushed content past the left edge, where it can't be scrolled to, or under
-           the header. Here the page grows and scrolls down instead. */
+        .iht--patient .swal-icon--success__ring {
+            border-color: rgba(30, 123, 79, 0.25);
+        }
+
+        .iht--patient .swal-icon--success__line {
+            background-color: var(--iht-reward);
+        }
+
+        .iht--patient .swal-icon--warning {
+            border-color: var(--iht-blue);
+        }
+
+        .iht--patient .swal-icon--warning__body,
+        .iht--patient .swal-icon--warning__dot {
+            background-color: var(--iht-blue);
+        }
+
+        .iht--patient .swal-icon--warning,
+        .iht--patient .swal-icon--success::after,
+        .iht--patient .swal-icon--success__line--tip,
+        .iht--patient .swal-icon--success__line--long {
+            animation: none;
+        }
+
+        /* sweetalert draws its icons in content-box sizing; theme.css makes everything
+           border-box, which would pull the tick's two strokes out of line. */
+        .iht--patient .swal-icon,
+        .iht--patient .swal-icon *,
+        .iht--patient .swal-icon::before,
+        .iht--patient .swal-icon::after {
+            box-sizing: content-box;
+        }
+
+        /* Their one button, OK, is a pill, not a circle. */
+        .iht--patient .swal-button--confirm {
+            min-width: min(7rem, 140px);
+        }
+
+        /* "Submitted!" can't wrap, so on a very tall window the title (7vh, theme.css) is capped
+           by the dialog's width: 478px, or the window less 20px. It's 5.15em wide. */
+        .iht--patient .swal-title {
+            font-size: min(max(7vh, 1.75rem), (min(100vw - 20px, 478px) - 12px) / 5.3);
+        }
+
+        /* Phones, tablets and zoomed-in laptops. The desktop sizes don't match this. */
         @media (max-width: 991.98px), (max-height: 599.98px) {
-            html {
-                display: block;
-            }
-
-            body {
-                height: auto;
-                min-height: 100%;
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .bods {
-                flex: 1 0 auto;
-                justify-content: center;
-                /* clear the 92px header */
-                padding: calc(92px + 1rem) 1rem 1rem;
-            }
-
-            /* !important because these override inline styles */
             .bods h2 {
-                font-size: clamp(1.75rem, min(0.5rem + 6.5vw, 9vh), 3em) !important;
-                text-align: center;
-                text-wrap: balance;
-            }
-
-            footer {
-                position: static !important;
-                transform: none !important;
+                font-size: clamp(1.75rem, min(0.5rem + 6.5vw, 9vh), 3em);
             }
         }
 
-        /* Phones: three cards side by side don't fit (each .btn has a 130px
-           min-width), so stack them. */
+        /* Phones: three cards side by side don't fit, so stack them. */
         @media (max-width: 599.98px) {
             .button-container {
                 flex-direction: column;
                 align-items: center;
+                gap: 0.75rem;
                 width: 100%;
             }
 
-            .button-container .btn {
+            .button-container .option {
                 width: min(100%, 20rem);
-                min-width: 0;
                 height: clamp(6.5rem, 17vh, 10rem);
-                margin: 0.5rem 0;
+                padding: 12px;
+            }
+
+            .button-container .option.active,
+            .button-container .option.active:hover {
+                padding: 9px;
             }
 
             .sub {
-                width: min(100%, 20rem) !important;
-                margin-top: 0.5rem;
+                width: min(100%, 20rem);
+                margin-top: 1rem;
             }
         }
     </style>
@@ -296,8 +268,5 @@
 
     </script>
 </body>
-<footer
-    style="text-align: center; font-family: Karla; padding: 5px; background-color: #466eb6; color: #fff; position: absolute; top: 100vh; transform: translateY(-100%); width: 100%;">
-    Incentive Health Technologies, LLC</footer>
 
 </html>
