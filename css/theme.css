@@ -19,7 +19,7 @@
  * The components, their markup and the patient type-size floors are written up in
  * COMPONENTS.md, which travels with the rollout notes.
  */
-@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5..125,700..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&display=swap");
 
 /* ---------- 1. Tokens ---------- */
 
@@ -101,8 +101,9 @@ body.iht a:hover {
   color: var(--iht-blue-deep);
 }
 
-/* Focus: a 3px ring for keyboard focus, never removed. */
-body.iht :focus {
+/* Focus: a 3px ring for keyboard focus, never removed. Only focus the browser wouldn't mark
+   (a mouse click) loses its outline; a browser without :focus-visible keeps its own. */
+body.iht :focus:not(:focus-visible) {
   outline: none;
 }
 
@@ -544,6 +545,8 @@ body.iht .iht-btn--onblue:hover {
 
 .iht-hero__text {
   padding-bottom: clamp(3rem, 7vw, 5.5rem);
+  /* Its width sizes the title (cqi, below). */
+  container-type: inline-size;
 }
 
 /* The one bold thing: the instrument face, wide and heavy. */
@@ -557,6 +560,13 @@ body.iht .iht-btn--onblue:hover {
   font-size: min(clamp(2.625rem, 1.2rem + 4.6vw, 4.75rem), 14vw);
   line-height: 0.98;
   letter-spacing: -0.015em;
+}
+
+/* The hero's title is also capped by its column, so "Pro-Active" (6.37em wide) stays on one
+   line and the title takes two lines, as before. Browsers without container units keep the
+   size above. */
+.iht-hero__text .iht-display {
+  font-size: min(clamp(2.625rem, 1.2rem + 4.6vw, 4.75rem), 14vw, 100cqi / 6.4);
 }
 
 .iht-lede {
@@ -686,20 +696,28 @@ body.iht .iht-btn--onblue:hover {
   padding-top: clamp(1.5rem, 4vw, 3rem);
 }
 
+/* The photo beside the text, or above it when the text would get less than 10rem: the longest
+   name ("Christopher", 8.7rem) then never breaks, whatever the default font. */
 .iht-person {
-  display: grid;
-  grid-template-columns: 6.5rem minmax(0, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
-  align-items: start;
+  align-items: flex-start;
   padding: 2rem 0;
   border-bottom: 2px solid var(--iht-mist);
 }
 
 .iht-person img {
+  flex: none;
   width: 6.5rem;
   height: 6.5rem;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.iht-person > div {
+  flex: 1 1 10rem;
+  min-width: 0;
 }
 
 .iht-person h3 {
@@ -746,7 +764,10 @@ body.iht .iht-footer a:hover {
   color: var(--iht-mist);
 }
 
-@media (max-width: 991.98px) {
+/* The page blocks switch at em widths: 992px and 768px at the default font, wider with a larger
+   one, so a larger font gets one column instead of narrow ones. (Media-query em follow the
+   browser's default font size.) The header keeps its px breakpoint, which menu.js shares. */
+@media (max-width: 61.99875em) {
   .iht-hero__grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
@@ -776,19 +797,23 @@ body.iht .iht-footer a:hover {
   }
 }
 
-@media (max-width: 767.98px) {
-  .iht-spec {
-    margin-inline: calc(-1 * var(--iht-gutter) / 2);
-  }
-
+@media (max-width: 47.99875em) {
   .iht-spec__row {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.5rem;
-    padding: 1.375rem 1.25rem;
+    /* Capped by the width, like the term, so the longest word ("Deterministic", 7.2em) fits a
+       phone with a 32px default font. */
+    padding: 1.375rem min(1.25rem, 5.6vw);
   }
 
   .iht-spec dt {
-    font-size: 1.25rem;
+    font-size: min(1.25rem, 11vw);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .iht-spec {
+    margin-inline: calc(-1 * var(--iht-gutter) / 2);
   }
 
   .iht-footer__inner {
@@ -800,7 +825,6 @@ body.iht .iht-footer a:hover {
    the text. */
 @media (max-width: 479.98px) {
   .iht-person {
-    grid-template-columns: min(4.5rem, 20vw) minmax(0, 1fr);
     gap: min(1rem, 4vw);
   }
 
@@ -823,6 +847,16 @@ body.iht--patient {
   background: #fff;
 }
 
+/* main.css starts with "* { font-family: Rubik; }", which stops every element inheriting its
+   font, and Rubik is no longer loaded, so anything the theme doesn't name (a link, a span, a
+   label) would fall back to a serif. This puts inheritance back. :where() keeps it at zero
+   specificity, like main.css's rule, so it only replaces that one; any class rule, such as an
+   icon font's, still wins. main.css's other font-family rules name classes, so a page that uses
+   those classes overrides them itself. */
+:where(body.iht--patient) * {
+  font-family: inherit;
+}
+
 /* The question: the reading face, heavy, in Ink. Its size comes from renderQuestion()
    (2em, or 1.8em on PHQ-9) of #questionnaire-form, whose size each page sets. */
 .iht--patient #question p {
@@ -833,6 +867,14 @@ body.iht--patient {
   line-height: 1.2;
   letter-spacing: -0.005em;
   text-wrap: balance;
+}
+
+/* PHQ-9's crisis note under question 9 is body text, not part of the question: drawn like the
+   end screen's #crisisHelp. Its size, line height, padding and margins stay in the page. */
+.iht--patient #question p.crisis {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-wrap: wrap;
 }
 
 .iht--patient #questionnaire-form {
@@ -1000,30 +1042,46 @@ body.iht--patient {
   }
 }
 
+/* "Remember:" is 5em, as on master: 80px on desktop at the default font, and more with a larger
+   one. It can't wrap, so the cut changes instead. "Remember:" is 7.04em wide in Archivo's
+   Expanded cut (125%), 5.71em in the normal cut (100%) and 5.07em at 87.5%. */
 .iht--patient #end .content h1 {
   margin: 0 0 0.2em;
   color: var(--iht-ink);
   font-family: var(--iht-display);
-  font-stretch: 125%;
+  font-stretch: 100%;
   font-weight: 800;
-  /* 5em (80px); capped by the window, so the one word always fits its 75vw column. */
-  font-size: min(5em, 10vw);
+  font-size: 5em;
   line-height: 1;
   letter-spacing: -0.015em;
   white-space: nowrap;
 }
 
-/* Narrower windows: the same size in the face's normal width, which is 20% narrower. */
-@media (max-width: 991.98px) {
+/* From 768px: the normal cut. With a larger default font it can be wider than its column; it
+   may then run into the right margin, as master's did, but it stops short of the window's edge:
+   the room from the column's left edge (50vw - --iht-end-col / 2 + 0.75rem) to 1rem from the
+   window's right edge, less 10px for a scrollbar. */
+@media (min-width: 768px) {
   .iht--patient #end .content h1 {
-    font-stretch: 100%;
-    font-size: min(5em, 12.5vw);
+    font-size: min(5em, (50vw + var(--iht-end-col) / 2 - 1.75rem - 10px) / 5.8);
   }
 }
 
-@media (max-width: 767.98px) {
+/* A very large default font in a window this narrow (24px up to 864px wide, 32px up to
+   1152px): the 87.5% cut, which keeps 5em on screen. */
+@media (min-width: 768px) and (max-width: 36em) {
   .iht--patient #end .content h1 {
-    font-size: 5em;
+    font-stretch: 87.5%;
+    font-size: min(5em, (50vw + var(--iht-end-col) / 2 - 1.75rem - 10px) / 5.15);
+  }
+}
+
+/* The Expanded cut wherever 5em of it fits the column: every desktop window at the default
+   font, and wide ones with a larger font. */
+@media (min-width: 992px) and (min-width: 48.5em) {
+  .iht--patient #end .content h1 {
+    font-stretch: 125%;
+    font-size: min(5em, (var(--iht-end-col) - 0.75rem) / 7.1);
   }
 }
 
@@ -1056,6 +1114,7 @@ body.iht--patient {
   font-weight: 400;
   font-size: 2.9em;
   line-height: 1.2;
+  text-wrap: pretty;
 }
 
 .iht--patient #end .content ul h2:last-child {
@@ -1234,10 +1293,13 @@ body.iht--patient .crisis a {
     scroll-behavior: auto;
   }
 
+  /* A zero duration and delay start no transition at all. (Even 0.01ms would: then the menu's
+     close button is still "visibility: hidden" when menu.js focuses it, and focus stays behind
+     on the menu button.) */
   body.iht *,
   body.iht *::before,
   body.iht *::after {
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
     transition-delay: 0s !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

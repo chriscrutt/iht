@@ -158,7 +158,11 @@
       --back-bottom: 5vh;   /* Go Back's distance from the foot of the quiz (the window's bottom when a screen fits) */
       --back-height: var(--iht-back-h);  /* Go Back's height (theme.css) */
       --room-top: calc(var(--iht-header-h) - 10px);  /* the header, less the 10px of padding above each question */
-      --room-bottom: calc(var(--back-bottom) + var(--back-height));
+      /* Go Back, and a gap above it for a screen that scrolls. Both empty items grow by the gap,
+         so a screen that fits stays where it was, unless the gap makes it too tall: 0.3rem
+         (4.8px) is as much as the 1366x768 video screen has to spare. Smaller windows get 12px
+         (below). */
+      --room-bottom: calc(var(--back-bottom) + var(--back-height) + 0.3rem);
       --room: max(var(--room-top), var(--room-bottom));
     }
 
@@ -238,6 +242,12 @@
     }
 
     @media (min-width: 992px) {
+      /* Yes and No stay side by side, as before. With a large default font the pair can be
+         wider than the form; it stays centred, inside the window. */
+      .testFhir #choices {
+        flex-wrap: nowrap;
+      }
+
       /* 225px down, as before, but higher when the screen is short. */
       #end > .container::before {
         flex: 1 0 0;
