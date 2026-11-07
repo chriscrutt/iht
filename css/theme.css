@@ -101,6 +101,19 @@ body.iht *::after {
   box-sizing: border-box;
 }
 
+/* The dialog libraries draw their icons in content-box sizing. Keep it, or the rings and ticks
+   fall out of line: sweetalert's on the gift-card page, SweetAlert2's "Downloaded!". */
+body.iht .swal-icon,
+body.iht .swal-icon *,
+body.iht .swal-icon::before,
+body.iht .swal-icon::after,
+body.iht .swal2-icon,
+body.iht .swal2-icon *,
+body.iht .swal2-icon::before,
+body.iht .swal2-icon::after {
+  box-sizing: content-box;
+}
+
 body.iht img {
   max-width: 100%;
   height: auto;

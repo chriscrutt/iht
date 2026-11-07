@@ -187,15 +187,6 @@
             animation: none;
         }
 
-        /* sweetalert draws its icons in content-box sizing; theme.css makes everything
-           border-box, which would pull the tick's two strokes out of line. */
-        .iht--patient .swal-icon,
-        .iht--patient .swal-icon *,
-        .iht--patient .swal-icon::before,
-        .iht--patient .swal-icon::after {
-            box-sizing: content-box;
-        }
-
         /* Their one button, OK, is a pill, not a circle. */
         .iht--patient .swal-button--confirm {
             min-width: min(7rem, 140px);
