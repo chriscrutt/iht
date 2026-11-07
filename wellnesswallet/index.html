@@ -97,7 +97,7 @@
       --ww-one-line: calc((min(100vw, var(--iht-max)) - 2 * var(--iht-gutter)) / 22.8);
       grid-area: slogan;
       margin: 0 0 3vh;
-      color: var(--iht-blue);
+      color: var(--iht-ink);
       font-family: var(--iht-display);
       font-stretch: 100%;
       font-weight: 700;
@@ -130,6 +130,23 @@
       font-size: 10vh;
       line-height: 1.05;
       letter-spacing: -0.015em;
+    }
+
+    /* The hero title's Expanded cut (125%), as on home and team, wherever the window is 3:2 or
+       wider: every desktop size. "Christopher!" sets the text column's width, so on squarer
+       windows the wide cut would squeeze the picture; there it's Semi-expanded (112.5%) from
+       5:4, as at 1024x768, and the normal cut below that, as at 1100x1000. The size doesn't
+       change. */
+    @media (min-aspect-ratio: 5/4) {
+      #greeting {
+        font-stretch: 112.5%;
+      }
+    }
+
+    @media (min-aspect-ratio: 3/2) {
+      #greeting {
+        font-stretch: 125%;
+      }
     }
 
     .ww-lede {
@@ -200,8 +217,10 @@
       }
 
       /* "Christopher!" can't wrap, so the width caps the size even when the browser's default
-         font size is larger than usual. It's 6.1em wide, so 13vw always fits. */
+         font size is larger than usual. In the normal cut it's 6.1em wide, so 13vw always fits;
+         the wider cuts wouldn't at master's size. */
       #greeting {
+        font-stretch: 100%;
         font-size: min(clamp(2.5rem, 12vw, 10vh), 13vw);
         line-height: 1.1;
       }
