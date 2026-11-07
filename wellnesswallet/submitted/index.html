@@ -204,9 +204,9 @@
         /* "Submitted!" can't wrap, so on a very tall window its title (7vh, theme.css) is capped
            by the dialog's width: 478px, or the window less 20px. It's 5.15em wide. The cap is
            for the success dialog only (its tick comes just before the title); "Oops!" fits
-           and keeps the full size. */
+           and keeps the full size. theme.css applies it, with its own caps. */
         .iht--patient .swal-icon--success ~ .swal-title {
-            font-size: min(max(7vh, 1.75rem), (min(100vw - 20px, 478px) - 12px) / 5.3);
+            --iht-swal-title-max: calc((min(100vw - 20px, 478px) - 12px) / 5.3);
         }
 
         /* Phones, tablets and zoomed-in laptops. The desktop sizes don't match this. */

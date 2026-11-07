@@ -1238,9 +1238,13 @@ body.iht .iht-footer--slim a {
   text-decoration: underline;
 }
 
-/* The "Resume Video?" prompt (sweetalert 1). Resume Video (its cancel button) is green, the
-   reward; Move On is blue. The type follows the window's height, as before, but never gets
-   smaller than it was on small windows. */
+/* The dialogs (sweetalert 1): "Resume Video?" on the quizzes, and "Oops!" and "Submitted!" on
+   the gift-card page. Resume Video (the cancel button) is green, the reward; Move On and OK
+   are blue. The type follows the window's height, as before, but never gets smaller than it
+   was on small windows, except on a short window with a large default font: there the height
+   caps it too (12vh and 8vh), so the dialog still fits. That only happens below 467px tall
+   with a 32px font, or 350px with 24px. A page caps a title that can't wrap by setting
+   --iht-swal-title-max. */
 .iht--patient .swal-modal {
   border-radius: var(--iht-radius-band);
   font-family: var(--iht-text);
@@ -1250,14 +1254,14 @@ body.iht .iht-footer--slim a {
   color: var(--iht-ink);
   font-family: var(--iht-text);
   font-weight: 700;
-  font-size: max(7vh, 1.75rem);
+  font-size: min(max(7vh, 1.75rem), 12vh, var(--iht-swal-title-max, 100vw));
   line-height: 1.15;
 }
 
 .iht--patient .swal-text {
   color: var(--iht-ink);
   font-family: var(--iht-text);
-  font-size: max(3vh, 1rem);
+  font-size: min(max(3vh, 1rem), 8vh);
   line-height: 1.3;
   text-align: center;
 }
@@ -1301,6 +1305,40 @@ body.iht .iht-footer--slim a {
   .iht--patient .swal-button--danger:not([disabled]):hover,
   .iht--patient .swal-button--confirm:not([disabled]):hover {
     background-color: var(--iht-blue-deep);
+  }
+}
+
+/* A short window, such as a phone on its side: the dialog tightens its spacing and shrinks its
+   icon, so all of it, buttons included, fits the window without scrolling. */
+@media (max-height: 499.98px) {
+  .iht--patient .swal-modal {
+    margin-block: 8px;
+  }
+
+  .iht--patient .swal-icon {
+    zoom: 0.6;
+  }
+
+  .iht--patient .swal-title {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .iht--patient .swal-title:first-child {
+    margin-top: 12px;
+  }
+
+  .iht--patient .swal-title:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  .iht--patient .swal-footer {
+    margin-top: 0;
+    padding-block: 8px;
+  }
+
+  .iht--patient .swal-button-container {
+    margin-block: 0;
   }
 }
 
