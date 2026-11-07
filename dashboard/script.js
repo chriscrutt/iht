@@ -538,18 +538,7 @@ function phq9PatientList() {
     });
 
     // Display the table in SweetAlert2 modal
-    Swal.fire({
-        title: "Patient List",
-        html: tableWrapper, // Use the table wrapper with sortable features
-        showCancelButton: true,
-        confirmButtonText: "Download",
-        // Themed in style.css: Download is IHT Blue, Cancel is outlined.
-        customClass: { popup: "dash-list" },
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire("Downloaded!", "Your file has been downloaded.", "success");
-        }
-    });
+    showPatientList(tableWrapper);
 }
 
 function breastCancerPatientList() {
@@ -860,18 +849,7 @@ function breastCancerPatientList() {
     });
 
     // Display the table in SweetAlert2 modal
-    Swal.fire({
-        title: "Patient List",
-        html: tableWrapper, // Use the table wrapper with sortable features
-        showCancelButton: true,
-        confirmButtonText: "Download",
-        // Themed in style.css: Download is IHT Blue, Cancel is outlined.
-        customClass: { popup: "dash-list" },
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire("Downloaded!", "Your file has been downloaded.", "success");
-        }
-    });
+    showPatientList(tableWrapper);
 }
 
 function fallPatientList() {
@@ -1211,6 +1189,16 @@ function fallPatientList() {
     });
 
     // Display the table in SweetAlert2 modal
+    showPatientList(tableWrapper);
+}
+
+// ---------- The Patient List dialog ----------
+// One dialog for all three lists. The table scrolls inside it (style.css), so its box takes
+// focus as well: Tab reaches it, and the arrow keys and Page Up/Down scroll it. Screen readers
+// name it by the dialog's title. While more columns are off to the right, the box's right edge
+// fades (dash-list--more).
+function showPatientList(tableWrapper) {
+    var observer = null;
     Swal.fire({
         title: "Patient List",
         html: tableWrapper, // Use the table wrapper with sortable features
@@ -1218,6 +1206,31 @@ function fallPatientList() {
         confirmButtonText: "Download",
         // Themed in style.css: Download is IHT Blue, Cancel is outlined.
         customClass: { popup: "dash-list" },
+        didOpen: function (popup) {
+            var box = Swal.getHtmlContainer();
+            box.tabIndex = 0;
+            box.setAttribute("role", "region");
+            box.setAttribute("aria-labelledby", Swal.getTitle().id);
+            var update = function () {
+                // The fade stops short of the scrollbars, where a system draws them.
+                popup.style.setProperty("--dash-scrollbar-w", box.offsetWidth - box.clientWidth + "px");
+                popup.style.setProperty("--dash-scrollbar-h", box.offsetHeight - box.clientHeight + "px");
+                popup.classList.toggle("dash-list--more",
+                    box.scrollLeft + box.clientWidth < box.scrollWidth - 1);
+            };
+            box.addEventListener("scroll", update, { passive: true });
+            if (window.ResizeObserver) {
+                observer = new ResizeObserver(update);
+                observer.observe(box);
+                observer.observe(box.querySelector("table"));
+            }
+            update();
+        },
+        willClose: function () {
+            if (observer) {
+                observer.disconnect();
+            }
+        },
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire("Downloaded!", "Your file has been downloaded.", "success");
