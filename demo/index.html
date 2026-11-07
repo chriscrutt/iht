@@ -84,18 +84,21 @@
        is the quiz's own layout. */
 
     #questionnaire-form {
-      width: 35vw;
+      width: 40vw;
       height: 35vh;
-      /* The question is 1.25em of this (main.css), and so are the answers (below). */
       font-size: 2em;
       /* No card: main.css's shadow goes, as the theme has no shadows on the page. */
       box-shadow: none;
     }
 
-    /* The answers are the question's size. (theme.css's default, 2em of the form, is the fall
-       quiz's, whose question is 2em too.) */
+    /* The question and the answers are the fall quiz's size, 2em of the form (64px), wherever
+       the window is wide enough; on phones they keep master's 1.25em (40px). */
+    #question p {
+      font-size: max(1.25em, min(2em, 9vw));
+    }
+
     #choices {
-      --iht-answer-size: 1.25em;
+      --iht-answer-size: max(1.25em, min(2em, 9vw));
     }
 
     .testFhir {
@@ -180,16 +183,15 @@
         max-width: none;
       }
 
-      /* At least 32rem wide, but within the screen. */
+      /* At least 32rem wide, but within the screen, as on the fall quiz. */
       #questionnaire-form {
-        width: min(max(35vw, 32rem), 100vw - min(3rem, 48px));
+        width: min(max(40vw, 32rem), 100vw - min(3rem, 48px));
       }
 
-      /* The question keeps its size (2.5rem, as before) and wraps. The answers are 40px at the
-         default font; with a larger one they grow only as far as Yes and No still fit side by
-         side on a phone. */
+      /* The question wraps. On phones the answers are 40px at the default font; with a larger
+         one they grow only as far as Yes and No still fit side by side. */
       #choices {
-        --iht-answer-size: min(1.25em, max(40px, 13.75vw));
+        --iht-answer-size: max(min(1.25em, max(40px, 13.75vw)), min(2em, 9vw));
       }
 
       /* The gap between them is capped by the width too (theme.css's at the default font). */
