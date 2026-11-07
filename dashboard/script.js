@@ -1393,3 +1393,18 @@ function drawFallChart() {
 drawPHQ9Chart();
 drawBreastCancerChart();
 drawFallChart();
+
+// ---------- Focus and the sticky bar ----------
+// The bar covers the top of the window. style.css's scroll-margin keeps a control that takes
+// focus clear of it whenever the browser scrolls to the control. Firefox doesn't scroll to one
+// that is already inside the window, though, even when the bar covers part of it (a tab two
+// lines tall, with a large default font on a phone), so that one is moved down here.
+document.querySelector(".dash").addEventListener("focusin", function (event) {
+    requestAnimationFrame(function () {
+        var bar = document.querySelector(".iht-header").getBoundingClientRect().bottom;
+        var top = event.target.getBoundingClientRect().top;
+        if (top < bar) {
+            window.scrollBy({ top: top - bar - 8, behavior: "instant" });
+        }
+    });
+});
