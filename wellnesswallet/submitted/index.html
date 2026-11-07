@@ -141,9 +141,13 @@
             background: var(--iht-blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 70% no-repeat;
         }
 
-        /* Go on: the filled blue pill (theme.css), at master's 2em and 25vw. */
+        /* Go on: the filled blue pill (theme.css), at master's 2em, and at least master's 25vw.
+           It grows to fit its label, so with a larger default font "Submit" never runs past the
+           pill (it did on master, white on the white page). */
         .sub {
-            width: 25vw;
+            width: auto;
+            min-width: 25vw;
+            max-width: 100%;
             min-height: max(3.5rem, 7vh);
             margin-top: 3vh;
             padding: 0.25em 1em;
@@ -197,9 +201,11 @@
             min-width: min(7rem, 140px);
         }
 
-        /* "Submitted!" can't wrap, so on a very tall window the title (7vh, theme.css) is capped
-           by the dialog's width: 478px, or the window less 20px. It's 5.15em wide. */
-        .iht--patient .swal-title {
+        /* "Submitted!" can't wrap, so on a very tall window its title (7vh, theme.css) is capped
+           by the dialog's width: 478px, or the window less 20px. It's 5.15em wide. The cap is
+           for the success dialog only (its tick comes just before the title); "Oops!" fits
+           and keeps the full size. */
+        .iht--patient .swal-icon--success ~ .swal-title {
             font-size: min(max(7vh, 1.75rem), (min(100vw - 20px, 478px) - 12px) / 5.3);
         }
 
