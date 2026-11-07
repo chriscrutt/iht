@@ -1238,6 +1238,10 @@ function showPatientList(tableWrapper) {
     });
 }
 
+// The charts and the focus handling below keep their names to themselves (no globals); only
+// the functions the page's onclick attributes call, and showPatientList, are global.
+(function () {
+
 // ---------- Charts ----------
 // Colours from the shared theme (../css/theme.css). Severity runs pale to dark blue, less to
 // more severe. The group counted as "Actionable" is Follow-up red, the same red as the key
@@ -1395,11 +1399,20 @@ drawBreastCancerChart();
 drawFallChart();
 
 // ---------- Focus and the sticky bar ----------
-// The bar covers the top of the window. style.css's scroll-margin keeps a control that takes
+// The bar covers the top of the window. theme.css's scroll-margin keeps a control that takes
 // focus clear of it whenever the browser scrolls to the control. Firefox doesn't scroll to one
 // that is already inside the window, though, even when the bar covers part of it (a tab two
 // lines tall, with a large default font on a phone), so that one is moved down here.
 document.querySelector(".dash").addEventListener("focusin", function (event) {
+    // Keyboard focus only. A mouse press focuses a tab or button too, and scrolling before the
+    // button is released would move the control out from under the pointer and lose the click.
+    try {
+        if (!event.target.matches(":focus-visible")) {
+            return;
+        }
+    } catch (e) {
+        // No :focus-visible: keep the correction for every focus.
+    }
     requestAnimationFrame(function () {
         var bar = document.querySelector(".iht-header").getBoundingClientRect().bottom;
         var top = event.target.getBoundingClientRect().top;
@@ -1408,3 +1421,5 @@ document.querySelector(".dash").addEventListener("focusin", function (event) {
         }
     });
 });
+
+})();
