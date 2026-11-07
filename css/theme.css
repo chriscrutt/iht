@@ -5,8 +5,8 @@
  *   css/theme.css         the home page
  *   ../css/theme.css      team/, demo/, dashboard/ and wellnesswallet/
  *   ../../css/theme.css   the Wellness Wallet subpages
- * Pages that still load template CSS (bootstrap.css, wellnesswallet/css/main.css) load this
- * after it.
+ * The patient pages still load the template's bootstrap.css and main.css, and load this
+ * after them.
  *
  * Nothing here applies until a page opts in:
  *   <body class="iht">                 site pages (home, team, dashboard)
@@ -16,8 +16,8 @@
  * Colour is vocabulary: blue is IHT and "go on", red means a person needs follow-up, green
  * means a reward or done. Nothing else is coloured.
  *
- * The components, their markup and the patient type-size floors are written up in
- * COMPONENTS.md, which travels with the rollout notes.
+ * Sections: 1 tokens, 2 base, 3 header, 4 buttons, 5 site pages and the footer, 6 patient
+ * pages, 7 motion. Page-specific CSS stays in each page (see .claude/CLAUDE.md).
  */
 @import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5..125,700..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&display=swap");
 
@@ -66,6 +66,22 @@ body.iht {
   }
 }
 
+/* Patient pages. */
+body.iht--patient {
+  /* Go Back's height. The quizzes' --back-height reads it. Capped, so a larger default font
+     doesn't turn it into a wall at the bottom of a phone. */
+  --iht-back-h: min(3.5rem, 72px);
+  /* The end screen's text column: the quizzes' 75vw, capped by Bootstrap's .container (720px
+     below 992px, 1320px at most). Go Back lines up under Finish with it (section 6). */
+  --iht-end-col: min(75vw, 1320px);
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  body.iht--patient {
+    --iht-end-col: min(75vw, 720px);
+  }
+}
+
 /* ---------- 2. Base ---------- */
 
 body.iht {
@@ -107,8 +123,7 @@ body.iht :focus:not(:focus-visible) {
   outline: none;
 }
 
-body.iht :focus-visible,
-body.iht .btn:focus-visible {
+body.iht :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
   box-shadow: none;
@@ -128,7 +143,6 @@ body.iht main[tabindex="-1"]:focus-visible {
   padding: 0.625rem 1rem;
   border-radius: var(--iht-radius-control);
   background: #fff;
-  color: var(--iht-ink);
   font-weight: 700;
   text-decoration: none;
   transform: translateY(-200%);
@@ -184,10 +198,8 @@ body.iht .iht-skip:focus-visible {
   min-height: 44px;
   margin: 0;
   border-radius: var(--iht-radius-control);
-  color: #fff;
   line-height: 1;
   white-space: nowrap;
-  text-decoration: none;
 }
 
 body.iht .iht-brand,
@@ -526,7 +538,12 @@ body.iht .iht-btn--onblue:hover {
   color: var(--iht-ink);
 }
 
-/* ---------- 5. Site pages: home and team ---------- */
+/* Patient actions are pills: Get Started on the start page, Submit on the gift-card page. */
+body.iht .iht-btn--pill {
+  border-radius: 999px;
+}
+
+/* ---------- 5. Site pages: home and team, and the footer ---------- */
 
 /* The blue hero band (home) and title band (team). */
 .iht-hero {
@@ -739,7 +756,9 @@ body.iht .iht-btn--onblue:hover {
   overflow-wrap: break-word;
 }
 
-/* Footer: the company name on Ink, and the illustration credit on pages that use them. */
+/* Footer: the company name on Ink, and the illustration credit on pages that use them. Home,
+   team and the dashboard use it as it is; the start page and the gift-card page use the slim
+   version (section 6). */
 .iht-footer {
   --focus: #fff;
   padding: 1.5rem 0;
@@ -835,17 +854,10 @@ body.iht .iht-footer a:hover {
 }
 
 /* ---------- 6. Patient pages (Wellness Wallet, demo/) ----------
-   These pages keep bootstrap.css and wellnesswallet/css/main.css underneath, and each keeps
-   its own layout maths at the end of its <style> block. This section is the look and the type
-   sizes shared by both quizzes. Large print: no size here is below what the pages showed
-   before (see COMPONENTS.md for the measured floors). */
-
-body.iht--patient {
-  /* Go Back's height. The quizzes' --back-height reads it. Capped, so a larger default font
-     doesn't turn it into a wall at the bottom of a phone. */
-  --iht-back-h: min(3.5rem, 72px);
-  background: #fff;
-}
+   These pages keep Bootstrap and the template's main.css underneath, and each keeps its own
+   layout maths at the end of its <style> block. This section is the look and the type sizes
+   they share. Large print: no size here is below what the pages showed before at the default
+   font. */
 
 /* main.css starts with "* { font-family: Rubik; }", which stops every element inheriting its
    font, and Rubik is no longer loaded, so anything the theme doesn't name (a link, a span, a
@@ -966,19 +978,8 @@ body.iht--patient .btn {
 }
 
 /* From 768px up the end screen's text is a left-aligned column, so there Go Back lines up
-   under Finish instead of sitting alone in the middle. --iht-end-col is that column's width:
-   the quizzes' 75vw, capped by Bootstrap's .container (720px below 992px, 1320px at most).
-   (goToEnd() shows #end with style="display: block".) */
-body.iht--patient {
-  --iht-end-col: min(75vw, 1320px);
-}
-
-@media (min-width: 768px) and (max-width: 991.98px) {
-  body.iht--patient {
-    --iht-end-col: min(75vw, 720px);
-  }
-}
-
+   under Finish instead of sitting alone in the middle. --iht-end-col (section 1) is that
+   column's width. (goToEnd() shows #end with style="display: block".) */
 @media (min-width: 768px) {
   .iht--patient .testFhir:has(> #end[style*="display: block"]) #prevAnswer {
     left: calc(50% - var(--iht-end-col) / 2 + 12px);
@@ -1218,6 +1219,25 @@ body.iht--patient .crisis a {
   white-space: nowrap;
 }
 
+/* The start page's and the gift-card page's footer: the site footer's Ink band (section 5),
+   slim, as on the quizzes. Its size is capped like theirs, so a larger default font doesn't
+   make it a wall. */
+.iht-footer.iht-footer--slim {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 1.5em;
+  padding: 0.35em 1rem;
+  font-size: min(1rem, 20px, 4.6vw);
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* main.css takes the underline off every link; the credit keeps it. */
+body.iht .iht-footer--slim a {
+  text-decoration: underline;
+}
+
 /* The "Resume Video?" prompt (sweetalert 1). Resume Video (its cancel button) is green, the
    reward; Move On is blue. The type follows the window's height, as before, but never gets
    smaller than it was on small windows. */
@@ -1313,42 +1333,3 @@ body.iht--patient .crisis a {
     scroll-behavior: auto !important;
   }
 }
-
-/* ---------- 8. Stage 2 ----------
-   One block per page group, so the later edits merge without conflicts. Keep each group's
-   rules between its own markers. */
-
-/* === stage 2: dashboard (start) === */
-
-/* === stage 2: dashboard (end) === */
-
-/* === stage 2: PHQ-9 and demo (start) === */
-
-/* === stage 2: PHQ-9 and demo (end) === */
-
-/* === stage 2: start page and submitted (start) === */
-
-/* Patient actions are pills: Get Started on the start page, Submit on the gift-card page. */
-body.iht .iht-btn--pill {
-  border-radius: 999px;
-}
-
-/* The start page's and the gift-card page's footer: the Ink band, slim, as on the quizzes. Its
-   size is capped like theirs, so a larger default font doesn't make it a wall. */
-.iht-footer.iht-footer--slim {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0 1.5em;
-  padding: 0.35em 1rem;
-  font-size: min(1rem, 20px, 4.6vw);
-  line-height: 1.4;
-  text-align: center;
-}
-
-/* main.css takes the underline off every link; the credit keeps it. */
-body.iht .iht-footer--slim a {
-  text-decoration: underline;
-}
-
-/* === stage 2: start page and submitted (end) === */
