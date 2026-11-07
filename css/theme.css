@@ -857,6 +857,13 @@ body.iht--patient {
   font-family: inherit;
 }
 
+/* main.css also gives .btn "transition: all 0.4s", so the keyboard focus ring slid in from
+   white and reached its colour and offset only after 0.4s. A button here fades only its
+   colours; the answers and Go Back also fade in and out (their own rules, below). */
+body.iht--patient .btn {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
 /* The question: the reading face, heavy, in Ink. Its size comes from renderQuestion()
    (2em, or 1.8em on PHQ-9) of #questionnaire-form, whose size each page sets. */
 .iht--patient #question p {
