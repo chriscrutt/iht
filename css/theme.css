@@ -193,6 +193,13 @@ body.iht .iht-skip:focus-visible {
   top: 0;
 }
 
+/* The sticky bar covers the top of the window, so wherever the browser scrolls a control into
+   view (Tab, Shift+Tab, the skip link), it stops clear of the bar instead of under it. The
+   header's own links stay in the bar and need none. */
+body.iht:not(.iht--patient) :is(a, button, [tabindex]):not(.iht-header *) {
+  scroll-margin-top: calc(var(--iht-header-h) + 0.5rem);
+}
+
 .iht-header__inner {
   display: flex;
   align-items: center;

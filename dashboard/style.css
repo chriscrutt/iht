@@ -16,14 +16,6 @@ body.iht {
     flex: 1 0 auto;
 }
 
-/* The bar stays at the top of the window, so a control that takes focus, and the skip link's
-   target, stop clear of it rather than under it. */
-body.iht .dash,
-body.iht .dash a,
-body.iht .dash button {
-    scroll-margin-top: calc(var(--iht-header-h) + 0.5rem);
-}
-
 /* script.js shows one set of sub-tabs and one panel at a time. */
 .hidden {
     display: none !important;
