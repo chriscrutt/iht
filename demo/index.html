@@ -309,6 +309,8 @@
 
     // render a question
     function renderQuestion() {
+      // A screen can be taller than a small window, so show each new one from the top.
+      window.scrollTo(0, 0);
       let q = questions[runningQuestion];
       question.innerHTML = "<p>" + q.question + "</p>";
       choiceA.innerHTML = q.choiceA;
@@ -330,6 +332,7 @@
     }
 
     function func() {
+      window.scrollTo(0, 0);
       document.getElementById("questionnaire-form").style.display = "none";
       document.getElementById("video").style.display = "block";
 
