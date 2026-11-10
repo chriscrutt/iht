@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>IHT.tools</title>
+    <title>Choose Your Gift Card | Wellness Wallet</title>
     <link rel="shortcut icon" href="../image/favicon.png" type="image/x-icon">
     <!-- Bootstrap , fonts & icons  -->
     <link rel="stylesheet" href="../css/bootstrap.css">
@@ -34,19 +34,21 @@
             <h1 class="iht-brand"><span class="iht-wordmark">IHT</span> <span class="iht-brand__app">Wellness Wallet</span></h1>
         </div>
     </header>
-    <div class="bods">
-        <h2>Please select your $10 reward gift card</h2>
-        <div class="button-container">
-            <button class="option" style="background-image: url('../image/walgreens.png');"
-                data-code="walgreens"></button>
-            <button class="option" style="background-image: url('../image/riteAid.png');"
-                data-code="riteAid"></button>
-            <button class="option" style="background-image: url('../image/target.png');"
-                data-code="target"></button>
+    <main class="bods">
+        <h2 id="cardsHeading">Please select your $10 reward gift card</h2>
+        <!-- The logos are background pictures, so each card is named by aria-label, and
+             aria-pressed says which one is chosen. -->
+        <div class="button-container" role="group" aria-labelledby="cardsHeading">
+            <button type="button" class="option" style="background-image: url('../image/walgreens.png');"
+                data-code="walgreens" aria-label="Walgreens" aria-pressed="false"></button>
+            <button type="button" class="option" style="background-image: url('../image/riteAid.png');"
+                data-code="riteAid" aria-label="Rite Aid" aria-pressed="false"></button>
+            <button type="button" class="option" style="background-image: url('../image/target.png');"
+                data-code="target" aria-label="Target" aria-pressed="false"></button>
 
         </div>
-        <button onclick="finish()" class="iht-btn iht-btn--primary iht-btn--pill sub">Submit</button>
-    </div>
+        <button type="button" onclick="finish()" class="iht-btn iht-btn--primary iht-btn--pill sub">Submit</button>
+    </main>
     <footer class="iht-footer iht-footer--slim">
         <span>Incentive Health Technologies, LLC</span>
     </footer>
@@ -117,7 +119,7 @@
         /* A mouse over a card only darkens its ring; it never looks chosen. */
         @media (hover: hover) {
             .button-container .option:hover {
-                border-color: var(--iht-ink);
+                border-color: var(--iht-blue-deep);
             }
         }
 
@@ -253,19 +255,54 @@
         $(document).ready(function () {
             $('.option').click(function () {
                 // Remove 'active' class from all buttons
-                $('.option').removeClass('active');
+                $('.option').removeClass('active').attr('aria-pressed', 'false');
                 // Add 'active' class to the clicked button
-                $(this).addClass('active');
+                $(this).addClass('active').attr('aria-pressed', 'true');
             });
         });
+
+        // sweetalert's dialog has no accessible name: this gives it its title, and its text as
+        // the description. Call it straight after swal(), which builds the dialog at once.
+        function nameDialog() {
+            var modal = document.querySelector(".swal-modal");
+            var title = modal && modal.querySelector(".swal-title");
+            var text = modal && modal.querySelector(".swal-text");
+            if (title) {
+                title.id = "swal-title";
+                modal.setAttribute("aria-labelledby", "swal-title");
+            }
+            if (text) {
+                text.id = "swal-text";
+                modal.setAttribute("aria-describedby", "swal-text");
+            }
+            // sweetalert focuses its last button at once but shows the dialog a moment later, and
+            // a closed dialog is hidden (theme.css), so that focus is lost. Move it in once it
+            // shows.
+            var tries = 0;
+            (function focusIn() {
+                var buttons = modal ? modal.querySelectorAll(".swal-button") : [];
+                if (document.querySelector(".swal-overlay--show-modal") && buttons.length) {
+                    if (!modal.contains(document.activeElement)) {
+                        buttons[buttons.length - 1].focus();
+                    }
+                } else if (++tries < 10) {
+                    setTimeout(focusIn, 20);
+                }
+            })();
+        }
 
         function finish() {
             // Check if a reward option is selected
             if ($('.option.active').length === 0) {
-                swal({
+                var oops = swal({
                     title: "Oops!",
                     text: "Please select an option before submitting.",
                     icon: "warning",
+                });
+                nameDialog();
+                // Back to the first card, so a keyboard user can choose one.
+                oops.then(function () {
+                    document.querySelector(".option").focus();
                 });
                 return; // Stop further execution
             } else {
@@ -276,6 +313,7 @@
                 }).then((submit) => {
                     window.location.href = "https://www.prospectmedical.com/";
                 });
+                nameDialog();
             }
         }
 

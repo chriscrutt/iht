@@ -1,14 +1,19 @@
 function switchTab(event, mainTabId, secondaryTabId) {
+    // The tabs are links to "#": don't jump to the top of the page.
+    event.preventDefault();
     var tabs = document.getElementsByClassName("content");
     for (var i = 0; i < tabs.length; i++) {
         tabs[i].classList.add("hidden");
     }
 
+    // aria-current tells screen readers which tab is chosen, as the underline shows.
     var mainTabs = document.getElementsByClassName("navbar")[0].getElementsByTagName("a");
     for (var i = 0; i < mainTabs.length; i++) {
         mainTabs[i].classList.remove("selected");
+        mainTabs[i].removeAttribute("aria-current");
     }
     document.getElementById(mainTabId).classList.add("selected");
+    document.getElementById(mainTabId).setAttribute("aria-current", "true");
 
     var secondaryTabs = document.getElementsByClassName("secondary-navbar");
     for (var i = 0; i < secondaryTabs.length; i++) {
@@ -19,9 +24,12 @@ function switchTab(event, mainTabId, secondaryTabId) {
     var secondaryTabLinks = document.querySelectorAll(".secondary-navbar a");
     for (var i = 0; i < secondaryTabLinks.length; i++) {
         secondaryTabLinks[i].classList.remove("selectedSub");
+        secondaryTabLinks[i].removeAttribute("aria-current");
     }
     let clickedId = event.target.id;
-    document.querySelectorAll(`[id*="${clickedId.slice(-3)}-1"]`)[0].classList.add("selectedSub");
+    var firstSub = document.querySelectorAll(`[id*="${clickedId.slice(-3)}-1"]`)[0];
+    firstSub.classList.add("selectedSub");
+    firstSub.setAttribute("aria-current", "true");
 
     if (clickedId.slice(-1) == "1") {
         document.getElementById("content1").classList.remove("hidden");
@@ -44,11 +52,21 @@ function switchContent(contentId, tabId) {
     var secondaryTabs = document.querySelectorAll(".secondary-navbar a");
     for (var i = 0; i < secondaryTabs.length; i++) {
         secondaryTabs[i].classList.remove("selectedSub");
+        secondaryTabs[i].removeAttribute("aria-current");
     }
     document.getElementById(tabId).classList.add("selectedSub");
+    document.getElementById(tabId).setAttribute("aria-current", "true");
 
     return false;
 }
+
+// Every tab is a link to "#". None of them should jump to the top of the page, including the
+// sub-tabs that don't work yet.
+document.querySelectorAll('.dash-tabs a[href="#"]').forEach(function (tab) {
+    tab.addEventListener("click", function (event) {
+        event.preventDefault();
+    });
+});
 
 function phq9PatientList() {
     const tableHTML = `
@@ -1199,6 +1217,7 @@ function fallPatientList() {
 // fades (dash-list--more).
 function showPatientList(tableWrapper) {
     var observer = null;
+    sortableFromKeyboard(tableWrapper.querySelector("table"));
     Swal.fire({
         title: "Patient List",
         html: tableWrapper, // Use the table wrapper with sortable features
@@ -1238,20 +1257,45 @@ function showPatientList(tableWrapper) {
     });
 }
 
+// Each list sorts by a column when its heading is clicked (the click handlers in the three list
+// functions, which flip the order on every click). This puts each heading's text in a button, so
+// the keyboard can sort too (the button's click reaches the heading's handler), and keeps
+// aria-sort on the heading the list is sorted by.
+function sortableFromKeyboard(table) {
+    var order = 1; // the next click's order, as the list functions keep it: 1 = ascending
+    table.querySelectorAll("th").forEach(function (th) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "dash-sort";
+        button.textContent = th.textContent;
+        th.textContent = "";
+        th.appendChild(button);
+        th.addEventListener("click", function () {
+            table.querySelectorAll("th[aria-sort]").forEach(function (other) {
+                other.removeAttribute("aria-sort");
+            });
+            th.setAttribute("aria-sort", order === 1 ? "ascending" : "descending");
+            order = -order;
+        });
+    });
+}
+
 // The charts and the focus handling below keep their names to themselves (no globals); only
-// the functions the page's onclick attributes call, and showPatientList, are global.
+// the functions the page's onclick attributes call, showPatientList and sortableFromKeyboard are
+// global.
 (function () {
 
 // ---------- Charts ----------
-// Colours from the shared theme (../css/theme.css). Severity runs pale to dark blue, less to
+// Colours from the shared theme (../css/theme.css). Severity runs pale blue to IHT blue, less to
 // more severe. The group counted as "Actionable" is Follow-up red, the same red as the key
 // beside that figure.
 var THEME = {
-    ink: "#1c2d50",
+    ink: "#1f2328",
+    blue: "#466eb6",
     followUp: "#b42318",
     // --iht-data-1 to -4. The two pale steps are under 3:1 against white, so their slices
-    // and legend keys get a 2px Ink outline.
-    data: ["#c4d1ea", "#8aa5dc", "#466eb6", "#1c2d50"],
+    // and legend keys get a 2px IHT blue outline.
+    data: ["#d3def2", "#a6bce5", "#7393cf", "#466eb6"],
     text: '"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif',
 };
 var OUTLINED = [THEME.data[0], THEME.data[1]];
@@ -1323,13 +1367,13 @@ function chartOptions() {
     };
 }
 
-// The pale slices are outlined in Ink. Every slice has a 2px border (the others in their own
-// colour), centred on its edge, so with 4px of spacing each gap shows 2px of white.
+// The pale slices are outlined in IHT blue. Every slice has a 2px border (the others in their
+// own colour), centred on its edge, so with 4px of spacing each gap shows 2px of white.
 function slices(data, colors) {
     return {
         data: data,
         backgroundColor: colors,
-        borderColor: colors.map(function (c) { return OUTLINED.indexOf(c) !== -1 ? THEME.ink : c; }),
+        borderColor: colors.map(function (c) { return OUTLINED.indexOf(c) !== -1 ? THEME.blue : c; }),
         borderWidth: 2,
         spacing: 4,
         hoverOffset: 6,
@@ -1397,6 +1441,19 @@ function drawFallChart() {
 drawPHQ9Chart();
 drawBreastCancerChart();
 drawFallChart();
+
+// A chart is a picture, so screen readers get its numbers as text: each canvas is an image
+// named by the chart's title and every group with its count.
+document.querySelectorAll(".dash-chart").forEach(function (figure) {
+    var canvas = figure.querySelector("canvas");
+    var chart = Chart.getChart(canvas);
+    var counts = chart.data.labels.map(function (label, i) {
+        return label + ": " + chart.data.datasets[0].data[i].toLocaleString("en-US");
+    });
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label",
+        figure.querySelector(".dash-chart__title").textContent + ". " + counts.join("; ") + ".");
+});
 
 // ---------- Focus and the sticky bar ----------
 // The bar covers the top of the window. theme.css's scroll-margin keeps a control that takes
