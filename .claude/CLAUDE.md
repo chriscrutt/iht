@@ -45,6 +45,7 @@ All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was
   - Archivo (titles and figures) is used at its normal width. The owner found the Expanded and Semi-expanded cuts too stretched, so the theme no longer loads them.
 - Pictures must need no credit. The illustrations are from unDraw (https://undraw.co/license: free, no attribution), with their accent recoloured to IHT Blue; each SVG says so in a comment at its top, along with any other change.
   - The site is for older patients, so the people who stand for patients are drawn older: the home banner's walker and the start page's gift-card woman have grey or white hair and round glasses. unDraw has almost no older people, so a new picture of a patient needs the same change. The nurses and the "Request a Demo" picture show staff and clinics, and are unchanged. The old Freepik art, which needed a credit, was removed on 2026-11-10. The team photos are the team's own.
+- The home page's figures ("Why check in early" and "Rewards get people to show up") each link to their source, and the wording follows the source: CDC's falls facts, WHO's fact sheet on older adults' mental health, Health Affairs 2018 (Borsky and others, 2015 data) and PLOS ONE 2014 (Giles and others, relative risk 1.92 for vaccination or screening). Don't add a figure without a source, and don't round past what the source says. The team page's intro uses only what the bios say.
 - Accessibility: the site was brought to WCAG 2.2 AA on 2026-11-10 (axe-core finds nothing, and every flow works from the keyboard). Keep it there:
   - Controls are real `<button>`s and links with an `href`, never `div`s with `onclick`. Inside a quiz's `<form>`, every button that isn't Continue needs `type="button"`, or it submits the form.
   - Don't give an element an `id` that an inline `onclick` calls by the same name inside a form: there `prevAnswer()` meant Go Back's button (`id="prevAnswer"`), not the function. Go Back's click is wired in the script for that reason.
@@ -134,6 +135,7 @@ Don't confirm the "Submitted!" box on `wellnesswallet/submitted/`: it leaves for
    - The start page greets everyone as "Hello Christopher!".
    - `submitted/` ends on prospectmedical.com.
 4. Smaller:
+   - Check the home page's figures once a year (next: November 2027). CDC updates its falls pages; the Health Affairs figure is from 2015 data, so a newer study may replace it.
    - Unpinned CDN libraries: `chart.js` and `sweetalert2@11` on the dashboard, and `sweetalert` on the Wellness Wallet. The theme styles their charts and dialogs, so a new major version could break the look. It was built against Chart.js 4.6.1, SweetAlert2 11.26.25 and sweetalert 2.1.2.
    - Google Analytics is split: the Wellness Wallet start page reports to G-BTYQ6V2CCM and its subpages to G-VMM3KZFGGE.
    - The dashboard's data and its Download button are fake.

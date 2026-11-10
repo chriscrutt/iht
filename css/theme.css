@@ -649,10 +649,18 @@ body.iht .iht-btn--pill {
   width: 100%;
 }
 
-/* Team: a compact title band. */
+/* Team: a compact title band, with a short intro under the title. */
+.iht-hero--title .iht-wrap {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
 .iht-hero--title .iht-display {
+  margin: 0 0 1.25rem;
+}
+
+.iht-hero--title .iht-lede {
+  max-width: 40rem;
   margin: 0;
-  padding: clamp(2.5rem, 6vw, 4.5rem) 0;
 }
 
 /* Long words in headings break with a hyphen rather than push past a narrow screen. */
@@ -740,6 +748,252 @@ body.iht .iht-btn--pill {
   margin: 0;
   font-size: 1.0625rem;
   line-height: 1.6;
+}
+
+/* A section's one-line intro, under its heading. */
+.iht-section-lede {
+  max-width: 40rem;
+  margin: -0.25rem 0 2.25rem;
+  font-size: 1.1875rem;
+  line-height: 1.6;
+}
+
+/* Home, "Why check in early": three sourced figures on a Mist band. The figures are large text,
+   so IHT blue on Mist (4.4:1) passes; the small source links take the deeper blue (6.1:1). */
+.iht-stats {
+  background: var(--iht-mist);
+}
+
+.iht-stats > .iht-wrap {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+
+.iht-stats__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem clamp(1.5rem, 4vw, 3.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.iht-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 3px solid var(--iht-blue);
+}
+
+.iht-stat p {
+  margin: 0;
+}
+
+.iht-stat__figure {
+  color: var(--iht-blue);
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: clamp(2.75rem, 2rem + 2.5vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.iht-stat__text {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.iht-stat p.iht-stat__source {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  color: var(--iht-ink-muted);
+  font-size: 0.9375rem;
+}
+
+body.iht .iht-stats a {
+  color: var(--iht-blue-deep);
+}
+
+/* Home, "How it works": three numbered steps (they are a sequence) beside a drawing of the
+   patient screen. */
+.iht-how {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+
+.iht-steps {
+  display: grid;
+  gap: 1.75rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: iht-step;
+}
+
+.iht-steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 1.25rem;
+  counter-increment: iht-step;
+}
+
+.iht-steps li::before {
+  content: counter(iht-step);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--iht-blue);
+  color: #fff;
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.iht-steps h3 {
+  margin: 0.4rem 0 0.25rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+.iht-steps p {
+  max-width: 34rem;
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+/* The patient screen, drawn in HTML: a white phone with a pale frame, the patient header, one
+   question and the two outlined answers, at the quizzes' proportions. */
+.iht-phone-wrap {
+  justify-self: center;
+  width: min(100%, 17.5rem);
+  margin: 0;
+}
+
+.iht-phone {
+  aspect-ratio: 9 / 18;
+  padding: 0.625rem;
+  border: 2px solid var(--iht-rule);
+  border-radius: 2.25rem;
+  background: var(--iht-mist);
+}
+
+.iht-phone__screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  background: #fff;
+}
+
+.iht-phone__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem 0.75rem;
+  background: var(--iht-blue);
+  color: #fff;
+  line-height: 1;
+}
+
+.iht-phone__brand {
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: 0.02em;
+}
+
+.iht-phone__app {
+  padding-left: 0.5rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.iht-phone__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.iht-phone__question {
+  margin: 0;
+  color: var(--iht-ink);
+  font-weight: 700;
+  font-size: 1.625rem;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.iht-phone__answers {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.iht-phone__answers span {
+  min-width: 4.5rem;
+  padding: 0.25rem 0.75rem;
+  border: 3px solid var(--iht-blue);
+  border-radius: var(--iht-radius-answer);
+  color: var(--iht-blue);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.iht-phone-wrap figcaption {
+  margin-top: 1rem;
+  color: var(--iht-ink-muted);
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Home, "Rewards get people to show up": one cited finding, with its figure large beside it. */
+.iht-evidence {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+  border-top: 2px solid var(--iht-mist);
+}
+
+.iht-evidence p.iht-evidence__figure {
+  max-width: none;
+  margin: 0;
+  color: var(--iht-blue);
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: clamp(4rem, 2.5rem + 6vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.iht-evidence p {
+  max-width: 36rem;
+  margin: 0;
+  font-size: 1.1875rem;
+  line-height: 1.6;
+}
+
+.iht-evidence p.iht-evidence__source {
+  margin-top: 0.75rem;
+  color: var(--iht-ink-muted);
+  font-size: 0.9375rem;
 }
 
 /* Team: people in two columns. Circles are for people only. */
@@ -852,6 +1106,11 @@ body.iht .iht-footer a:hover {
   .iht-people {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  /* The steps, then the phone under them. */
+  .iht-how {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 47.99875em) {
@@ -865,6 +1124,12 @@ body.iht .iht-footer a:hover {
 
   .iht-spec dt {
     font-size: min(1.25rem, 11vw);
+  }
+
+  /* The figures stack, and the finding sits under its figure. */
+  .iht-stats__list,
+  .iht-evidence {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
