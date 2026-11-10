@@ -113,6 +113,17 @@
       }
     }
 
+    /* Archivo's Semi-expanded cut (112.5%), as on the site's other secondary headings, wherever
+       the line still fits at the full size above: it's 25.05em wide there. That's every desktop
+       window from 1024px at the default font. With a larger default font, or a window just over
+       992px, the normal cut stays, so the line isn't made smaller to fit the wider cut. */
+    @media (min-width: 64em) and (max-width: 1199.98px), (min-width: 68em) and (min-width: 1200px) {
+      .ww-slogan {
+        --ww-one-line: calc((min(100vw, var(--iht-max)) - 2 * var(--iht-gutter)) / 25.2);
+        font-stretch: 112.5%;
+      }
+    }
+
     .ww-slogan span {
       white-space: nowrap;
     }
@@ -215,6 +226,7 @@
          21em (the last rule) the phrases may break instead. */
       .ww-slogan {
         margin-bottom: 0.5em;
+        font-stretch: 100%;
         font-size: min(1.375rem + 1.5vw, (100vw - 2 * var(--iht-gutter)) / 10.9);
       }
 

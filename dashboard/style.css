@@ -173,9 +173,12 @@ body.iht {
     margin: 0;
 }
 
+/* A heading, so the instrument face, as the dialog's title and the team names are. */
 .dash-chart__title {
     margin: 0 0 1rem;
     color: var(--iht-ink);
+    font-family: var(--iht-display);
+    font-stretch: 112.5%;
     font-weight: 700;
     font-size: 1.375rem;
     line-height: 1.25;

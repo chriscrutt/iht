@@ -300,19 +300,20 @@ body.iht .iht-header .nav-link-item:hover {
   text-underline-offset: 0.3em;
 }
 
-/* "Request a Demo": a white button in the bar, the filled button in the phone menu. */
+/* "Request a Demo": outlined in white in the bar, so on home it doesn't repeat the hero's white
+   button just below it; it fills on hover. In the phone menu it's the filled blue button. */
 body.iht .iht-header .iht-nav-cta {
   margin-left: 0.25rem;
   padding: 0.5rem 1.125rem;
   border: 2px solid #fff;
-  background: #fff;
-  color: var(--iht-blue);
+  background: transparent;
+  color: #fff;
 }
 
 body.iht .iht-header .iht-nav-cta:hover {
-  border-color: var(--iht-mist);
-  background: var(--iht-mist);
-  color: var(--iht-ink);
+  border-color: #fff;
+  background: #fff;
+  color: var(--iht-blue);
   text-decoration: none;
 }
 
@@ -830,10 +831,11 @@ body.iht .iht-footer a:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* Text first on phones; the picture follows. */
+  /* Text first on phones; the picture follows, centred, as the hero's is. */
   .iht-split__art {
     order: 2;
-    max-width: 28rem;
+    justify-self: center;
+    max-width: 34rem;
   }
 
   .iht-people {

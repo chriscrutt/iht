@@ -341,6 +341,15 @@
         width: 100%;
       }
     }
+
+    /* Phones: renderQuestion() draws question 9 at 1.35em to leave room for its crisis note,
+       which made it smaller than its own answers (1.8em). On phones there's room for 1.8em, so
+       it's as large as the other questions; the inline size needs !important to override. */
+    @media (max-width: 767.98px) {
+      #question p[style*="1.35em"] {
+        font-size: 1.8em !important;
+      }
+    }
   </style>
   <script>
 
