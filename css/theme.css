@@ -19,7 +19,7 @@
  * Sections: 1 tokens, 2 base, 3 header, 4 buttons, 5 site pages and the footer, 6 patient
  * pages, 7 motion. Page-specific CSS stays in each page (see .claude/CLAUDE.md).
  */
-@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5..125,700..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5..125,700..800&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap");
 
 /* ---------- 1. Tokens ---------- */
 
@@ -171,8 +171,7 @@ body.iht .iht-skip {
   color: var(--iht-ink);
 }
 
-body.iht .iht-skip:focus,
-body.iht .iht-skip:focus-visible {
+body.iht .iht-skip:focus {
   transform: none;
 }
 
@@ -937,8 +936,9 @@ body.iht--patient .btn {
 }
 
 /* Answers are outlined: a choice, not a step. Their size is --iht-answer-size of the form's
-   size (2em, as before; PHQ-9 sets 1.8em). The !important values beat main.css's
-   ".btn:hover { background: #466eb6 !important }". */
+   size (2em, as before; PHQ-9 sets 1.8em). The !important colours beat main.css's
+   ".btn:hover { color: #fff !important; background-color: #466eb6 !important }"; the borders
+   need none, since main.css's border there isn't !important. */
 .iht--patient #choices .btn {
   flex: 0 1 auto;
   height: auto;
@@ -946,7 +946,7 @@ body.iht--patient .btn {
   min-height: 48px;
   margin: 0;
   padding: 0.2em 0.35em;
-  border: 3px solid var(--iht-blue) !important;
+  border: 3px solid var(--iht-blue);
   border-radius: var(--iht-radius-answer);
   background: #fff !important;
   color: var(--iht-blue) !important;
@@ -967,12 +967,12 @@ body.iht--patient .btn {
    tap). Only a press fills it. */
 @media (hover: hover) {
   .iht--patient #choices .btn:hover {
-    border-color: var(--iht-ink) !important;
+    border-color: var(--iht-ink);
   }
 }
 
 .iht--patient #choices .btn:active {
-  border-color: var(--iht-blue-deep) !important;
+  border-color: var(--iht-blue-deep);
   background: var(--iht-blue-deep) !important;
   color: #fff !important;
 }
@@ -983,7 +983,7 @@ body.iht--patient .btn {
   height: var(--iht-back-h);
   min-width: 0;
   padding: 0 1.4em;
-  border: 2px solid var(--iht-ink-muted) !important;
+  border: 2px solid var(--iht-ink-muted);
   border-radius: 999px;
   background: #fff !important;
   color: var(--iht-ink) !important;
@@ -999,7 +999,7 @@ body.iht--patient .btn {
 
 @media (hover: hover) {
   .iht--patient #prevAnswer:hover {
-    border-color: var(--iht-ink) !important;
+    border-color: var(--iht-ink);
     background: var(--iht-mist) !important;
   }
 }
@@ -1066,7 +1066,7 @@ body.iht--patient .btn {
   height: auto;
   min-width: 0;
   margin: 0;
-  border: 0 !important;
+  border: 0;
   border-radius: 999px;
   color: #fff !important;
   font-family: var(--iht-text);

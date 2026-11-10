@@ -186,7 +186,8 @@
     }
 
     /* On wide windows the greeting's 10vh makes the text's column wide, so the picture may run
-       into the right-hand margin, up to 2rem short of the window's edge. */
+       into the right-hand margin, stopping 4.5rem (the 2.5rem gutter plus 2rem) short of the
+       window's edge. */
     .ww-start__art {
       grid-area: art;
       margin: 0 calc(-1 * max(0px, (100vw - var(--iht-max)) / 2 - 2rem)) 0 0;
