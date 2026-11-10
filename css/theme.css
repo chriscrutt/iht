@@ -55,6 +55,11 @@ body.iht {
   --iht-radius-answer: 16px;
   --iht-radius-band: 12px;
 
+  /* Dialogs and the open menu: the page behind is dimmed in Ink, and a dialog floats on a
+     shadow. The only shadows in the theme. */
+  --iht-scrim: rgba(28, 45, 80, 0.55);
+  --iht-shadow-dialog: 0 24px 64px rgba(28, 45, 80, 0.3);
+
   /* Focus ring colour: Ink on light grounds; the blue regions set it to white. */
   --focus: var(--iht-ink);
 }
@@ -369,7 +374,7 @@ body.iht .iht-header .iht-nav-cta:hover {
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background: rgba(28, 45, 80, 0.55);
+    background: var(--iht-scrim);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease, visibility 0s linear 0.2s;
@@ -1265,9 +1270,15 @@ body.iht .iht-footer--slim a {
    caps it too (12vh and 8vh), so the dialog still fits. That only happens below 467px tall
    with a 32px font, or 350px with 24px. A page caps a title that can't wrap by setting
    --iht-swal-title-max. */
+/* The same dimmed page and shadow as the dashboard's dialogs and the open menu. */
+.iht--patient .swal-overlay {
+  background-color: var(--iht-scrim);
+}
+
 .iht--patient .swal-modal {
   border-radius: var(--iht-radius-band);
   font-family: var(--iht-text);
+  box-shadow: var(--iht-shadow-dialog);
 }
 
 .iht--patient .swal-title {
@@ -1286,8 +1297,31 @@ body.iht .iht-footer--slim a {
   text-align: center;
 }
 
+/* The buttons sit in a centred row, 10px apart. ("Resume Video" and "Move On" need 298px, so
+   they share a row from a 360px window up.) Narrower, they stack at equal widths. */
 .iht--patient .swal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
   text-align: center;
+}
+
+.iht--patient .swal-footer .swal-button-container {
+  margin: 0;
+}
+
+@media (max-width: 359.98px) {
+  .iht--patient .swal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .iht--patient .swal-footer .swal-button {
+    width: 100%;
+  }
 }
 
 /* Capped, so with a larger default font both buttons still fit a phone's dialog. */
@@ -1305,16 +1339,29 @@ body.iht .iht-footer--slim a {
   box-shadow: none;
 }
 
+/* sweetalert's own :hover and :active colours apply everywhere, touch screens included (a tap
+   leaves :hover behind), and they're pale blue and red. These keep each button in its own
+   colour, a shade deeper while pressed; the deeper hover is for mice only (below). */
 .iht--patient .swal-button--cancel,
-.iht--patient .swal-button--cancel:not([disabled]):hover,
-.iht--patient .swal-button--cancel:not([disabled]):active {
+.iht--patient .swal-button--cancel:not([disabled]):hover {
   background-color: var(--iht-reward);
   color: #fff;
 }
 
 .iht--patient .swal-button--danger,
-.iht--patient .swal-button--confirm {
+.iht--patient .swal-button--confirm,
+.iht--patient .swal-button--danger:not([disabled]):hover,
+.iht--patient .swal-button--confirm:not([disabled]):hover {
   background-color: var(--iht-blue);
+}
+
+.iht--patient .swal-button--cancel:not([disabled]):active {
+  background-color: var(--iht-reward-deep);
+}
+
+.iht--patient .swal-button--danger:not([disabled]):active,
+.iht--patient .swal-button--confirm:not([disabled]):active {
+  background-color: var(--iht-blue-deep);
 }
 
 @media (hover: hover) {
@@ -1355,10 +1402,6 @@ body.iht .iht-footer--slim a {
   .iht--patient .swal-footer {
     margin-top: 0;
     padding-block: 8px;
-  }
-
-  .iht--patient .swal-button-container {
-    margin-block: 0;
   }
 }
 

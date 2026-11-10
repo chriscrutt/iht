@@ -367,16 +367,16 @@ body.iht {
 /* ---------- The Patient List dialog (SweetAlert2) ----------
    SweetAlert2 adds its own styles at run time, all at low specificity, so these win. */
 
-/* The same dimmed page as the open menu. */
+/* The same dimmed page and shadow as the open menu and the patient pages' dialogs (theme.css). */
 body.iht .swal2-container.swal2-backdrop-show {
-    background: rgba(28, 45, 80, 0.55);
+    background: var(--iht-scrim);
 }
 
 body.iht .swal2-popup {
     border-radius: var(--iht-radius-band);
     color: var(--iht-ink);
     font-family: var(--iht-text);
-    box-shadow: 0 24px 64px rgba(28, 45, 80, 0.3);
+    box-shadow: var(--iht-shadow-dialog);
 }
 
 body.iht .swal2-popup .swal2-title {
