@@ -54,8 +54,8 @@ All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was
   - The gift cards have `aria-label`s and `aria-pressed`; the dashboard's tabs carry `aria-current`, its unfinished sub-tabs `aria-disabled`, its charts a text description (`role="img"`), and its Patient List headings are buttons with `aria-sort`.
   - The home page's motion is started by its inline script, only when the device allows motion.
     - The phone preview loops for 14 seconds: text message, two questions, thank-you. The matching "How it works" step lights up as it plays. It has a Pause button (WCAG 2.2.2 requires one for motion over 5 seconds), and it holds still while off screen. Its play state is on the `.iht-how` section.
-    - Once each, as they come into view: the figures count up, the lines above them draw in, and the two reward bars grow.
-    - The large numbers and the bars are `aria-hidden`; the sentences carry the numbers for screen readers. The bars are to scale (52% and 100%, for the relative risk of 1.92).
+    - Once each, as they come into view: the figures count up, and the lines above them draw in. (A bar chart of the 1.9× finding was tried and dropped: the owner found it overkill for two numbers.)
+    - The large numbers are `aria-hidden`; the sentences carry the numbers for screen readers.
     - Hover feedback (buttons lift, feature rows deepen) is for a mouse only.
   - Home alternates full-width bands (`.iht-band--mist`, `.iht-band--blue`) so neighbouring sections read as separate, and section headings are IHT blue.
   - Every page has a `<main>` and its own `<title>`. The quiz videos have English captions (`wellnesswallet/video/*.vtt`, on by default), made with Whisper on this machine and checked by reading; if a video changes, its captions must change with it.

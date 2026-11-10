@@ -216,20 +216,6 @@
           <h2 class="iht-h2" id="evidence-heading">Rewards get people to show up</h2>
           <p>In randomized trials, people offered a financial reward were nearly twice as likely to come in for a
             vaccination or screening as people who weren't.</p>
-          <!-- The finding as two bars, to scale: a relative risk of 1.92, so the first is 1 / 1.92 = 52% of
-               the second. For the eye only; the sentence above says the same. -->
-          <div class="iht-bars" aria-hidden="true">
-            <div class="iht-bar">
-              <span class="iht-bar__label">Without a reward</span>
-              <span class="iht-bar__track"><span class="iht-bar__fill iht-bar__fill--base" style="--iht-bar: 52%"></span></span>
-              <span class="iht-bar__value">1×</span>
-            </div>
-            <div class="iht-bar">
-              <span class="iht-bar__label">With a reward</span>
-              <span class="iht-bar__track"><span class="iht-bar__fill" style="--iht-bar: 100%"></span></span>
-              <span class="iht-bar__value">1.9×</span>
-            </div>
-          </div>
           <p class="iht-evidence__source">Giles and others, <a href="https://doi.org/10.1371/journal.pone.0090347">a review of
               16 trials in PLOS ONE, 2014</a></p>
         </div>
@@ -261,8 +247,8 @@
   <script>
     // The home page's motion, all skipped when the reader's device asks for less motion: the phone
     // preview plays its short loop with the matching step lit (paused while off screen, and with a
-    // Pause button), and, the first time each comes into view, the figures count up, the lines above
-    // them draw in and the two reward bars grow.
+    // Pause button), and, the first time each comes into view, the figures count up and the lines
+    // above them draw in.
     (function () {
       var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (calm || !("IntersectionObserver" in window)) {
@@ -286,7 +272,7 @@
         how.classList.toggle("is-held", !entries[0].isIntersecting);
       }, { threshold: 0.4 }).observe(phone);
 
-      // The lines above the figures, and the reward bars: drawn from nothing, once.
+      // The lines above the figures: drawn from nothing, once.
       var draw = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
@@ -296,7 +282,7 @@
           }
         });
       }, { threshold: 0.5 });
-      document.querySelectorAll(".iht-stats__list, .iht-bars").forEach(function (el) {
+      document.querySelectorAll(".iht-stats__list").forEach(function (el) {
         el.classList.add("is-waiting");
         draw.observe(el);
       });
