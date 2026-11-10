@@ -231,7 +231,9 @@
         line-height: 1.25;
       }
 
-      /* The side padding is capped, so a larger default font keeps "Get Started" on one line. */
+      /* The side padding is capped, so a larger default font keeps "Get Started" on one line.
+         On phones, theme.css sets its width and label size, shared by the patient pages' main
+         buttons. */
       #getStarted {
         min-height: 48px;
         padding: 0.35em min(1.1em, 5vw);
@@ -248,13 +250,6 @@
 
       .ww-start__art img {
         max-height: none;
-      }
-    }
-
-    /* Phones: Get Started spans the column, like the quizzes' Finish. */
-    @media (max-width: 767.98px) {
-      #getStarted {
-        width: 100%;
       }
     }
 

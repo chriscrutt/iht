@@ -1187,7 +1187,7 @@ body.iht--patient .btn {
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
-/* Finish: green, done. 2em, as before; the whole column on phones. */
+/* Finish: green, done. 2em, as before; on phones, the main buttons' rule below. */
 .iht--patient #end .content .btn {
   display: inline-flex;
   align-items: center;
@@ -1204,9 +1204,17 @@ body.iht--patient .btn {
   }
 }
 
+/* Phones: the patient pages' main buttons share one rule: Get Started, Continue (demo/'s Submit
+   too), Finish and the gift-card Submit. They span the column at the page gutter, and their label
+   is 2rem, as Continue's and Submit's were, capped by the width so the longest, "Get Started",
+   stays inside its pill with a larger default font. */
 @media (max-width: 767.98px) {
-  .iht--patient #end .content .btn {
+  body.iht--patient #getStarted,
+  body.iht--patient #video .btn,
+  body.iht--patient #end .content .btn,
+  body.iht--patient .iht-btn.sub {
     width: 100%;
+    font-size: min(2rem, (100vw - 2 * var(--iht-gutter)) / 7.5);
   }
 }
 

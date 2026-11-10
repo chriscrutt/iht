@@ -207,7 +207,8 @@
             }
         }
 
-        /* Phones: three cards side by side don't fit, so stack them. */
+        /* Phones: three cards side by side don't fit, so stack them. They span the column at the
+           page gutter, as Submit does (theme.css, shared by the patient pages' main buttons). */
         @media (max-width: 599.98px) {
             .button-container {
                 flex-direction: column;
@@ -228,7 +229,6 @@
             }
 
             .sub {
-                width: min(100%, 20rem);
                 margin-top: 1rem;
             }
         }
