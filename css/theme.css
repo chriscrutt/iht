@@ -1190,51 +1190,6 @@ body.iht .iht-stats a {
   color: #fff;
 }
 
-/* The finding as two bars, to scale: hollow without a reward, solid with one. Their white edges
-   stand 5.0:1 against the blue. They draw in once (section 7). */
-.iht-bars {
-  display: grid;
-  gap: 0.75rem;
-  max-width: 36rem;
-  margin-top: 1.5rem;
-}
-
-.iht-bar {
-  display: grid;
-  grid-template-columns: 9rem minmax(0, 1fr) 3rem;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1rem;
-}
-
-.iht-bar__label {
-  font-weight: 700;
-}
-
-.iht-bar__track {
-  display: block;
-}
-
-.iht-bar__fill {
-  display: block;
-  width: var(--iht-bar);
-  height: 1.25rem;
-  border: 2px solid #fff;
-  border-radius: 4px;
-  background: #fff;
-  transform-origin: left;
-}
-
-.iht-bar__fill.iht-bar__fill--base {
-  background: transparent;
-}
-
-.iht-bar__value {
-  font-family: var(--iht-display);
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-}
-
 /* Gentle hover feedback, for a mouse only: the filled buttons lift on a soft shadow, and a
    feature row deepens a shade. Nothing moves on its own. */
 @media (hover: hover) {
@@ -1395,15 +1350,6 @@ body.iht .iht-footer a:hover {
     padding: 0.75rem 0.5rem;
   }
 
-  /* Each bar's label goes above it. */
-  .iht-bar {
-    grid-template-columns: minmax(0, 1fr) 3rem;
-    row-gap: 0.25rem;
-  }
-
-  .iht-bar__label {
-    grid-column: 1 / -1;
-  }
 }
 
 @media (max-width: 767.98px) {
@@ -1999,8 +1945,8 @@ body.iht .iht-footer--slim a {
 /* ---------- 7. Motion ----------
    No fade-ins. The quiz fades between screens, the dashboard's charts draw in, and on the home
    page the phone preview plays with its step lit, the figures count up, and the lines above them
-   and the reward bars draw in. All of it stops under reduced motion: the home page's script
-   doesn't start any of it. (Hover feedback is in section 5.) */
+   draw in. All of it stops under reduced motion: the home page's script doesn't start any of it.
+   (Hover feedback is in section 5.) */
 
 /* The phone preview's loop, 14 seconds, with the matching step lit beside it: the text message
    arrives and is tapped (step 1), two questions are answered "No" (step 2), then the thank-you
@@ -2165,20 +2111,17 @@ body.iht .iht-footer--slim a {
   93.4%, 100% { background-color: transparent; }
 }
 
-/* The lines above the figures and the reward bars draw in once, when the script marks them
-   is-drawn. Without the script, or with reduced motion, they're simply there. */
-.iht-stats__list.is-waiting .iht-stat::before,
-.iht-bars.is-waiting .iht-bar__fill {
+/* The lines above the figures draw in once, when the script marks the list is-drawn. Without the
+   script, or with reduced motion, they're simply there. */
+.iht-stats__list.is-waiting .iht-stat::before {
   transform: scaleX(0);
 }
 
-.iht-stats__list.is-drawn .iht-stat::before,
-.iht-bars.is-drawn .iht-bar__fill {
+.iht-stats__list.is-drawn .iht-stat::before {
   transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.iht-stats__list.is-drawn .iht-stat:nth-child(2)::before,
-.iht-bars.is-drawn .iht-bar:nth-child(2) .iht-bar__fill {
+.iht-stats__list.is-drawn .iht-stat:nth-child(2)::before {
   transition-delay: 0.2s;
 }
 
