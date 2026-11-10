@@ -545,7 +545,8 @@ body.iht .iht-header .iht-nav-cta:hover {
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 body.iht .iht-btn:hover {
@@ -671,9 +672,11 @@ body.iht .iht-btn--pill {
   hyphens: auto;
 }
 
+/* Section headings are IHT blue (5.0:1 on white; large text, so Mist's 4.4:1 passes too), and
+   white on a blue band. */
 .iht-h2 {
   margin: 0 0 1.25rem;
-  color: var(--iht-ink);
+  color: var(--iht-blue);
   font-family: var(--iht-display);
   font-weight: 700;
   font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
@@ -750,6 +753,33 @@ body.iht .iht-btn--pill {
   line-height: 1.6;
 }
 
+/* Full-width bands, so neighbouring sections read as separate: home runs blue (the hero), Mist,
+   white, Mist, white, blue (the finding), white, then the blue footer. The content sits in an
+   .iht-wrap inside. */
+.iht-band--mist {
+  background: var(--iht-mist);
+}
+
+.iht-band--blue {
+  --focus: #fff;
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+.iht-band--blue .iht-h2 {
+  color: #fff;
+}
+
+body.iht .iht-band--blue a,
+body.iht .iht-band--blue a:hover {
+  color: #fff;
+}
+
+/* Home: the four features, under their own heading. */
+.iht-features {
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+
 /* A section's one-line intro, under its heading. */
 .iht-section-lede {
   max-width: 40rem;
@@ -777,12 +807,24 @@ body.iht .iht-btn--pill {
   list-style: none;
 }
 
+/* The blue line above each figure is drawn by ::before, so it can draw in (section 7). */
 .iht-stat {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding-top: 1.25rem;
-  border-top: 3px solid var(--iht-blue);
+}
+
+.iht-stat::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--iht-blue);
+  transform-origin: left;
 }
 
 .iht-stat p {
@@ -826,17 +868,21 @@ body.iht .iht-stats a {
 
 .iht-steps {
   display: grid;
-  gap: 1.75rem;
+  gap: 0.5rem;
   margin: 0.5rem 0 0;
   padding: 0;
   list-style: none;
   counter-reset: iht-step;
 }
 
+/* Each step has room for a Mist highlight, lit while the phone shows that step (section 7). */
 .iht-steps li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 1.25rem;
+  margin: 0 -1rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--iht-radius-band);
   counter-increment: iht-step;
 }
 
@@ -906,6 +952,23 @@ body.iht .iht-stats a {
   line-height: 1;
 }
 
+/* The top of the screen: the app's blue bar, with the Messages app's grey bar laid over it while
+   the text message shows (section 7). Still, only the blue bar shows. */
+.iht-phone__top {
+  position: relative;
+}
+
+.iht-phone__bar.iht-phone__bar--msg {
+  position: absolute;
+  inset: 0;
+  justify-content: center;
+  background: #f1f3f6;
+  color: var(--iht-ink);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  opacity: 0;
+}
+
 .iht-phone__brand {
   font-family: var(--iht-display);
   font-weight: 800;
@@ -943,6 +1006,34 @@ body.iht .iht-stats a {
 .iht-phone__step--2,
 .iht-phone__step--3 {
   transform: translateX(100%);
+}
+
+/* The text message, which only the loop shows: a bubble from IHT at the top of the screen. */
+.iht-phone__step--0 {
+  justify-content: flex-start;
+  padding-top: 1.5rem;
+  transform: translateX(-100%);
+}
+
+.iht-phone__msg {
+  position: relative;
+  max-width: 92%;
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border-radius: 1.125rem 1.125rem 1.125rem 0.25rem;
+  background: var(--iht-mist);
+  color: var(--iht-ink);
+  font-size: 1rem;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.iht-phone__msg-from {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--iht-blue-deep);
+  font-weight: 700;
+  font-size: 0.875rem;
 }
 
 .iht-phone__step--3 {
@@ -1067,7 +1158,6 @@ body.iht .iht-stats a {
   gap: 1rem clamp(2rem, 5vw, 4rem);
   align-items: center;
   padding-block: clamp(3rem, 7vw, 5.5rem);
-  border-top: 2px solid var(--iht-mist);
 }
 
 .iht-evidence p.iht-evidence__figure {
@@ -1092,6 +1182,75 @@ body.iht .iht-stats a {
   margin-top: 0.75rem;
   color: var(--iht-ink-muted);
   font-size: 0.9375rem;
+}
+
+/* On the blue band everything is white (5.0:1). */
+.iht-band--blue .iht-evidence p.iht-evidence__figure,
+.iht-band--blue .iht-evidence p.iht-evidence__source {
+  color: #fff;
+}
+
+/* The finding as two bars, to scale: hollow without a reward, solid with one. Their white edges
+   stand 5.0:1 against the blue. They draw in once (section 7). */
+.iht-bars {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 36rem;
+  margin-top: 1.5rem;
+}
+
+.iht-bar {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) 3rem;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+}
+
+.iht-bar__label {
+  font-weight: 700;
+}
+
+.iht-bar__track {
+  display: block;
+}
+
+.iht-bar__fill {
+  display: block;
+  width: var(--iht-bar);
+  height: 1.25rem;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background: #fff;
+  transform-origin: left;
+}
+
+.iht-bar__fill.iht-bar__fill--base {
+  background: transparent;
+}
+
+.iht-bar__value {
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Gentle hover feedback, for a mouse only: the filled buttons lift on a soft shadow, and a
+   feature row deepens a shade. Nothing moves on its own. */
+@media (hover: hover) {
+  body.iht .iht-btn--primary:hover,
+  body.iht .iht-btn--onblue:hover {
+    box-shadow: 0 6px 18px rgba(31, 35, 40, 0.18);
+    transform: translateY(-1px);
+  }
+
+  .iht-spec__row {
+    transition: background-color 0.2s ease;
+  }
+
+  .iht-spec .iht-spec__row:hover {
+    background: #e3e9f4;
+  }
 }
 
 /* Team: people in two columns. Circles are for people only. */
@@ -1228,6 +1387,22 @@ body.iht .iht-footer a:hover {
   .iht-stats__list,
   .iht-evidence {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The steps' highlight stays inside the page gutter. */
+  .iht-steps li {
+    margin: 0 -0.5rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  /* Each bar's label goes above it. */
+  .iht-bar {
+    grid-template-columns: minmax(0, 1fr) 3rem;
+    row-gap: 0.25rem;
+  }
+
+  .iht-bar__label {
+    grid-column: 1 / -1;
   }
 }
 
@@ -1823,105 +1998,192 @@ body.iht .iht-footer--slim a {
 
 /* ---------- 7. Motion ----------
    No fade-ins. The quiz fades between screens, the dashboard's charts draw in, and on the home
-   page the phone preview plays and the figures count up. All of it stops under reduced motion:
-   the home page's script doesn't start its two at all. */
+   page the phone preview plays with its step lit, the figures count up, and the lines above them
+   and the reward bars draw in. All of it stops under reduced motion: the home page's script
+   doesn't start any of it. (Hover feedback is in section 5.) */
 
-/* The phone preview's loop, 12 seconds: the first question waits, "No" is tapped, the second
-   question slides in and is answered the same way, then the thank-you, then back to the start.
-   The script adds is-animated only when motion is allowed; is-held (off screen) and is-paused
-   (the Pause button) freeze it. Times are in % of 12s: 1s = 8.33%. */
-.iht-phone.is-animated .iht-phone__step--1 {
-  animation: iht-phone-step1 12s infinite;
+/* The phone preview's loop, 14 seconds, with the matching step lit beside it: the text message
+   arrives and is tapped (step 1), two questions are answered "No" (step 2), then the thank-you
+   (step 3), then back to the start. The script adds is-animated to the section only when motion
+   is allowed; is-held (off screen) and is-paused (the Pause button) freeze it. Times are in % of
+   14s: 1s = 7.14%. */
+.iht-how.is-animated .iht-phone__step--0 {
+  animation: iht-phone-step0 14s infinite;
 }
 
-.iht-phone.is-animated .iht-phone__step--2 {
-  animation: iht-phone-step2 12s infinite;
+.iht-how.is-animated .iht-phone__step--1 {
+  animation: iht-phone-step1 14s infinite;
 }
 
-.iht-phone.is-animated .iht-phone__step--3 {
-  animation: iht-phone-step3 12s infinite;
+.iht-how.is-animated .iht-phone__step--2 {
+  animation: iht-phone-step2 14s infinite;
 }
 
-.iht-phone.is-animated .iht-phone__step--1 .iht-phone__tap {
-  animation: iht-phone-tap1 12s infinite;
+.iht-how.is-animated .iht-phone__step--3 {
+  animation: iht-phone-step3 14s infinite;
 }
 
-.iht-phone.is-animated .iht-phone__step--2 .iht-phone__tap {
-  animation: iht-phone-tap2 12s infinite;
+.iht-how.is-animated .iht-phone__bar--msg {
+  animation: iht-phone-msgbar 14s infinite;
 }
 
-.iht-phone.is-animated .iht-phone__step--1 .iht-phone__tap::after {
-  animation: iht-phone-ring1 12s infinite;
+.iht-how.is-animated .iht-phone__step--0 .iht-phone__tap::after {
+  animation: iht-phone-ring0 14s infinite;
 }
 
-.iht-phone.is-animated .iht-phone__step--2 .iht-phone__tap::after {
-  animation: iht-phone-ring2 12s infinite;
+.iht-how.is-animated .iht-phone__step--1 .iht-phone__tap {
+  animation: iht-phone-tap1 14s infinite;
 }
 
-.iht-phone.is-animated .iht-phone__check {
-  animation: iht-phone-check 12s infinite;
+.iht-how.is-animated .iht-phone__step--2 .iht-phone__tap {
+  animation: iht-phone-tap2 14s infinite;
+}
+
+.iht-how.is-animated .iht-phone__step--1 .iht-phone__tap::after {
+  animation: iht-phone-ring1 14s infinite;
+}
+
+.iht-how.is-animated .iht-phone__step--2 .iht-phone__tap::after {
+  animation: iht-phone-ring2 14s infinite;
+}
+
+.iht-how.is-animated .iht-phone__check {
+  animation: iht-phone-check 14s infinite;
+}
+
+.iht-how.is-animated .iht-steps li:nth-child(1) {
+  animation: iht-step-lit1 14s infinite;
+}
+
+.iht-how.is-animated .iht-steps li:nth-child(2) {
+  animation: iht-step-lit2 14s infinite;
+}
+
+.iht-how.is-animated .iht-steps li:nth-child(3) {
+  animation: iht-step-lit3 14s infinite;
 }
 
 /* !important: the animation shorthands above are more specific, and would reset this. */
-.iht-phone.is-held *,
-.iht-phone.is-held *::after,
-.iht-phone.is-paused *,
-.iht-phone.is-paused *::after {
+.iht-how.is-held *,
+.iht-how.is-held *::after,
+.iht-how.is-paused *,
+.iht-how.is-paused *::after {
   animation-play-state: paused !important;
 }
 
-/* Question 1: shown until 2.8s, slides out by 3.3s; back at 10.5-11s for the next loop. */
+/* The text message: shown until 2.4s, slides out by 2.9s; back at 12.6-13.1s for the next loop. */
+@keyframes iht-phone-step0 {
+  0%, 17.14% { transform: translateX(0); opacity: 1; }
+  20.71%, 90% { transform: translateX(-100%); opacity: 1; }
+  90.01% { transform: translateX(0); opacity: 0; }
+  93.57%, 100% { transform: translateX(0); opacity: 1; }
+}
+
+/* Question 1: in by 2.9s, out from 4.9s to 5.4s. */
 @keyframes iht-phone-step1 {
-  0%, 23.3% { transform: translateX(0); opacity: 1; }
-  27.5%, 87.5% { transform: translateX(-100%); opacity: 1; }
-  87.6% { transform: translateX(0); opacity: 0; }
-  91.7%, 100% { transform: translateX(0); opacity: 1; }
+  0%, 17.14% { transform: translateX(100%); }
+  20.71%, 35% { transform: translateX(0); }
+  38.57%, 100% { transform: translateX(-100%); }
 }
 
-/* Question 2: in by 3.3s, out from 6.3s to 6.8s. */
+/* Question 2: in by 5.4s, out from 7.4s to 7.9s. */
 @keyframes iht-phone-step2 {
-  0%, 23.3% { transform: translateX(100%); }
-  27.5%, 52.5% { transform: translateX(0); }
-  56.7%, 100% { transform: translateX(-100%); }
+  0%, 35% { transform: translateX(100%); }
+  38.57%, 52.86% { transform: translateX(0); }
+  56.43%, 100% { transform: translateX(-100%); }
 }
 
-/* The thank-you: in by 6.8s, fades out from 10.5s to 11s. */
+/* The thank-you: in by 7.9s, fades out from 12.6s to 13.1s. */
 @keyframes iht-phone-step3 {
-  0%, 52.5% { transform: translateX(100%); opacity: 1; }
-  56.7%, 87.5% { transform: translateX(0); opacity: 1; }
-  91.7% { transform: translateX(0); opacity: 0; }
-  91.8%, 100% { transform: translateX(100%); opacity: 0; }
+  0%, 52.86% { transform: translateX(100%); opacity: 1; }
+  56.43%, 90% { transform: translateX(0); opacity: 1; }
+  93.57% { transform: translateX(0); opacity: 0; }
+  93.58%, 100% { transform: translateX(100%); opacity: 0; }
 }
 
-/* "No" fills at the tap (2s, then 5.5s) and stays filled while its screen leaves. */
+/* The Messages bar shows with the text message. */
+@keyframes iht-phone-msgbar {
+  0%, 17.14% { opacity: 1; }
+  20.71%, 90% { opacity: 0; }
+  93.57%, 100% { opacity: 1; }
+}
+
+/* The taps: the message at 1.8s, then "No" at 4.3s and 6.8s, which fills and stays filled while
+   its screen leaves. */
+@keyframes iht-phone-ring0 {
+  0%, 12% { transform: scale(0.4); opacity: 0; }
+  12.86% { transform: scale(0.6); opacity: 0.9; }
+  16.5%, 100% { transform: scale(1.8); opacity: 0; }
+}
+
 @keyframes iht-phone-tap1 {
-  0%, 16.6% { background: #fff; color: var(--iht-blue); }
-  17.5%, 27.5% { background: var(--iht-blue); color: #fff; }
-  27.6%, 100% { background: #fff; color: var(--iht-blue); }
+  0%, 30.6% { background: #fff; color: var(--iht-blue); }
+  31.4%, 38.57% { background: var(--iht-blue); color: #fff; }
+  38.6%, 100% { background: #fff; color: var(--iht-blue); }
 }
 
 @keyframes iht-phone-tap2 {
-  0%, 45.7% { background: #fff; color: var(--iht-blue); }
-  46.6%, 56.7% { background: var(--iht-blue); color: #fff; }
-  56.8%, 100% { background: #fff; color: var(--iht-blue); }
+  0%, 48.5% { background: #fff; color: var(--iht-blue); }
+  49.3%, 56.43% { background: var(--iht-blue); color: #fff; }
+  56.5%, 100% { background: #fff; color: var(--iht-blue); }
 }
 
 @keyframes iht-phone-ring1 {
-  0%, 15.8% { transform: scale(0.4); opacity: 0; }
-  16.7% { transform: scale(0.6); opacity: 0.9; }
-  21.7%, 100% { transform: scale(1.8); opacity: 0; }
+  0%, 29.9% { transform: scale(0.4); opacity: 0; }
+  30.71% { transform: scale(0.6); opacity: 0.9; }
+  34.3%, 100% { transform: scale(1.8); opacity: 0; }
 }
 
 @keyframes iht-phone-ring2 {
-  0%, 45% { transform: scale(0.4); opacity: 0; }
-  45.8% { transform: scale(0.6); opacity: 0.9; }
-  50.8%, 100% { transform: scale(1.8); opacity: 0; }
+  0%, 47.8% { transform: scale(0.4); opacity: 0; }
+  48.57% { transform: scale(0.6); opacity: 0.9; }
+  52.1%, 100% { transform: scale(1.8); opacity: 0; }
 }
 
 /* The tick pops in as the thank-you arrives. */
 @keyframes iht-phone-check {
-  0%, 56.7% { transform: scale(0.4); }
-  60%, 100% { transform: scale(1); }
+  0%, 56.43% { transform: scale(0.4); }
+  59.29%, 100% { transform: scale(1); }
+}
+
+/* The lit step: a Mist highlight, on while the phone shows that step. */
+@keyframes iht-step-lit1 {
+  0%, 18.93% { background-color: var(--iht-mist); }
+  20.5%, 91.79% { background-color: transparent; }
+  93.4%, 100% { background-color: var(--iht-mist); }
+}
+
+@keyframes iht-step-lit2 {
+  0%, 18.93% { background-color: transparent; }
+  20.5%, 54.64% { background-color: var(--iht-mist); }
+  56.2%, 100% { background-color: transparent; }
+}
+
+@keyframes iht-step-lit3 {
+  0%, 54.64% { background-color: transparent; }
+  56.2%, 91.79% { background-color: var(--iht-mist); }
+  93.4%, 100% { background-color: transparent; }
+}
+
+/* The lines above the figures and the reward bars draw in once, when the script marks them
+   is-drawn. Without the script, or with reduced motion, they're simply there. */
+.iht-stats__list.is-waiting .iht-stat::before,
+.iht-bars.is-waiting .iht-bar__fill {
+  transform: scaleX(0);
+}
+
+.iht-stats__list.is-drawn .iht-stat::before,
+.iht-bars.is-drawn .iht-bar__fill {
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.iht-stats__list.is-drawn .iht-stat:nth-child(2)::before,
+.iht-bars.is-drawn .iht-bar:nth-child(2) .iht-bar__fill {
+  transition-delay: 0.2s;
+}
+
+.iht-stats__list.is-drawn .iht-stat:nth-child(3)::before {
+  transition-delay: 0.4s;
 }
 
 /* "Request a Demo" links to #request-a-demo; with motion allowed the page glides there. */
