@@ -1013,6 +1013,35 @@ body.iht--patient .btn {
   }
 }
 
+/* Phones: the quiz's screens start at the page gutter, like the header and the other patient
+   pages, instead of Bootstrap's 12px (the container's padding, less the row's negative margin,
+   plus the column's padding). The end screen also takes the whole width rather than shrinking
+   to fit "Remember:", which can't wrap; it's capped below instead, so in a very narrow window
+   the column no longer runs off both sides. */
+@media (max-width: 767.98px) {
+  body.iht--patient .testFhir > .container,
+  body.iht--patient #end > .container {
+    padding-left: var(--iht-gutter);
+    padding-right: var(--iht-gutter);
+  }
+
+  body.iht--patient .testFhir > .container > .row,
+  body.iht--patient #end > .container > .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  body.iht--patient .testFhir > .container > .row > [class*="col-"],
+  body.iht--patient #end > .container > .row > [class*="col-"] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body.iht--patient #end {
+    align-self: stretch;
+  }
+}
+
 /* The video screen */
 .iht--patient #video h1 {
   color: var(--iht-ink);
@@ -1088,6 +1117,15 @@ body.iht--patient .btn {
   line-height: 1;
   letter-spacing: -0.015em;
   white-space: nowrap;
+}
+
+/* Phones: 5em of the capped #end .content (62px at 390px), as on master. Below 360px that would
+   be wider than the window, so there the width caps it: it may run into the right-hand gutter,
+   but stops 8px short of the window's edge. */
+@media (max-width: 767.98px) {
+  .iht--patient #end .content h1 {
+    font-size: min(5em, (100vw - 24px) / 5.72);
+  }
 }
 
 /* From 768px: the normal cut. With a larger default font it can be wider than its column; it
@@ -1239,29 +1277,30 @@ body.iht--patient .crisis a {
 }
 
 /* The quiz footer (main.css fixes it to the bottom; the quizzes put it at the foot of the
-   page). One line, capped, so a larger font doesn't make it a band over the answers or Go
-   Back. */
+   page). One line, at most 20px, so it's at most 40px tall: the quizzes keep that much room
+   for it under Go Back, and a larger default font can't make it a band over the answers.
+   "Incentive Health Technologies, LLC" is 15.5em wide, so it keeps 16px down to a 280px
+   window and only gets smaller below that. */
 .iht--patient .testFhir footer {
-  padding: 0.3em 1rem;
+  padding: 0.3em min(1rem, 12px);
   border-top: 0;
   background: var(--iht-ink);
   color: #fff;
   font-family: var(--iht-text);
-  font-size: min(1rem, 20px, 4.6vw);
+  font-size: min(1rem, 20px, (100vw - 24px) / 15.5);
   line-height: 1.4;
   white-space: nowrap;
 }
 
 /* The start page's and the gift-card page's footer: the site footer's Ink band (section 5),
-   slim, as on the quizzes. Its size is capped like theirs, so a larger default font doesn't
-   make it a wall. */
+   slim, and the same size as the quizzes', so the bar doesn't change from page to page. */
 .iht-footer.iht-footer--slim {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 1.5em;
-  padding: 0.35em 1rem;
-  font-size: min(1rem, 20px, 4.6vw);
+  padding: 0.3em min(1rem, 12px);
+  font-size: min(1rem, 20px, (100vw - 24px) / 15.5);
   line-height: 1.4;
   text-align: center;
 }

@@ -156,11 +156,13 @@
       line-height: 1.3;
     }
 
-    /* The reward is the one thing in green, and stays on one line. */
+    /* The reward is the one thing in green. It moves to the next line as a whole rather than
+       breaking, unless it's wider than a whole line (a 280px window with a 32px default font);
+       then it wraps inside its own box instead of running off the side. */
     .ww-lede strong {
+      display: inline-block;
       color: var(--iht-reward);
       font-weight: 700;
-      white-space: nowrap;
     }
 
     /* Go on: the filled blue pill. */
