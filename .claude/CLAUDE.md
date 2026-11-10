@@ -23,7 +23,7 @@ A static site for IHT plus two demo apps, all served by GitHub Pages from this r
 | `dashboard/` | https://iht.tools/dashboard/ | clinic-side mock-up; formerly `chriscrutt/iht-dashboard` at dashboard.iht.tools |
 | `wellnesswallet/` (landing page, `fallPrevention/`, `PHQ9/`, `submitted/`) | https://iht.tools/wellnesswallet/ | patient demo; formerly `chriscrutt/iht-demo` (branch `noFhir`) at wellnesswallet.iht.tools |
 
-All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was an older copy of the fall quiz; since 2026-11-10 it's a page that sends visitors on to `/wellnesswallet/`.) The dashboard also uses the main site's phone menu, `plugins/menu/menu.js`. Apart from those two files each site is self-contained: the main site and `wellnesswallet/` each have their own `css/`, `js/`, `image/` and `plugins/`, and `dashboard/` is just four files: `index.html`, `script.js`, `style.css` and `favicon.png`.
+All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was an older copy of the fall quiz; since 2026-11-10 it's a page that sends visitors on to `/wellnesswallet/`.) The dashboard also uses the main site's phone menu, `plugins/menu/menu.js`. Apart from those two files each site is self-contained: the main site and `wellnesswallet/` each have their own `css/`, `js/`, `image/` and `plugins/`, and `dashboard/` is just `index.html`, `script.js`, `style.css` and its icons (`favicon.ico`, `favicon.svg`, `apple-touch-icon.png`).
 
 ## Editing rules
 - Keep asset paths relative to the page's own folder.
@@ -45,6 +45,14 @@ All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was
   - Archivo (titles and figures) is used at its normal width. The owner found the Expanded and Semi-expanded cuts too stretched, so the theme no longer loads them.
 - Pictures must need no credit. The illustrations are from unDraw (https://undraw.co/license: free, no attribution), with their accent recoloured to IHT Blue; each SVG says so in a comment at its top, along with any other change.
   - The site is for older patients, so the people who stand for patients are drawn older: the home banner's walker and the start page's gift-card woman have grey or white hair and round glasses. unDraw has almost no older people, so a new picture of a patient needs the same change. The nurses and the "Request a Demo" picture show staff and clinics, and are unchanged. The old Freepik art, which needed a credit, was removed on 2026-11-10. The team photos are the team's own.
+- Icons and link previews:
+  - The favicon is "IHT" in white bars on a rounded IHT blue square. `image/favicon.svg` is its source, drawn on a 64 grid so its edges fall on whole pixels at 32px.
+  - `favicon.ico` holds 16, 32 and 48px renders of it. `apple-touch-icon.png` (180px, full-bleed, since iOS rounds the corners) comes from `_design/apple-touch-icon.svg`.
+  - Each site keeps its own copies: `image/`, `dashboard/` and `wellnesswallet/image/`. There are also copies of the ICO and the touch icon at the root, where browsers and apps look by default. Change one, change them all.
+  - Every page has Open Graph tags (`og:title`, `og:description`, `og:url`, `og:image`) and `twitter:card`, which give a shared link its preview card in texts and chats. `og:image` and `og:url` must be absolute `https://iht.tools/...` URLs, the one exception to relative paths.
+  - Home, team and the dashboard use `image/og-image.png`; the Wellness Wallet pages use `wellnesswallet/image/og-image.png`.
+  - Both images are 1200x630, rendered in Chromium from `_design/og-image.html` and `_design/og-wellnesswallet.html` once the fonts have loaded. Jekyll doesn't publish `_design/`, because its name starts with `_`.
+  - Messaging apps cache previews, so a changed image can take days to show. Renaming the file makes it show sooner.
 - The home page's figures ("Why check in early" and "Rewards get people to show up") each link to their source, and the wording follows the source: CDC's falls facts, WHO's fact sheet on older adults' mental health, Health Affairs 2018 (Borsky and others, 2015 data) and PLOS ONE 2014 (Giles and others, relative risk 1.92 for vaccination or screening). Don't add a figure without a source, and don't round past what the source says. The team page's intro uses only what the bios say.
 - Accessibility: the site was brought to WCAG 2.2 AA on 2026-11-10 (axe-core finds nothing, and every flow works from the keyboard). Keep it there:
   - Controls are real `<button>`s and links with an `href`, never `div`s with `onclick`. Inside a quiz's `<form>`, every button that isn't Continue needs `type="button"`, or it submits the form.
