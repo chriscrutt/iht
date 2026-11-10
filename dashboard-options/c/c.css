@@ -1,0 +1,179 @@
+/*
+ * Dashboard option C, the follow-up worklist: the people first. A tile per program filters one
+ * list of everyone who needs follow-up; how each program is doing sits under it on a Mist band.
+ * The pieces are in ../shared.css.
+ */
+
+.dash-work {
+  padding-block: 2.25rem clamp(2.5rem, 6vw, 4rem);
+}
+
+/* ---------- The tiles: all programs, then one each ---------- */
+
+.dash-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.dash-tile {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem 1.125rem;
+  border: 3px solid var(--iht-rule);
+  border-radius: var(--iht-radius-band);
+  background: #fff;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .dash-tile:hover {
+    border-color: var(--iht-blue);
+  }
+}
+
+/* The chosen tile, drawn like the chosen gift card: a blue ring, Mist, and a tick in the corner. */
+.dash-tile[aria-pressed="true"] {
+  border-color: var(--iht-blue);
+  background: var(--iht-mist);
+}
+
+.dash-tile[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--iht-blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 70% no-repeat;
+}
+
+.dash-tile__name {
+  padding-right: 1.75rem;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.25;
+}
+
+.dash-tile__number {
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-tile__note {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.dash-tile__note::before {
+  content: "";
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+  background: var(--iht-followup);
+}
+
+/* ---------- The list ---------- */
+
+.dash-shown {
+  margin: 0;
+  color: var(--iht-ink-muted);
+  font-size: 1rem;
+}
+
+/* The worklist is short, so it's shown whole instead of scrolling in a box. */
+.dash-work .dash-table-wrap {
+  max-height: none;
+}
+
+/* ---------- How each program is doing ---------- */
+
+.dash-doing {
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+}
+
+.dash-doing .iht-h2 {
+  margin-bottom: 0.5rem;
+}
+
+/* A white panel per program: its name and numbers beside its bars, then its patient list. */
+.dash-card {
+  margin-top: 1.5rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: var(--iht-radius-band);
+  background: #fff;
+}
+
+.dash-card__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 2rem clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.dash-card__name {
+  margin: 0 0 1.25rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+/* Inside a panel the numbers are a size smaller, so two sit side by side. */
+.dash-card .dash-figures {
+  gap: 1.25rem 2rem;
+}
+
+.dash-card .dash-figure {
+  flex-basis: 10rem;
+}
+
+.dash-card .dash-figure dd:not(.dash-figure__note) {
+  font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+}
+
+.dash-card .dash-details {
+  margin-top: 1.5rem;
+}
+
+.dash-note {
+  margin: 1.5rem 0 0;
+  color: var(--iht-ink-muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ---------- Narrower windows ---------- */
+
+@media (max-width: 61.99875em) {
+  .dash-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .dash-card__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 47.99875em) {
+  .dash-tile {
+    padding: 0.75rem 0.875rem 0.875rem;
+  }
+}

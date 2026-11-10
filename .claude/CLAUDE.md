@@ -25,6 +25,14 @@ A static site for IHT plus two demo apps, all served by GitHub Pages from this r
 
 All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was an older copy of the fall quiz; since 2026-11-10 it's a page that sends visitors on to `/wellnesswallet/`.) The dashboard also uses the main site's phone menu, `plugins/menu/menu.js`. Apart from those two files each site is self-contained: the main site and `wellnesswallet/` each have their own `css/`, `js/`, `image/` and `plugins/`, and `dashboard/` is just `index.html`, `script.js`, `style.css` and its icons (`favicon.ico`, `favicon.svg`, `apple-touch-icon.png`).
 
+`dashboard-options/` is temporary (added 2026-11-10). The owner found the dashboard's layout wrong and asked to see alternatives, so it holds three working layouts to choose from, live at https://iht.tools/dashboard-options/ but unlisted and marked `noindex`:
+- `a/` is a sidebar app: the programs down the left, one view at a time, chosen by the address's `#name`.
+- `b/` is one scrolling page: a band per program, with jump links.
+- `c/` is a follow-up worklist: one list of everyone who is Actionable, filtered by program tiles.
+- All three draw from `shared.js` and `shared.css`: the sample data (the old dashboard's 29 made-up patients, with the placeholder dashes filled in), the headline figures, HTML bar charts in place of the Chart.js donuts, and patient lists that sit on the page, sort, filter to the Actionable and download as real CSV files. No libraries.
+- They load the theme, the phone menu and the dashboard's icons with `../../` paths, and a dark strip at the top of each switches between them.
+- When the owner picks one, it replaces `dashboard/` (with `shared.js` and `shared.css` folded in and the paths made `../`), and this folder, the strip and this note go.
+
 ## Editing rules
 - Keep asset paths relative to the page's own folder.
   - Don't use root-absolute paths like `/css/...`.

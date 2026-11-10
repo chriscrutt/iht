@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option B: one scrolling page | Dashboard options | IHT</title>
+  <!-- A temporary preview: one of three layout options for the dashboard. Search engines stay out. -->
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../../dashboard/favicon.ico" sizes="32x32">
+  <link rel="icon" href="../../dashboard/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../dashboard/apple-touch-icon.png">
+  <meta name="theme-color" content="#466eb6">
+  <!-- The shared theme. It loads its own fonts. -->
+  <link rel="stylesheet" href="../../css/theme.css">
+  <link rel="stylesheet" href="../shared.css">
+  <link rel="stylesheet" href="b.css">
+</head>
+
+<body class="iht dash-b">
+  <a class="iht-skip" href="#main">Skip to content</a>
+  <!-- Switches between the three options. It goes when one is chosen. -->
+  <nav class="opt-strip" aria-label="Layout options">
+    <span>Layout options (temporary):</span>
+    <a href="../a/">A: Sidebar app</a>
+    <a href="../b/" aria-current="page">B: One scrolling page</a>
+    <a href="../c/">C: Follow-up worklist</a>
+  </nav>
+  <header class="iht-header iht-header--sticky">
+    <div class="iht-header__inner">
+      <a class="iht-brand" href="../../">
+        <h1 class="iht-wordmark">IHT</h1>
+      </a>
+      <div class="menu-block-wrapper">
+        <div class="menu-overlay"></div>
+        <nav class="menu-block" id="append-menu-header">
+          <div class="mobile-menu-head">
+            <div class="mobile-menu-close">&times;</div>
+          </div>
+          <ul class="site-menu-main">
+            <li class="nav-item">
+              <a href="../../team/" class="nav-link-item">Our Team</a>
+            </li>
+            <li class="nav-item iht-nav-item--cta">
+              <a href="../../#request-a-demo" class="nav-link-item iht-nav-cta">Request a Demo</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="mobile-menu-trigger">
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Option B, one scrolling page: every program is a band, one after another. b.js fills the
+       jump links, the totals and the bands. -->
+  <main id="main" tabindex="-1" class="dash">
+    <div class="iht-wrap dash-head">
+      <div class="dash-title">
+        <h1 class="dash-h1">Dashboard</h1>
+        <span class="dash-sample">Sample data</span>
+      </div>
+    </div>
+    <!-- Stays under the bar while the page scrolls, with the band in view underlined. -->
+    <nav class="dash-jump" aria-label="Programs">
+      <div class="iht-wrap">
+        <ul id="dash-jump" role="list"></ul>
+      </div>
+    </nav>
+
+    <section class="iht-band iht-band--mist dash-band" id="all-programs" aria-labelledby="all-title">
+      <div class="iht-wrap">
+        <h2 class="iht-h2" id="all-title">All programs</h2>
+        <div id="dash-totals"></div>
+      </div>
+    </section>
+
+    <div id="dash-programs"></div>
+
+    <section class="iht-band iht-band--mist dash-band" aria-labelledby="more-title">
+      <div class="iht-wrap">
+        <h2 class="iht-h2" id="more-title">More screenings</h2>
+        <ul class="dash-more" id="dash-more" role="list"></ul>
+        <p class="dash-note">These aren't part of this demo.</p>
+      </div>
+    </section>
+    <noscript>
+      <p class="iht-wrap">This dashboard needs JavaScript to show its numbers.</p>
+    </noscript>
+  </main>
+
+  <footer class="iht-footer">
+    <div class="iht-wrap iht-footer__inner">
+      <span>Incentive Health Technologies, LLC</span>
+    </div>
+  </footer>
+
+  <script src="../shared.js"></script>
+  <script src="b.js"></script>
+  <!-- The shared header's phone menu. -->
+  <script src="../../plugins/menu/menu.js"></script>
+</body>
+
+</html>

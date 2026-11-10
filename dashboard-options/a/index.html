@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option A: sidebar app | Dashboard options | IHT</title>
+  <!-- A temporary preview: one of three layout options for the dashboard. Search engines stay out. -->
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../../dashboard/favicon.ico" sizes="32x32">
+  <link rel="icon" href="../../dashboard/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../dashboard/apple-touch-icon.png">
+  <meta name="theme-color" content="#466eb6">
+  <!-- The shared theme. It loads its own fonts. -->
+  <link rel="stylesheet" href="../../css/theme.css">
+  <link rel="stylesheet" href="../shared.css">
+  <link rel="stylesheet" href="a.css">
+</head>
+
+<body class="iht dash-a">
+  <a class="iht-skip" href="#main">Skip to content</a>
+  <!-- Switches between the three options. It goes when one is chosen. -->
+  <nav class="opt-strip" aria-label="Layout options">
+    <span>Layout options (temporary):</span>
+    <a href="../a/" aria-current="page">A: Sidebar app</a>
+    <a href="../b/">B: One scrolling page</a>
+    <a href="../c/">C: Follow-up worklist</a>
+  </nav>
+  <header class="iht-header iht-header--sticky">
+    <div class="iht-header__inner">
+      <a class="iht-brand" href="../../">
+        <h1 class="iht-wordmark">IHT</h1>
+      </a>
+      <div class="menu-block-wrapper">
+        <div class="menu-overlay"></div>
+        <nav class="menu-block" id="append-menu-header">
+          <div class="mobile-menu-head">
+            <div class="mobile-menu-close">&times;</div>
+          </div>
+          <ul class="site-menu-main">
+            <li class="nav-item">
+              <a href="../../team/" class="nav-link-item">Our Team</a>
+            </li>
+            <li class="nav-item iht-nav-item--cta">
+              <a href="../../#request-a-demo" class="nav-link-item iht-nav-cta">Request a Demo</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="mobile-menu-trigger">
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Option A, the sidebar app. a.js fills the sidebar, the phone's picker and the views. -->
+  <div class="dash-shell">
+    <nav class="dash-nav" aria-label="Programs" id="dash-nav"></nav>
+    <main id="main" tabindex="-1" class="dash">
+      <!-- Below 992px the sidebar gives way to this picker. -->
+      <div class="dash-pick">
+        <label for="dash-program">Program</label>
+        <select id="dash-program"></select>
+      </div>
+      <div class="dash-views" id="dash-views"></div>
+      <noscript>
+        <p>This dashboard needs JavaScript to show its numbers.</p>
+      </noscript>
+    </main>
+  </div>
+
+  <footer class="iht-footer">
+    <div class="iht-wrap iht-footer__inner">
+      <span>Incentive Health Technologies, LLC</span>
+    </div>
+  </footer>
+
+  <script src="../shared.js"></script>
+  <script src="a.js"></script>
+  <!-- The shared header's phone menu. -->
+  <script src="../../plugins/menu/menu.js"></script>
+</body>
+
+</html>
