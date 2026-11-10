@@ -81,24 +81,26 @@
         <h2 class="iht-h2" id="why-heading">Why check in early</h2>
         <p class="iht-section-lede">Many problems older patients face go unmentioned until they turn serious.</p>
         <ul class="iht-stats__list" role="list">
+          <!-- The large figures are for the eye (two count up; see the script at the end). Screen
+               readers get each number from the sentence under it. -->
           <li class="iht-stat">
-            <p class="iht-stat__figure">1 in 4</p>
+            <p class="iht-stat__figure" aria-hidden="true">1 in 4</p>
             <p class="iht-stat__text">More than one in four adults 65 and older falls each year, and less than half tell their
               doctor.</p>
             <p class="iht-stat__source"><a href="https://www.cdc.gov/falls/data-research/facts-stats/index.html">CDC, Facts
                 About Falls</a></p>
           </li>
           <li class="iht-stat">
-            <p class="iht-stat__figure">15%</p>
-            <p class="iht-stat__text">of adults 70 and older live with a mental disorder, most often anxiety or depression,
+            <p class="iht-stat__figure" aria-hidden="true" data-count="15" data-suffix="%">15%</p>
+            <p class="iht-stat__text"><span class="iht-sr-only">15% </span>of adults 70 and older live with a mental disorder, most often anxiety or depression,
               and these often go unrecognized and untreated.</p>
             <p class="iht-stat__source"><a
                 href="https://www.who.int/news-room/fact-sheets/detail/mental-health-of-older-adults">World Health
                 Organization</a></p>
           </li>
           <li class="iht-stat">
-            <p class="iht-stat__figure">8%</p>
-            <p class="iht-stat__text">of U.S. adults 35 and older were up to date on all the high-priority preventive care
+            <p class="iht-stat__figure" aria-hidden="true" data-count="8" data-suffix="%">8%</p>
+            <p class="iht-stat__text"><span class="iht-sr-only">8% </span>of U.S. adults 35 and older were up to date on all the high-priority preventive care
               recommended for them.</p>
             <p class="iht-stat__source"><a href="https://doi.org/10.1377/hlthaff.2017.1248">Health Affairs, 2018</a></p>
           </li>
@@ -126,19 +128,33 @@
         </ol>
       </div>
       <figure class="iht-phone-wrap">
-        <!-- A drawing of the patient screen, not a working copy: its buttons are plain text. -->
+        <!-- A drawing of the patient screens, not a working copy: its buttons are plain text. With
+             motion allowed, the script at the end plays it: a tap on "No", the next question, another
+             tap, then the thank-you. The Pause button under it stops it (WCAG 2.2.2). -->
         <div class="iht-phone" role="img"
-          aria-label="A phone showing one question, Have you fallen in the past year?, with large Yes and No buttons">
+          aria-label="A phone showing the patient screens: the question Have you fallen in the past year? with large Yes and No buttons, a second question, then a thank-you for the gift card">
           <div class="iht-phone__screen">
             <div class="iht-phone__bar"><span class="iht-phone__brand">IHT</span><span class="iht-phone__app">Wellness
                 Wallet</span></div>
             <div class="iht-phone__body">
-              <p class="iht-phone__question">Have you fallen in the past year?</p>
-              <div class="iht-phone__answers"><span>Yes</span><span>No</span></div>
+              <div class="iht-phone__step iht-phone__step--1">
+                <p class="iht-phone__question">Have you fallen in the past year?</p>
+                <div class="iht-phone__answers"><span>Yes</span><span class="iht-phone__tap">No</span></div>
+              </div>
+              <div class="iht-phone__step iht-phone__step--2">
+                <p class="iht-phone__question">Do you have a problem with your balance?</p>
+                <div class="iht-phone__answers"><span>Yes</span><span class="iht-phone__tap">No</span></div>
+              </div>
+              <div class="iht-phone__step iht-phone__step--3">
+                <span class="iht-phone__check"></span>
+                <p class="iht-phone__question">Thank you!</p>
+                <p class="iht-phone__note">Your gift card is on its way.</p>
+              </div>
             </div>
           </div>
         </div>
         <figcaption>One question at a time, in large print.</figcaption>
+        <button type="button" class="iht-phone__toggle" hidden>Pause demo</button>
       </figure>
     </section>
 
@@ -181,7 +197,7 @@
     </section>
 
     <section class="iht-wrap iht-evidence" aria-labelledby="evidence-heading">
-      <p class="iht-evidence__figure" aria-hidden="true">1.9×</p>
+      <p class="iht-evidence__figure" aria-hidden="true" data-count="1.9" data-suffix="×">1.9×</p>
       <div>
         <h2 class="iht-h2" id="evidence-heading">Rewards get people to show up</h2>
         <p>In randomized trials, people offered a financial reward were nearly twice as likely to come in for a
@@ -213,6 +229,62 @@
 
   <!-- The phone menu. -->
   <script src="plugins/menu/menu.js"></script>
+  <script>
+    // The home page's two touches of motion, both skipped when the reader's device asks for less
+    // motion: the phone preview plays its short loop (paused while off screen, and with a Pause
+    // button), and the figures count up the first time they scroll into view.
+    (function () {
+      var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (calm || !("IntersectionObserver" in window)) {
+        return;
+      }
+
+      var phone = document.querySelector(".iht-phone");
+      var toggle = document.querySelector(".iht-phone__toggle");
+      var paused = false;
+      // is-held keeps it at its first screen until it's on screen, so it starts where it begins.
+      phone.classList.add("is-animated", "is-held");
+      toggle.hidden = false;
+      toggle.addEventListener("click", function () {
+        paused = !paused;
+        phone.classList.toggle("is-paused", paused);
+        toggle.textContent = paused ? "Play demo" : "Pause demo";
+      });
+      new IntersectionObserver(function (entries) {
+        phone.classList.toggle("is-held", !entries[0].isIntersecting);
+      }, { threshold: 0.4 }).observe(phone);
+
+      var counter = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) {
+            return;
+          }
+          counter.unobserve(entry.target);
+          var el = entry.target;
+          var target = el.getAttribute("data-count");
+          var to = parseFloat(target);
+          var places = (target.split(".")[1] || "").length;
+          var suffix = el.getAttribute("data-suffix") || "";
+          var start = null;
+          (function frame(now) {
+            if (start === null) {
+              start = now;
+            }
+            var k = Math.min(1, (now - start) / 1200);
+            el.textContent = (to * (1 - Math.pow(1 - k, 3))).toFixed(places) + suffix;
+            if (k < 1) {
+              requestAnimationFrame(frame);
+            }
+          })(performance.now());
+        });
+      }, { threshold: 0.6 });
+      document.querySelectorAll("[data-count]").forEach(function (el) {
+        var places = (el.getAttribute("data-count").split(".")[1] || "").length;
+        el.textContent = (0).toFixed(places) + (el.getAttribute("data-suffix") || "");
+        counter.observe(el);
+      });
+    })();
+  </script>
 </body>
 
 </html>
