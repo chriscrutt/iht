@@ -6,7 +6,6 @@
  * close button, a tap on the dimmed page, Escape, picking a link or tabbing
  * out of the menu closes it again.
  *
- * demo/ loads this file but has no menu, so it does nothing there.
  * It's plain ES5 so it also runs on older phones and tablets.
  */
 (function () {
