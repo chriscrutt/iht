@@ -419,6 +419,10 @@
       reachedEnd = true;
     });
 
+    // Continue asks "Resume Video?" only below this share watched: 90%, a little slack for anyone
+    // who stops just short of the end.
+    var WATCHED_ENOUGH = 0.9;
+
     function watchedFraction() {
       if (reachedEnd) {
         return 1;
@@ -433,7 +437,7 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       perc = watchedFraction();
-      if (perc < 1) {
+      if (perc < WATCHED_ENOUGH) {
         player.pause();
         var resume = swal({
           title: "Resume Video?",
