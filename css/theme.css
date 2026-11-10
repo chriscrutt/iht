@@ -920,14 +920,61 @@ body.iht .iht-stats a {
   font-size: 0.9375rem;
 }
 
+/* Three screens in one place: the first question, the second, the thank-you. Only the first
+   shows unless the loop runs (section 7); the others wait off to the right. */
 .iht-phone__body {
+  position: relative;
   flex: 1;
+  overflow: hidden;
+}
+
+.iht-phone__step {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 1.25rem;
   padding: 1rem;
   text-align: center;
+}
+
+.iht-phone__step--2,
+.iht-phone__step--3 {
+  transform: translateX(100%);
+}
+
+.iht-phone__step--3 {
+  gap: 0.75rem;
+}
+
+/* The thank-you's tick: white on Reward green, as on the quizzes' end screen. */
+.iht-phone__check {
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--iht-reward);
+}
+
+.iht-phone__check::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 0.95rem;
+  height: 1.8rem;
+  border: solid #fff;
+  border-width: 0 0.35rem 0.35rem 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.iht-phone__note {
+  margin: 0;
+  color: var(--iht-ink);
+  font-size: 1.125rem;
+  line-height: 1.35;
 }
 
 .iht-phone__question {
@@ -946,13 +993,30 @@ body.iht .iht-stats a {
 }
 
 .iht-phone__answers span {
+  position: relative;
   min-width: 4.5rem;
   padding: 0.25rem 0.75rem;
   border: 3px solid var(--iht-blue);
   border-radius: var(--iht-radius-answer);
+  background: #fff;
   color: var(--iht-blue);
   font-weight: 700;
   font-size: 1.5rem;
+}
+
+/* The finger's tap: a ring that spreads from the answer and fades (section 7). */
+.iht-phone__tap::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: -1.625rem 0 0 -1.625rem;
+  border: 3px solid var(--iht-blue-deep);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .iht-phone-wrap figcaption {
@@ -960,6 +1024,40 @@ body.iht .iht-stats a {
   color: var(--iht-ink-muted);
   font-size: 1rem;
   text-align: center;
+}
+
+/* Pause/Play for the loop: a quiet outlined pill under the caption. */
+.iht-phone__toggle {
+  display: block;
+  min-height: 44px;
+  margin: 0.75rem auto 0;
+  padding: 0.5rem 1.25rem;
+  border: 2px solid var(--iht-ink-muted);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.iht-phone__toggle[hidden] {
+  display: none;
+}
+
+@media (hover: hover) {
+  .iht-phone__toggle:hover {
+    border-color: var(--iht-ink);
+    background: var(--iht-mist);
+  }
+}
+
+/* Figures that count up keep their width while they do. */
+.iht-stat__figure,
+.iht-evidence__figure {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Home, "Rewards get people to show up": one cited finding, with its figure large beside it. */
@@ -1724,8 +1822,107 @@ body.iht .iht-footer--slim a {
 }
 
 /* ---------- 7. Motion ----------
-   No fade-ins. The quiz fades between screens, and the dashboard's charts draw in; both stop
-   under reduced motion. */
+   No fade-ins. The quiz fades between screens, the dashboard's charts draw in, and on the home
+   page the phone preview plays and the figures count up. All of it stops under reduced motion:
+   the home page's script doesn't start its two at all. */
+
+/* The phone preview's loop, 12 seconds: the first question waits, "No" is tapped, the second
+   question slides in and is answered the same way, then the thank-you, then back to the start.
+   The script adds is-animated only when motion is allowed; is-held (off screen) and is-paused
+   (the Pause button) freeze it. Times are in % of 12s: 1s = 8.33%. */
+.iht-phone.is-animated .iht-phone__step--1 {
+  animation: iht-phone-step1 12s infinite;
+}
+
+.iht-phone.is-animated .iht-phone__step--2 {
+  animation: iht-phone-step2 12s infinite;
+}
+
+.iht-phone.is-animated .iht-phone__step--3 {
+  animation: iht-phone-step3 12s infinite;
+}
+
+.iht-phone.is-animated .iht-phone__step--1 .iht-phone__tap {
+  animation: iht-phone-tap1 12s infinite;
+}
+
+.iht-phone.is-animated .iht-phone__step--2 .iht-phone__tap {
+  animation: iht-phone-tap2 12s infinite;
+}
+
+.iht-phone.is-animated .iht-phone__step--1 .iht-phone__tap::after {
+  animation: iht-phone-ring1 12s infinite;
+}
+
+.iht-phone.is-animated .iht-phone__step--2 .iht-phone__tap::after {
+  animation: iht-phone-ring2 12s infinite;
+}
+
+.iht-phone.is-animated .iht-phone__check {
+  animation: iht-phone-check 12s infinite;
+}
+
+/* !important: the animation shorthands above are more specific, and would reset this. */
+.iht-phone.is-held *,
+.iht-phone.is-held *::after,
+.iht-phone.is-paused *,
+.iht-phone.is-paused *::after {
+  animation-play-state: paused !important;
+}
+
+/* Question 1: shown until 2.8s, slides out by 3.3s; back at 10.5-11s for the next loop. */
+@keyframes iht-phone-step1 {
+  0%, 23.3% { transform: translateX(0); opacity: 1; }
+  27.5%, 87.5% { transform: translateX(-100%); opacity: 1; }
+  87.6% { transform: translateX(0); opacity: 0; }
+  91.7%, 100% { transform: translateX(0); opacity: 1; }
+}
+
+/* Question 2: in by 3.3s, out from 6.3s to 6.8s. */
+@keyframes iht-phone-step2 {
+  0%, 23.3% { transform: translateX(100%); }
+  27.5%, 52.5% { transform: translateX(0); }
+  56.7%, 100% { transform: translateX(-100%); }
+}
+
+/* The thank-you: in by 6.8s, fades out from 10.5s to 11s. */
+@keyframes iht-phone-step3 {
+  0%, 52.5% { transform: translateX(100%); opacity: 1; }
+  56.7%, 87.5% { transform: translateX(0); opacity: 1; }
+  91.7% { transform: translateX(0); opacity: 0; }
+  91.8%, 100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* "No" fills at the tap (2s, then 5.5s) and stays filled while its screen leaves. */
+@keyframes iht-phone-tap1 {
+  0%, 16.6% { background: #fff; color: var(--iht-blue); }
+  17.5%, 27.5% { background: var(--iht-blue); color: #fff; }
+  27.6%, 100% { background: #fff; color: var(--iht-blue); }
+}
+
+@keyframes iht-phone-tap2 {
+  0%, 45.7% { background: #fff; color: var(--iht-blue); }
+  46.6%, 56.7% { background: var(--iht-blue); color: #fff; }
+  56.8%, 100% { background: #fff; color: var(--iht-blue); }
+}
+
+@keyframes iht-phone-ring1 {
+  0%, 15.8% { transform: scale(0.4); opacity: 0; }
+  16.7% { transform: scale(0.6); opacity: 0.9; }
+  21.7%, 100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes iht-phone-ring2 {
+  0%, 45% { transform: scale(0.4); opacity: 0; }
+  45.8% { transform: scale(0.6); opacity: 0.9; }
+  50.8%, 100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* The tick pops in as the thank-you arrives. */
+@keyframes iht-phone-check {
+  0%, 56.7% { transform: scale(0.4); }
+  60%, 100% { transform: scale(1); }
+}
 
 /* "Request a Demo" links to #request-a-demo; with motion allowed the page glides there. */
 @media (prefers-reduced-motion: no-preference) {
