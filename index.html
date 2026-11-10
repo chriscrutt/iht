@@ -108,6 +108,8 @@
       </div>
     </section>
 
+    <!-- With motion allowed, the script at the end plays the phone and lights up the step it shows.
+         It sets is-animated, is-held (off screen) and is-paused (the Pause button) on this section. -->
     <section class="iht-wrap iht-how" aria-labelledby="how-heading">
       <div>
         <h2 class="iht-h2" id="how-heading">How it works</h2>
@@ -128,15 +130,23 @@
         </ol>
       </div>
       <figure class="iht-phone-wrap">
-        <!-- A drawing of the patient screens, not a working copy: its buttons are plain text. With
-             motion allowed, the script at the end plays it: a tap on "No", the next question, another
-             tap, then the thank-you. The Pause button under it stops it (WCAG 2.2.2). -->
+        <!-- A drawing of the patient screens, not a working copy: its buttons are plain text. Played,
+             it goes: the text message arrives and is tapped, two questions are answered "No", then the
+             thank-you. Still (no script, or reduced motion), it shows the first question. The Pause
+             button under it stops it (WCAG 2.2.2). -->
         <div class="iht-phone" role="img"
-          aria-label="A phone showing the patient screens: the question Have you fallen in the past year? with large Yes and No buttons, a second question, then a thank-you for the gift card">
+          aria-label="A phone showing what a patient sees: a text message that their check-in is ready, the question Have you fallen in the past year? with large Yes and No buttons, a second question, then a thank-you for the gift card">
           <div class="iht-phone__screen">
-            <div class="iht-phone__bar"><span class="iht-phone__brand">IHT</span><span class="iht-phone__app">Wellness
-                Wallet</span></div>
+            <div class="iht-phone__top">
+              <div class="iht-phone__bar"><span class="iht-phone__brand">IHT</span><span class="iht-phone__app">Wellness
+                  Wallet</span></div>
+              <div class="iht-phone__bar iht-phone__bar--msg">Messages</div>
+            </div>
             <div class="iht-phone__body">
+              <div class="iht-phone__step iht-phone__step--0">
+                <p class="iht-phone__msg iht-phone__tap"><span class="iht-phone__msg-from">IHT Wellness Wallet</span>
+                  Your check-in is ready. Answer a few questions to earn a $10 gift card.</p>
+              </div>
               <div class="iht-phone__step iht-phone__step--1">
                 <p class="iht-phone__question">Have you fallen in the past year?</p>
                 <div class="iht-phone__answers"><span>Yes</span><span class="iht-phone__tap">No</span></div>
@@ -158,20 +168,23 @@
       </figure>
     </section>
 
-    <section class="iht-wrap iht-split">
-      <figure class="iht-split__art">
-        <img src="image/illustrations/medical-care.svg" width="888" height="618"
-          alt="Two nurses in scrubs beside a large jar of pills">
-      </figure>
-      <div>
-        <h2 class="iht-h2">Not Just Rewards</h2>
-        <p>Our program goes beyond just rewarding you for good behavior - we also help you identify potential
-          health problems before they become actual problems. With our proactive approach, we aim to keep you
-          healthy and prevent costly medical bills down the line.</p>
+    <section class="iht-band iht-band--mist">
+      <div class="iht-wrap iht-split">
+        <figure class="iht-split__art">
+          <img src="image/illustrations/medical-care.svg" width="888" height="618"
+            alt="Two nurses in scrubs beside a large jar of pills">
+        </figure>
+        <div>
+          <h2 class="iht-h2">Not Just Rewards</h2>
+          <p>Our program goes beyond just rewarding you for good behavior - we also help you identify potential
+            health problems before they become actual problems. With our proactive approach, we aim to keep you
+            healthy and prevent costly medical bills down the line.</p>
+        </div>
       </div>
     </section>
 
-    <section class="iht-wrap">
+    <section class="iht-wrap iht-features" aria-labelledby="features-heading">
+      <h2 class="iht-h2" id="features-heading">What makes it work</h2>
       <dl class="iht-spec">
         <div class="iht-spec__row">
           <dt>Deterministic Response Methodology</dt>
@@ -196,14 +209,30 @@
       </dl>
     </section>
 
-    <section class="iht-wrap iht-evidence" aria-labelledby="evidence-heading">
-      <p class="iht-evidence__figure" aria-hidden="true" data-count="1.9" data-suffix="×">1.9×</p>
-      <div>
-        <h2 class="iht-h2" id="evidence-heading">Rewards get people to show up</h2>
-        <p>In randomized trials, people offered a financial reward were nearly twice as likely to come in for a
-          vaccination or screening as people who weren't.</p>
-        <p class="iht-evidence__source">Giles and others, <a href="https://doi.org/10.1371/journal.pone.0090347">a review of
-            16 trials in PLOS ONE, 2014</a></p>
+    <section class="iht-band iht-band--blue" aria-labelledby="evidence-heading">
+      <div class="iht-wrap iht-evidence">
+        <p class="iht-evidence__figure" aria-hidden="true" data-count="1.9" data-suffix="×">1.9×</p>
+        <div>
+          <h2 class="iht-h2" id="evidence-heading">Rewards get people to show up</h2>
+          <p>In randomized trials, people offered a financial reward were nearly twice as likely to come in for a
+            vaccination or screening as people who weren't.</p>
+          <!-- The finding as two bars, to scale: a relative risk of 1.92, so the first is 1 / 1.92 = 52% of
+               the second. For the eye only; the sentence above says the same. -->
+          <div class="iht-bars" aria-hidden="true">
+            <div class="iht-bar">
+              <span class="iht-bar__label">Without a reward</span>
+              <span class="iht-bar__track"><span class="iht-bar__fill iht-bar__fill--base" style="--iht-bar: 52%"></span></span>
+              <span class="iht-bar__value">1×</span>
+            </div>
+            <div class="iht-bar">
+              <span class="iht-bar__label">With a reward</span>
+              <span class="iht-bar__track"><span class="iht-bar__fill" style="--iht-bar: 100%"></span></span>
+              <span class="iht-bar__value">1.9×</span>
+            </div>
+          </div>
+          <p class="iht-evidence__source">Giles and others, <a href="https://doi.org/10.1371/journal.pone.0090347">a review of
+              16 trials in PLOS ONE, 2014</a></p>
+        </div>
       </div>
     </section>
 
@@ -230,29 +259,47 @@
   <!-- The phone menu. -->
   <script src="plugins/menu/menu.js"></script>
   <script>
-    // The home page's two touches of motion, both skipped when the reader's device asks for less
-    // motion: the phone preview plays its short loop (paused while off screen, and with a Pause
-    // button), and the figures count up the first time they scroll into view.
+    // The home page's motion, all skipped when the reader's device asks for less motion: the phone
+    // preview plays its short loop with the matching step lit (paused while off screen, and with a
+    // Pause button), and, the first time each comes into view, the figures count up, the lines above
+    // them draw in and the two reward bars grow.
     (function () {
       var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (calm || !("IntersectionObserver" in window)) {
         return;
       }
 
+      // The phone and the steps share one timeline (theme.css), so their state is on the section.
+      var how = document.querySelector(".iht-how");
       var phone = document.querySelector(".iht-phone");
       var toggle = document.querySelector(".iht-phone__toggle");
       var paused = false;
       // is-held keeps it at its first screen until it's on screen, so it starts where it begins.
-      phone.classList.add("is-animated", "is-held");
+      how.classList.add("is-animated", "is-held");
       toggle.hidden = false;
       toggle.addEventListener("click", function () {
         paused = !paused;
-        phone.classList.toggle("is-paused", paused);
+        how.classList.toggle("is-paused", paused);
         toggle.textContent = paused ? "Play demo" : "Pause demo";
       });
       new IntersectionObserver(function (entries) {
-        phone.classList.toggle("is-held", !entries[0].isIntersecting);
+        how.classList.toggle("is-held", !entries[0].isIntersecting);
       }, { threshold: 0.4 }).observe(phone);
+
+      // The lines above the figures, and the reward bars: drawn from nothing, once.
+      var draw = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            draw.unobserve(entry.target);
+            entry.target.classList.remove("is-waiting");
+            entry.target.classList.add("is-drawn");
+          }
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll(".iht-stats__list, .iht-bars").forEach(function (el) {
+        el.classList.add("is-waiting");
+        draw.observe(el);
+      });
 
       var counter = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
