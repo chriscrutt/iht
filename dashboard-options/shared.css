@@ -1,0 +1,507 @@
+/*
+ * Shared by the three dashboard layout options (a/, b/ and c/): the look of the pieces shared.js
+ * draws. Colours, type, the header, buttons and the footer come from the theme
+ * (../../css/theme.css). Each option's own layout is in its folder.
+ */
+
+/* The footer stays at the foot of a tall window. */
+body.iht {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.dash {
+  flex: 1 0 auto;
+}
+
+/* ---------- The strip that switches between the options ----------
+   Not part of any layout: it goes when one is chosen. */
+.opt-strip {
+  --focus: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem var(--iht-gutter);
+  background: var(--iht-ink);
+  color: #fff;
+  font-size: 0.9375rem;
+}
+
+body.iht .opt-strip a {
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--iht-radius-control);
+  color: #fff;
+  font-weight: 700;
+}
+
+body.iht .opt-strip a[aria-current="page"] {
+  background: #fff;
+  color: var(--iht-ink);
+  text-decoration: none;
+}
+
+/* ---------- Titles ---------- */
+
+.dash-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1.75rem;
+}
+
+.dash-h1 {
+  margin: 0;
+  color: var(--iht-blue);
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 1.5rem + 1.8vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+/* The group a program belongs to, above its name. */
+.dash-group {
+  margin: 0 0 0.25rem;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.dash-h2 {
+  margin: 0 0 1rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+/* Says the patients aren't real. */
+.dash-sample {
+  padding: 0.125rem 0.75rem;
+  border: 2px solid var(--iht-rule);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* ---------- Headline figures ---------- */
+
+.dash-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem clamp(1.5rem, 4vw, 3rem);
+  margin: 0;
+}
+
+.dash-figure {
+  flex: 0 1 13rem;
+  padding-top: 0.875rem;
+  border-top: 3px solid var(--iht-blue);
+}
+
+.dash-figure dt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.dash-figure dd {
+  margin: 0.125rem 0 0;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 1.5rem + 1.6vw, 2.75rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-figure dd.dash-figure__note {
+  color: var(--iht-ink-muted);
+  font-family: var(--iht-text);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* The keys: red means these people need follow-up, green means rewards paid. */
+.dash-figure--followup dt::before,
+.dash-figure--reward dt::before,
+.dash-flag::before {
+  content: "";
+  flex: none;
+  width: 0.8125rem;
+  height: 0.8125rem;
+  border-radius: 3px;
+  background: var(--iht-followup);
+}
+
+.dash-figure--reward dt::before {
+  background: var(--iht-reward);
+}
+
+/* ---------- Bar charts ---------- */
+
+/* The groups' colours: the Actionable group is red, the rest run from IHT blue to pale. The two
+   palest are under 3:1 against white, so they carry an IHT blue outline. */
+.dash-tone--followup {
+  background: var(--iht-followup);
+}
+
+.dash-tone--4 {
+  background: var(--iht-data-4);
+}
+
+.dash-tone--3 {
+  background: var(--iht-data-3);
+}
+
+.dash-tone--2 {
+  border: 2px solid var(--iht-blue);
+  background: var(--iht-data-2);
+}
+
+.dash-tone--1 {
+  border: 2px solid var(--iht-blue);
+  background: var(--iht-data-1);
+}
+
+.dash-bars {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dash-bar {
+  display: grid;
+  grid-template-columns: minmax(7rem, 13.5rem) minmax(3rem, 1fr) 4.5rem 3rem;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+}
+
+.dash-bar__track {
+  display: block;
+}
+
+.dash-bar__fill {
+  display: block;
+  box-sizing: border-box;
+  min-width: 6px;
+  height: 1.5rem;
+  border-radius: 4px;
+  transform-origin: left;
+}
+
+.dash-bar__count,
+.dash-bar__share {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-bar__count {
+  font-weight: 700;
+}
+
+.dash-bar__share {
+  color: var(--iht-ink-muted);
+}
+
+/* The bars grow in once (shared.js marks them); see the reduced-motion rule in the theme. */
+.dash-bars.is-waiting .dash-bar__fill {
+  transform: scaleX(0);
+}
+
+.dash-bars.is-drawn .dash-bar__fill {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.dash-bars.is-drawn .dash-bar:nth-child(2) .dash-bar__fill { transition-delay: 0.06s; }
+.dash-bars.is-drawn .dash-bar:nth-child(3) .dash-bar__fill { transition-delay: 0.12s; }
+.dash-bars.is-drawn .dash-bar:nth-child(4) .dash-bar__fill { transition-delay: 0.18s; }
+.dash-bars.is-drawn .dash-bar:nth-child(5) .dash-bar__fill { transition-delay: 0.24s; }
+
+/* The same groups as one thin strip. */
+.dash-strip {
+  display: flex;
+  gap: 2px;
+  height: 0.875rem;
+}
+
+.dash-strip span {
+  box-sizing: border-box;
+  min-width: 4px;
+  border-radius: 2px;
+}
+
+/* ---------- Patient lists ---------- */
+
+.dash-list__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.875rem;
+}
+
+/* All / Actionable: two halves of one pill; the chosen half is filled. */
+.dash-toggle {
+  display: inline-flex;
+}
+
+.dash-toggle button {
+  min-height: 44px;
+  padding: 0 1.125rem;
+  border: 2px solid var(--iht-blue);
+  background: #fff;
+  color: var(--iht-blue);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.dash-toggle button:first-child {
+  border-radius: 999px 0 0 999px;
+}
+
+.dash-toggle button:last-child {
+  margin-left: -2px;
+  border-radius: 0 999px 999px 0;
+}
+
+.dash-toggle button[aria-pressed="true"] {
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+.dash-toggle button:focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+/* A quiet button: outlined, for what isn't the main thing to do (Download). */
+body.iht .dash-quiet {
+  min-height: 44px;
+  padding: 0.5rem 1.125rem;
+  border-color: var(--iht-ink-muted);
+  background: #fff;
+  color: var(--iht-ink);
+  font-size: 1rem;
+}
+
+body.iht .dash-quiet:hover {
+  border-color: var(--iht-ink);
+  background: var(--iht-mist);
+}
+
+/* The table scrolls inside its box, both ways, with its headings and the names staying put. The
+   box is the positioning parent of what's inside it: otherwise the hidden screen-reader text in a
+   wide table (absolutely positioned) would stick out past the box and widen the page. */
+.dash-table-wrap {
+  position: relative;
+  max-height: min(36rem, 78vh);
+  overflow: auto;
+  border: 2px solid var(--iht-rule);
+  border-radius: var(--iht-radius-band);
+  container: dash-table / inline-size;
+}
+
+.dash-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-table th,
+.dash-table td {
+  padding: 0.625rem 0.75rem;
+  background: #fff;
+  font-weight: 400;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.dash-table tbody tr:nth-child(even) > * {
+  background: var(--iht-mist);
+}
+
+.dash-table tbody th {
+  font-weight: 700;
+}
+
+/* Headings: white on IHT blue. Each is a button that sorts by its column; an arrow shows the
+   column and direction the list is sorted by. */
+.dash-table thead th {
+  --focus: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--iht-blue);
+  color: #fff;
+  font-weight: 700;
+  vertical-align: bottom;
+}
+
+.dash-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dash-sort:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.dash-sort::after {
+  content: "";
+  flex: none;
+  border: 0.3125rem solid transparent;
+}
+
+th[aria-sort="ascending"] .dash-sort::after {
+  margin-top: -0.3125rem;
+  border-bottom-color: currentColor;
+}
+
+th[aria-sort="descending"] .dash-sort::after {
+  margin-top: 0.3125rem;
+  border-top-color: currentColor;
+}
+
+/* The names stay put while the table scrolls sideways, where there's room for that. */
+@container dash-table (min-width: 30em) {
+  .dash-table thead th:first-child,
+  .dash-table tbody th {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    border-right: 2px solid var(--iht-rule);
+  }
+
+  .dash-table thead th:first-child {
+    z-index: 3;
+    border-right-color: var(--iht-blue-deep);
+  }
+}
+
+/* Why a patient is Actionable: the red key beside the word. */
+.dash-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font-weight: 700;
+}
+
+/* ---------- A patient list that opens in place (options B and C) ---------- */
+
+.dash-details {
+  margin-top: 2rem;
+}
+
+.dash-details > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 52px;
+  padding: 0.5rem 1.125rem;
+  border: 2px solid var(--iht-rule);
+  border-radius: var(--iht-radius-band);
+  background: #fff;
+  color: var(--iht-ink);
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  cursor: pointer;
+  list-style: none;
+}
+
+.dash-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* A chevron that turns down when the list is open. */
+.dash-details > summary::before {
+  content: "";
+  flex: none;
+  width: 0.5625rem;
+  height: 0.5625rem;
+  margin-left: 0.125rem;
+  border: solid var(--iht-blue);
+  border-width: 0 3px 3px 0;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+
+.dash-details[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.dash-details > summary span {
+  margin-left: auto;
+  color: var(--iht-ink-muted);
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+@media (hover: hover) {
+  .dash-details > summary:hover {
+    border-color: var(--iht-blue);
+  }
+}
+
+.dash-details > .dash-list {
+  margin-top: 1rem;
+}
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 47.99875em) {
+  /* Each bar's label goes above it. */
+  .dash-bar {
+    grid-template-columns: minmax(0, 1fr) 4.5rem 3rem;
+  }
+
+  .dash-bar__label {
+    grid-column: 1 / -1;
+  }
+
+  .dash-figure {
+    flex-basis: 9.5rem;
+  }
+
+  .dash-table th,
+  .dash-table td {
+    padding: 0.5625rem 0.625rem;
+  }
+}

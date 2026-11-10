@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard layout options | IHT</title>
+  <!-- Temporary: three layout options for the dashboard, for the owner to choose from. Search
+       engines stay out. -->
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../dashboard/favicon.ico" sizes="32x32">
+  <link rel="icon" href="../dashboard/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#466eb6">
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .opt-page {
+      padding-block: clamp(2.5rem, 6vw, 4.5rem);
+    }
+
+    .opt-page > p {
+      max-width: 40rem;
+      margin: 1rem 0 0;
+      font-size: 1.125rem;
+    }
+
+    .opt-list {
+      display: grid;
+      gap: 1rem;
+      max-width: 44rem;
+      margin: 2rem 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .opt-list li {
+      position: relative;
+      padding: 1.25rem 1.5rem;
+      border: 3px solid var(--iht-rule);
+      border-radius: var(--iht-radius-band);
+    }
+
+    .opt-list li:hover {
+      border-color: var(--iht-blue);
+    }
+
+    body.iht .opt-list a {
+      font-family: var(--iht-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      text-decoration: none;
+    }
+
+    /* The whole box is the link. */
+    .opt-list a::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .opt-list span {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 1.0625rem;
+    }
+  </style>
+</head>
+
+<body class="iht">
+  <main class="iht-wrap opt-page">
+    <h1 class="dash-h1">Dashboard layout options</h1>
+    <p>Three working versions of the dashboard, all with the same sample data. They're temporary: the one
+      that's chosen replaces the current dashboard, and these pages go.</p>
+    <ul class="opt-list" role="list">
+      <li>
+        <a href="a/">A: Sidebar app</a>
+        <span>The programs are listed down the left. The right side shows one program at a time, with its
+          patient list on the page. It opens on an overview.</span>
+      </li>
+      <li>
+        <a href="b/">B: One scrolling page</a>
+        <span>No menus. Every program is a full-width band, one after another, each with a patient list that
+          opens in place.</span>
+      </li>
+      <li>
+        <a href="c/">C: Follow-up worklist</a>
+        <span>The people first: one list of everyone who needs follow-up, filtered by program, with each
+          program's numbers underneath.</span>
+      </li>
+    </ul>
+    <p><a href="../dashboard/">The current dashboard</a>, for comparison.</p>
+  </main>
+</body>
+
+</html>
