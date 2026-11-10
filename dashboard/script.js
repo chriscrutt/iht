@@ -538,17 +538,7 @@ function phq9PatientList() {
     });
 
     // Display the table in SweetAlert2 modal
-    Swal.fire({
-        title: "Patient List",
-        html: tableWrapper, // Use the table wrapper with sortable features
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "Download",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire("Downloaded!", "Your file has been downloaded.", "success");
-        }
-    });
+    showPatientList(tableWrapper);
 }
 
 function breastCancerPatientList() {
@@ -859,17 +849,7 @@ function breastCancerPatientList() {
     });
 
     // Display the table in SweetAlert2 modal
-    Swal.fire({
-        title: "Patient List",
-        html: tableWrapper, // Use the table wrapper with sortable features
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "Download",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire("Downloaded!", "Your file has been downloaded.", "success");
-        }
-    });
+    showPatientList(tableWrapper);
 }
 
 function fallPatientList() {
@@ -1209,17 +1189,151 @@ function fallPatientList() {
     });
 
     // Display the table in SweetAlert2 modal
+    showPatientList(tableWrapper);
+}
+
+// ---------- The Patient List dialog ----------
+// One dialog for all three lists. The table scrolls inside it (style.css), so its box takes
+// focus as well: Tab reaches it, and the arrow keys and Page Up/Down scroll it. Screen readers
+// name it by the dialog's title. While more columns are off to the right, the box's right edge
+// fades (dash-list--more).
+function showPatientList(tableWrapper) {
+    var observer = null;
     Swal.fire({
         title: "Patient List",
         html: tableWrapper, // Use the table wrapper with sortable features
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
         confirmButtonText: "Download",
+        // Themed in style.css: Download is IHT Blue, Cancel is outlined.
+        customClass: { popup: "dash-list" },
+        didOpen: function (popup) {
+            var box = Swal.getHtmlContainer();
+            box.tabIndex = 0;
+            box.setAttribute("role", "region");
+            box.setAttribute("aria-labelledby", Swal.getTitle().id);
+            var update = function () {
+                // The fade stops short of the scrollbars, where a system draws them.
+                popup.style.setProperty("--dash-scrollbar-w", box.offsetWidth - box.clientWidth + "px");
+                popup.style.setProperty("--dash-scrollbar-h", box.offsetHeight - box.clientHeight + "px");
+                popup.classList.toggle("dash-list--more",
+                    box.scrollLeft + box.clientWidth < box.scrollWidth - 1);
+            };
+            box.addEventListener("scroll", update, { passive: true });
+            if (window.ResizeObserver) {
+                observer = new ResizeObserver(update);
+                observer.observe(box);
+                observer.observe(box.querySelector("table"));
+            }
+            update();
+        },
+        willClose: function () {
+            if (observer) {
+                observer.disconnect();
+            }
+        },
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire("Downloaded!", "Your file has been downloaded.", "success");
         }
     });
+}
+
+// The charts and the focus handling below keep their names to themselves (no globals); only
+// the functions the page's onclick attributes call, and showPatientList, are global.
+(function () {
+
+// ---------- Charts ----------
+// Colours from the shared theme (../css/theme.css). Severity runs pale to dark blue, less to
+// more severe. The group counted as "Actionable" is Follow-up red, the same red as the key
+// beside that figure.
+var THEME = {
+    ink: "#1c2d50",
+    followUp: "#b42318",
+    // --iht-data-1 to -4. The two pale steps are under 3:1 against white, so their slices
+    // and legend keys get a 2px Ink outline.
+    data: ["#c4d1ea", "#8aa5dc", "#466eb6", "#1c2d50"],
+    text: '"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif',
+};
+var OUTLINED = [THEME.data[0], THEME.data[1]];
+
+// Canvas text (the tooltips) in the reading face, at the browser's default font size.
+var remPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+Chart.defaults.font.family = THEME.text;
+Chart.defaults.font.size = remPx;
+Chart.defaults.color = THEME.ink;
+// The draw-in is the page's only motion; none when the reader asks for less.
+if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    Chart.defaults.animation = false;
+}
+
+// The legend is HTML (.dash-legend, beside the donut or under it; see style.css), so it wraps,
+// grows with the browser's font size and can be read aloud. Pressing an entry hides or shows its
+// slice, as Chart.js's own legend did.
+var htmlLegend = {
+    id: "htmlLegend",
+    afterUpdate: function (chart) {
+        var list = chart.canvas.closest(".dash-chart").querySelector(".dash-legend");
+        var items = chart.options.plugins.legend.labels.generateLabels(chart);
+        if (list.children.length !== items.length) {
+            list.textContent = "";
+            items.forEach(function (item) {
+                var button = document.createElement("button");
+                button.type = "button";
+                button.className = "dash-legend__item";
+                var key = document.createElement("span");
+                key.className = "dash-legend__key";
+                key.style.backgroundColor = item.fillStyle;
+                if (OUTLINED.indexOf(item.fillStyle) !== -1) {
+                    key.classList.add("dash-legend__key--outlined");
+                }
+                button.appendChild(key);
+                button.appendChild(document.createTextNode(item.text));
+                button.addEventListener("click", function () {
+                    chart.toggleDataVisibility(item.index);
+                    chart.update();
+                });
+                var entry = document.createElement("li");
+                entry.appendChild(button);
+                list.appendChild(entry);
+            });
+        }
+        items.forEach(function (item, i) {
+            list.children[i].firstChild.setAttribute("aria-pressed", item.hidden ? "false" : "true");
+        });
+    },
+};
+
+function chartOptions() {
+    return {
+        responsive: true,
+        // Square, as wide as its box (.dash-chart__donut in style.css).
+        aspectRatio: 1,
+        cutout: "58%",
+        layout: { padding: 8 },
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: THEME.ink,
+                padding: 12,
+                cornerRadius: 6,
+                boxPadding: 6,
+                bodyFont: { size: remPx },
+            },
+        },
+    };
+}
+
+// The pale slices are outlined in Ink. Every slice has a 2px border (the others in their own
+// colour), centred on its edge, so with 4px of spacing each gap shows 2px of white.
+function slices(data, colors) {
+    return {
+        data: data,
+        backgroundColor: colors,
+        borderColor: colors.map(function (c) { return OUTLINED.indexOf(c) !== -1 ? THEME.ink : c; }),
+        borderWidth: 2,
+        spacing: 4,
+        hoverOffset: 6,
+    };
 }
 
 function drawPHQ9Chart() {
@@ -1235,48 +1349,14 @@ function drawPHQ9Chart() {
                 "0-4 (minimal)",
             ],
             datasets: [
-                {
-                    data: [23456, 12345, 15432, 35678, 36545],
-                    backgroundColor: [
-                        "rgba(255, 99, 132, 0.2)",
-                        "rgba(255, 206, 86, 0.2)",
-                        "rgba(54, 162, 235, 0.2)",
-                        "rgba(75, 192, 192, 0.2)",
-                        "rgba(153, 102, 255, 0.2)",
-                    ],
-                    borderColor: [
-                        "rgba(255, 99, 132, 1)",
-                        "rgba(255, 206, 86, 1)",
-                        "rgba(54, 162, 235, 1)",
-                        "rgba(75, 192, 192, 1)",
-                        "rgba(153, 102, 255, 1)",
-                    ],
-                    borderWidth: 1,
-                },
+                // "20-27 (severe)" is the 23,456 shown as Actionable.
+                slices([23456, 12345, 15432, 35678, 36545], [
+                    THEME.followUp, THEME.data[3], THEME.data[2], THEME.data[1], THEME.data[0],
+                ]),
             ],
         },
-        options: {
-            responsive: true,
-            // cutout: '80%',  // for doughnut visualization
-            plugins: {
-                legend: {
-                    position: "top",
-                    labels: {
-                        font: {
-                            size: 16, // Adjust the legend font size as desired
-                        },
-                    },
-                },
-                title: {
-                    display: true,
-                    text: "PHQ-9 Responses",
-                    font: {
-                        size: 24, // Adjust the title font size as desired
-                        weight: "bold", // Optionally adjust font weight
-                    },
-                },
-            },
-        },
+        options: chartOptions(),
+        plugins: [htmlLegend],
     });
 }
 
@@ -1287,44 +1367,12 @@ function drawBreastCancerChart() {
         data: {
             labels: ["Has Breast Cancer", "Does Not Have Breast Cancer", "Awaiting Screening"],
             datasets: [
-                {
-                    data: [3456, 2345, 5432],
-                    backgroundColor: [
-                        "rgba(255, 99, 132, 0.2)",
-                        "rgba(75, 192, 192, 0.2)",
-                        "rgba(255, 206, 86, 0.2)",
-                    ],
-                    borderColor: [
-                        "rgba(255, 99, 132, 1)",
-                        "rgba(75, 192, 192, 1)",
-                        "rgba(255, 206, 86, 1)",
-                    ],
-                    borderWidth: 1,
-                },
+                // "Awaiting Screening" is the 5,432 shown as Actionable.
+                slices([3456, 2345, 5432], [THEME.data[3], THEME.data[1], THEME.followUp]),
             ],
         },
-        options: {
-            responsive: true,
-            // cutout: '80%',  // for doughnut visualization
-            plugins: {
-                legend: {
-                    position: "top",
-                    labels: {
-                        font: {
-                            size: 16, // Adjust the legend font size as desired
-                        },
-                    },
-                },
-                title: {
-                    display: true,
-                    text: "Breast Cancer Screening Results",
-                    font: {
-                        size: 24, // Adjust the title font size as desired
-                        weight: "bold", // Optionally adjust font weight
-                    },
-                },
-            },
-        },
+        options: chartOptions(),
+        plugins: [htmlLegend],
     });
 }
 
@@ -1335,49 +1383,43 @@ function drawFallChart() {
         data: {
             labels: ["Severe", "Moderate", "Mild", "None"],
             datasets: [
-                {
-                    data: [6321, 7495, 9463, 8736],
-                    backgroundColor: [
-                        "rgba(255, 99, 132, 0.2)",
-                        "rgba(255, 206, 86, 0.2)",
-                        "rgba(54, 162, 235, 0.2)",
-                        "rgba(75, 192, 192, 0.2)",
-                    ],
-                    borderColor: [
-                        "rgba(255, 99, 132, 1)",
-                        "rgba(255, 206, 86, 1)",
-                        "rgba(54, 162, 235, 1)",
-                        "rgba(75, 192, 192, 1)",
-                    ],
-                    borderWidth: 1,
-                },
+                // "Severe" is the 6,321 shown as Actionable.
+                slices([6321, 7495, 9463, 8736], [
+                    THEME.followUp, THEME.data[2], THEME.data[1], THEME.data[0],
+                ]),
             ],
         },
-        options: {
-            responsive: true,
-            // cutout: '80%',  // for doughnut visualization
-            plugins: {
-                legend: {
-                    position: "top",
-                    labels: {
-                        font: {
-                            size: 16, // Adjust the legend font size as desired
-                        },
-                    },
-                },
-                title: {
-                    display: true,
-                    text: "Patient Risk Levels",
-                    font: {
-                        size: 24, // Adjust the title font size as desired
-                        weight: "bold", // Optionally adjust font weight
-                    },
-                },
-            },
-        },
+        options: chartOptions(),
+        plugins: [htmlLegend],
     });
 }
 
 drawPHQ9Chart();
 drawBreastCancerChart();
 drawFallChart();
+
+// ---------- Focus and the sticky bar ----------
+// The bar covers the top of the window. theme.css's scroll-margin keeps a control that takes
+// focus clear of it whenever the browser scrolls to the control. Firefox doesn't scroll to one
+// that is already inside the window, though, even when the bar covers part of it (a tab two
+// lines tall, with a large default font on a phone), so that one is moved down here.
+document.querySelector(".dash").addEventListener("focusin", function (event) {
+    // Keyboard focus only. A mouse press focuses a tab or button too, and scrolling before the
+    // button is released would move the control out from under the pointer and lose the click.
+    try {
+        if (!event.target.matches(":focus-visible")) {
+            return;
+        }
+    } catch (e) {
+        // No :focus-visible: keep the correction for every focus.
+    }
+    requestAnimationFrame(function () {
+        var bar = document.querySelector(".iht-header").getBoundingClientRect().bottom;
+        var top = event.target.getBoundingClientRect().top;
+        if (top < bar) {
+            window.scrollBy({ top: top - bar - 8, behavior: "instant" });
+        }
+    });
+});
+
+})();

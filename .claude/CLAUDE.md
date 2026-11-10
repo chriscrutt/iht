@@ -23,29 +23,48 @@ A static site for IHT plus two demo apps, all served by GitHub Pages from this r
 | `dashboard/` | https://iht.tools/dashboard/ | clinic-side mock-up; formerly `chriscrutt/iht-dashboard` at dashboard.iht.tools |
 | `wellnesswallet/` (landing page, `fallPrevention/`, `PHQ9/`, `submitted/`) | https://iht.tools/wellnesswallet/ | patient demo; formerly `chriscrutt/iht-demo` (branch `noFhir`) at wellnesswallet.iht.tools |
 
-Each site is self-contained. The main site and `wellnesswallet/` each have their own `css/`, `js/`, `image/` and `plugins/`. `dashboard/` is just four files: `index.html`, `script.js`, `style.css` and `favicon.png`.
+All 8 pages share one stylesheet, `css/theme.css` at the repo root. The dashboard also uses the main site's phone menu, `plugins/menu/menu.js`. Apart from those two files each site is self-contained: the main site and `wellnesswallet/` each have their own `css/`, `js/`, `image/` and `plugins/`, and `dashboard/` is just four files: `index.html`, `script.js`, `style.css` and `favicon.png`.
 
 ## Editing rules
-- Keep asset paths relative to the page's own site folder.
+- Keep asset paths relative to the page's own folder.
   - Don't use root-absolute paths like `/css/...`.
-  - Don't use a `../` that climbs out of `dashboard/` or `wellnesswallet/` into the main site. That's what broke the Wellness Wallet landing page when it moved (fixed in 4ad7460).
+  - Every page loads the theme by a relative path: `css/theme.css` from the home page, `../css/theme.css` from `team/`, `demo/`, `dashboard/` and `wellnesswallet/`, and `../../css/theme.css` from the Wellness Wallet's subpages. The dashboard also loads `../plugins/menu/menu.js`.
+  - Don't load anything else from outside `dashboard/` or `wellnesswallet/`. A `../` into the main site is what broke the Wellness Wallet landing page when it moved (fixed in 4ad7460).
 - Link to the sub-sites with a trailing slash: `/wellnesswallet/`, not `/wellnesswallet`.
 - Keep changes small and test them locally before pushing to `master`. There's no staging site.
-- Each Wellness Wallet page keeps its layout fixes at the end of its own `<style>` block. Its media queries for phones, tablets and zoomed windows don't match the five desktop window sizes (1280x800, 1366x768, 1440x900, 1536x864, 1920x1080). On the quizzes, though, the `(min-width: 992px)` query and the rules outside any media query do apply on desktop. Leave `wellnesswallet/css/main.css` alone, since all four pages share it.
+- The theme applies only where a page opts in with a body class:
+  - `<body class="iht">` on the site pages: home, team and the dashboard.
+  - `<body class="iht iht--patient">` on the patient pages: the four Wellness Wallet pages and `demo/`.
+  - Every rule in `css/theme.css` is scoped to one of those classes or to an `iht-` class. Keep it that way, with no bare `h1`, `.btn` or `*` rules: the patient pages still load the template's `bootstrap.css` and `main.css` underneath.
+- What goes where:
+  - `css/theme.css` holds what pages share: the tokens (colours, fonts, sizes), the header, buttons, footers, and the quiz screens' type, answers, Go Back, Finish and dialogs. Its sections are listed at its top.
+  - Page-specific CSS stays in the page: the dashboard's in `dashboard/style.css`, every other page's in its own `<style>` block.
+  - Leave the template's `main.css` files alone. `wellnesswallet/css/main.css` is shared by the four Wellness Wallet pages, and `demo/` loads the main site's `css/main.css`.
+- Colours each mean one thing: IHT Blue is the brand and "go on", the red `--iht-followup` means a person needs follow-up, and the green `--iht-reward` means a reward or done.
+- The header's height is the token `--iht-header-h`: 72px on desktop and 64px below 992px at the default font. It grows with a larger font, but only up to a cap. Anything that must clear the header reads the token, so don't write a header height into a page.
+  - The site pages' header is sticky. Its phone layout starts below 992px (`max-width: 991.98px`), and `plugins/menu/menu.js` uses the same query, so change both together. The page layouts switch at `em` widths instead, so a larger default font gets the one-column layout sooner.
+  - The patient header is laid over the page: `position: absolute` below 992px, `fixed` from 992px. The start page's stacked layout (below 992px, or a portrait window) puts it back in the flow with `position: relative`.
+- Each Wellness Wallet page keeps its layout fixes at the end of its own `<style>` block. Its media queries for phones, tablets and zoomed windows don't match the five desktop window sizes (1280x800, 1366x768, 1440x900, 1536x864, 1920x1080). On every page, though, the rules outside any media query apply on desktop, and so do the quizzes' `(min-width: 992px)` query and the start page's wide-window queries: `(min-width: 1200px)`, the slogan's `(min-width: 64em)` and `min-aspect-ratio`.
   - The start page's desktop type is sized in `vh`, so it follows the window's height.
-  - On the quizzes, each screen is at least one window tall and grows, so the page scrolls, when its content doesn't fit. Two equal empty flex items, `.testFhir::before` and `::after` (sized by the `--room` variables), leave room for the 92px header and the fixed Go Back button: content clears the header when scrolled to the top, and Go Back when scrolled to the bottom. The end screen has its own spacers. At the desktop sizes, a question or video screen that fits sits exactly where it did before PR #3.
+  - On the quizzes, each screen is at least one window tall and grows, so the page scrolls, when its content doesn't fit. Two equal empty flex items, `.testFhir::before` and `::after`, leave room for the header and Go Back. They're sized by the `--room` variables, which read `--iht-header-h` and Go Back's height. Content clears the header when scrolled to the top, and Go Back when scrolled to the bottom. The end screen has its own spacers.
+  - Go Back and the quiz footer sit at the foot of the quiz (`.testFhir`), not fixed to the window. When a screen fits, that's the bottom of the window. When it's taller, they wait below its last button, so they never cover it.
   - Go Back starts hidden and ignores clicks while it's transparent. It's drawn on top of the footer, and the footer on top of the answers.
-  - Anything added to a screen can make it scroll, or push Finish toward Go Back, so measure at common phone and laptop sizes, and with a larger default font.
+  - Anything added to a screen can make it scroll, or push Finish toward Go Back, so measure at the sizes and fonts listed under "Test locally".
 
 ## Test locally
 1. From the repo root, run `python3 -m http.server 8000` (`py -m http.server 8000` on Windows). Serving from the root reproduces the paths GitHub Pages uses.
 2. Open these pages under http://localhost:8000:
-   - `/`, `/team/` and `/demo/`, plus the phone-width menu on `/` and `/team/`
-   - `/dashboard/`
+   - `/`, `/team/`, `/demo/` and `/dashboard/`, plus the phone-width menu on `/`, `/team/` and `/dashboard/`
    - `/wellnesswallet/` and its `fallPrevention/`, `PHQ9/` and `submitted/` pages
-3. For the Wellness Wallet, also try a phone (390x844), 1024x768, a laptop window zoomed to 150%, and a larger browser font size (Chrome's "Very large" is 24px).
+3. Try them at these window sizes:
+   - laptops and desktops: 1280x800, 1366x768, 1440x900, 1536x864 and 1920x1080, plus the windows real laptops show, such as 1366x657, 1440x789 and 1920x969
+   - phones: 360x740, 375x667, 390x844, 412x915 and 430x932, and a phone on its side (844x390)
+   - tablets: 768x1024 and 1024x768
+   - 1280x800 and 1366x768 zoomed to 125% and 150%
+4. Also try a larger default font of 20, 24 and 32px, and reduced motion. Chrome's "Large" font size is 20px and "Very large" is 24px; Firefox's font settings go higher.
+5. Check that nothing scrolls sideways, no text is cut off or under the header, Go Back never covers an answer, Continue or Finish, and the dialogs fit the window.
 
-Some libraries load from public CDNs, so you need to be online.
+Some libraries load from public CDNs, and the theme's fonts from Google Fonts, so you need to be online.
 
 On Windows, several `http.server` processes can listen on the same port at once, and a test can then get another copy's files. Give each test server its own port.
 
@@ -81,25 +100,36 @@ Don't press Submit on `demo/`: it sends the answers to the public HAPI test serv
   - a double-click on a quiz answer no longer skips the next question
 - PR #3 (branch `fix-ww-layout`) made the Wellness Wallet pages fit phones, tablets and zoomed laptop windows. Before, content there was cut off, covered or out of reach. At the five desktop window sizes the pages look as they did, except quiz screens that had something covered or cut off.
   - The five desktop sizes are browser viewports. A real 1366x768 laptop shows a viewport about 1366x657, so it gets the smaller-window quiz layout; that was tested too.
+- PR #4 (branch `refresh-look`) gave all 8 pages one look from a shared stylesheet, `css/theme.css`: a blue IHT header, Archivo for titles, Atkinson Hyperlegible Next for reading, and a few colours that each mean one thing. The patient pages keep their large print and now also fit larger default fonts and short windows: the header no longer spills, Go Back no longer covers a button, and the dialogs fit. The dashboard got a phone layout, and the wording changed in only a few places: a team bio and heading, the dashboard's colons, image descriptions, illustration credits and a skip link.
 
 ## Open items
-1. The quiz answers, Go Back and Finish can't be reached from the keyboard: the answers and Go Back are `div`s, and Finish is an `<a>` with no `href`.
-2. Small layout problems left after PR #3:
-   - On very large or nearly square landscape windows (2560x1440, 1920x1200, 1100x1000), the start page's "Christopher!" runs under the gift-card picture. At 1200x600 the footer covers the bottom of the picture. Fixing these would change the desktop layout.
-   - When a quiz screen taller than the window first appears, Go Back can sit over part of its lowest button until the page is scrolled.
-   - At desktop sizes, on the PHQ-9 questions that scroll (6 to 8 at 1280x800, and 8 at 1366x768 and 1440x900), the last answer touches Go Back's border, by under 2px, at the bottom of the scroll.
-   - At 280px wide (a folding phone's cover screen), the quiz end screens are about 23px wider than the window, so "Remember:" and the lines under it are cut off by up to 11px at both sides.
-   - On phones the quiz questions, answers and end screens are sized by the width, so they hardly grow when the browser's font size is raised. The end-screen cap stops at 767px wide, so at 768x1024 with a 32px default font "Remember:" runs past the right edge, as it does on `master`.
-   - The quiz and gift-card headers are a fixed 92px. With a 24px or larger default font, "IHT - Wellness Wallet" wraps and spills below the bar on phones, over the first line of content. At 32px on a 360px phone it covers the 988 link on PHQ-9's crisis end screen.
+1. Keyboard and screen readers:
+   - The quiz answers, Go Back and Finish can't be reached from the keyboard: the answers and Go Back are `div`s, and Finish is an `<a>` with no `href`.
+   - The dashboard's Patient List sorts by a column when its heading is clicked, but the headings can't be reached from the keyboard.
+   - The gift cards on `submitted/` have no accessible name or pressed state, because their logos are background pictures. Naming them needs new wording.
+2. Small layout problems:
+   - Go Back sits at the foot of the quiz, so on a screen taller than the window it can be below the fold, or cut off by the window's bottom edge, when the screen first appears. Examples are PHQ-9's question 8 at 1280x800 and most screens at the 125% and 150% zooms. It covers nothing, and scrolling brings it into view.
+   - At 280px wide (a folding phone's cover screen), the quiz end screens used to be about 34px wider than the window. "Remember:" is now capped by the window's width, and with a 32px font the start page's "$10 gift card" wraps inside its box, but neither has been re-measured at 280px.
+   - On phones the quiz end screens are sized by the width, so apart from Finish they don't grow when the browser's font size is raised. The questions and answers do.
+   - The dashboard's Patient List scrolls sideways where its columns don't fit. At the default font that's below about 1280px wide for PHQ-9's 13 columns, and below 1024px for the other two lists. A fade at its right edge shows there's more.
 3. Decided to leave as they are on 2026-11-05:
    - `demo/` still POSTs its quiz answers to the public HAPI test server, under test patient 22, when someone presses Submit.
    - The Wellness Wallet stores nothing: quiz answers only go to the browser console.
    - The start page greets everyone as "Hello Christopher!".
    - `submitted/` ends on prospectmedical.com.
 4. Smaller:
-   - Unpinned CDN libraries: `chart.js` and `sweetalert2@11` on the dashboard, and `sweetalert` on the Wellness Wallet.
+   - Unpinned CDN libraries: `chart.js` and `sweetalert2@11` on the dashboard, and `sweetalert` on the Wellness Wallet. The theme styles their charts and dialogs, so a new major version could break the look. It was built against Chart.js 4.6.1, SweetAlert2 11.26.25 and sweetalert 2.1.2.
    - Google Analytics is split: the Wellness Wallet start page reports to G-BTYQ6V2CCM and its subpages to G-VMM3KZFGGE.
    - The dashboard's data and its Download button are fake.
    - Rite Aid, one of the gift-card choices, closed in 2025.
-   - `css/main.css` has a 991–992px breakpoint gap, so at some zoom levels neither the mobile nor the desktop header applies.
    - PHQ-9's first question is drawn at 2em when the page loads, but at 1.8em when Go Back returns to it, because the static markup lacks the inline size that `renderQuestion()` sets.
+   - Older browsers get a plainer version of a few details:
+     - Without `:has()` (Firefox before 121, Safari before 15.4), Go Back stays centred on the end screen instead of lining up under Finish, and Request a Demo jumps instead of scrolling smoothly.
+     - Without container queries (Chrome before 105, Safari before 16, Firefox before 110), the Patient List's name column doesn't stay put while the table scrolls sideways, and the home page's title isn't capped by its column.
+     - Without `zoom` (Firefox before 126), the dialogs' icon doesn't shrink on short windows.
+   - Playwright's WebKit on Windows doesn't apply variable-font axes, so there Archivo and Atkinson Hyperlegible Next show at their regular weight and width. Judge type in Chromium or Firefox, or in real Safari.
+5. Left from the last review of PR #4, all minor:
+   - Look: "Resume Video?" takes two lines from 1440x900 up, as on master. The site buttons' base size (17px, 48px tall) isn't the 18px and 52px the pages use. On desktop the quiz end screen's column doesn't line up with the header, as on master.
+   - Keyboard and screen readers, as on master: after the end screen's links, Tab reaches the closed "Resume Video?" buttons, and the video's own controls take a second Tab stop with no ring. The quizzes, `demo/` and `submitted/` have no `<main>`, the end-screen list is a `ul` of `h2`s, the dashboard's charts have no text alternative and its content has no headings, and every page but the dashboard is titled "IHT.tools". New: at the top of the dashboard, the top edge of a main tab's focus ring is under the bar.
+   - Large fonts: the patient footers stop at 20px. At 32px the menu's × is clipped at 280 and 320px wide, the dashboard's skip link runs below the bar, and "Resume Video?" is taller than a 280 or 320px window (as on master).
+   - Code: `dashboard/script.js` adds seven globals. The start page and `submitted/` load the template's CSS and scripts though nothing uses them (about 970KB and 490KB). The fonts load through an `@import` in `theme.css`, with no preconnect. `demo/` loads `menu.js` but has no menu, `team/` keeps the unused class `yobtn`, and three pages repeat the sticky-footer body rule.

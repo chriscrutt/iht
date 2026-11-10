@@ -11,17 +11,12 @@
   <link rel="shortcut icon" href="../image/favicon.png" type="image/x-icon">
   <!-- Bootstrap , fonts & icons  -->
   <link rel="stylesheet" href="../css/bootstrap.css">
-  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <!-- Plugin'stylesheets  -->
-  <link rel="stylesheet" href="../plugins/aos/aos.min.css">
   <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <!-- Vendor stylesheets  -->
   <link rel="stylesheet" href="../css/main.css">
-  <!-- Custom stylesheet -->
+  <!-- The shared theme, after the template CSS so it wins. It loads its own fonts. -->
+  <link rel="stylesheet" href="../css/theme.css">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTYQ6V2CCM"></script>
   <script>
@@ -33,7 +28,7 @@
   </script>
 </head>
 
-<body data-theme-mode-panel-active data-theme="light" style="font-family: 'Mazzard H';">
+<body class="iht iht--patient" data-theme-mode-panel-active data-theme="light">
   <div class="site-wrapper overflow-hidden position-relative">
     <!-- Site Header -->
     <!-- Preloader -->
@@ -43,18 +38,10 @@
    </div>
    </div>    -->
     <!--Site Header Area -->
-    <header style="background-color: #466EB6;"
-      class="site-header site-header--menu-right landing-14-menu site-header--absolute site-header--sticky">
-      <div class="container">
-        <nav style=" height: 92px;" class="navbar site-navbar">
-          <!-- Brand Logo-->
-          <div class="brand-logo">
-            <a href="#">
-              <!-- <img src="image/logo/logo-black.png" alt=""> -->
-              <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT - Wellness Wallet</h1>
-            </a>
-          </div>
-        </nav>
+    <!-- The shared header, patient version: the wordmark and "Wellness Wallet", no links. -->
+    <header class="iht-header iht-header--patient">
+      <div class="iht-header__inner">
+        <h1 class="iht-brand"><span class="iht-wordmark">IHT</span> <span class="iht-brand__app">Wellness Wallet</span></h1>
       </div>
     </header>
     <!-- navbar- -->
@@ -74,7 +61,7 @@
                 </div>
               </div>
               <div id="video">
-                <h1 style="color: #466EB6;">Thank you for sharing.</h1>
+                <h1>Thank you for sharing.</h1>
                 <h3>Now, watch this quick video to learn more about fall prevention.</h3>
                 <div id="player"></div>
                 <button class="btn" type="submit">Submit</button>
@@ -91,43 +78,27 @@
   </div>
   <!-- Footer Area -->
   <!-- Vendor Scripts -->
-  <script src="../plugins/aos/aos.min.js"></script>
   <script src="../plugins/menu/menu.js"></script>
   <style>
-    .testFhir footer {
-      border-top: 0;
-    }
-
-    body {
-      background-image: url("../image/l4/background-1920x1080.png");
-    }
-
-    .btn:hover {
-      background: #466eb6 !important;
-      color: #fff !important;
-    }
-
-    .btn {
-      background: #fff !important;
-      border: 2px solid #466eb6 !important;
-      color: #466eb6 !important;
-      padding: 25px;
-      font-size: 1em;
-    }
-
-    p {
-      color: #466EB6;
-    }
-
-    * {
-      font-family: Rubik;
-      color: #466EB6;
-    }
+    /* The look (type, colours, the answers, the Submit pill) is in ../css/theme.css. This block
+       is the quiz's own layout. */
 
     #questionnaire-form {
-      width: 35vw;
+      width: 40vw;
       height: 35vh;
       font-size: 2em;
+      /* No card: main.css's shadow goes, as the theme has no shadows on the page. */
+      box-shadow: none;
+    }
+
+    /* The question and the answers are the fall quiz's size, 2em of the form (64px), wherever
+       the window is wide enough; on phones they keep master's 1.25em (40px). */
+    #question p {
+      font-size: max(1.25em, min(2em, 9vw));
+    }
+
+    #choices {
+      --iht-answer-size: max(1.25em, min(2em, 9vw));
     }
 
     .testFhir {
@@ -135,9 +106,98 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      /* At least one window tall, and taller (the page scrolls) when a screen doesn't fit. */
+      min-height: 100vh;
+      height: auto;
       padding-top: 0;
       background-color: #ffffff00;
+    }
+
+    /* Keep each screen clear of the header and the footer. It's centred in the window between
+       two empty flex items of the same height, the room the header needs; one that doesn't fit
+       makes the page grow and scroll. */
+    .testFhir {
+      --room-top: calc(var(--iht-header-h) + 8px);  /* a little space under the header */
+      --room-bottom: calc(40px + 0.75rem);          /* the footer is at most 40px tall */
+      --room: max(var(--room-top), var(--room-bottom));
+    }
+
+    .testFhir::before,
+    .testFhir::after {
+      content: "";
+      flex: none;
+      height: var(--room);
+    }
+
+    /* The footer sits at the foot of the page (main.css fixes it to the window), so it's never
+       drawn over a screen taller than the window. */
+    .testFhir footer {
+      position: absolute;
+      z-index: 6;
+    }
+
+    /* The video screen: "Thank you for sharing." (theme.css), then this line in the reading
+       weight, the player, and Submit (theme.css's blue pill). */
+    #video h3 {
+      margin-bottom: 0.75rem;
+      color: var(--iht-ink);
+      font-weight: 400;
+      line-height: 1.3;
+      text-wrap: balance;
+    }
+
+    /* Vimeo's player is an <iframe width="750" height="450">. It keeps that shape, but it's never
+       taller than half the window or wider than the screen. */
+    #player iframe {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      height: min(450px, 50vh);
+      aspect-ratio: 750 / 450;
+      margin: 0 auto 1rem;
+      border-radius: var(--iht-radius-band);
+      background: var(--iht-ink);
+    }
+
+    /* Portrait screens: the player fits the width rather than half the height. */
+    @media (max-aspect-ratio: 1/1) {
+      #player iframe {
+        width: 100%;
+        max-width: 750px;
+        height: auto;
+      }
+    }
+
+    @media (min-width: 992px) {
+      /* Yes and No stay side by side, as before. With a large default font the pair can be
+         wider than the form; it stays centred, inside the window. */
+      .testFhir #choices {
+        flex-wrap: nowrap;
+      }
+    }
+
+    /* Smaller windows: phones, tablets, and short or zoomed-in laptop windows. */
+    @media (max-width: 1279px), (max-height: 767px) {
+      /* The whole width, not Bootstrap's 540px or 720px. */
+      .testFhir > .container {
+        max-width: none;
+      }
+
+      /* At least 32rem wide, but within the screen, as on the fall quiz. */
+      #questionnaire-form {
+        width: min(max(40vw, 32rem), 100vw - min(3rem, 48px));
+      }
+
+      /* The question wraps. On phones the answers are 40px at the default font; with a larger
+         one they grow only as far as Yes and No still fit side by side. */
+      #choices {
+        --iht-answer-size: max(min(1.25em, max(40px, 13.75vw)), min(2em, 9vw));
+      }
+
+      /* The gap between them is capped by the width too (theme.css's at the default font). */
+      .testFhir #choices {
+        gap: max(12px, min(0.5em, 5vw));
+      }
     }
   </style>
   <script>
@@ -251,6 +311,8 @@
 
     // render a question
     function renderQuestion() {
+      // A screen can be taller than a small window, so show each new one from the top.
+      window.scrollTo(0, 0);
       let q = questions[runningQuestion];
       question.innerHTML = "<p>" + q.question + "</p>";
       choiceA.innerHTML = q.choiceA;
@@ -272,6 +334,7 @@
     }
 
     function func() {
+      window.scrollTo(0, 0);
       document.getElementById("questionnaire-form").style.display = "none";
       document.getElementById("video").style.display = "block";
 

@@ -9,15 +9,10 @@
   <link rel="shortcut icon" href="./image/favicon.png" type="image/x-icon">
   <!-- Bootstrap , fonts & icons  -->
   <link rel="stylesheet" href="./css/bootstrap.css">
-  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <!-- Plugin'stylesheets  -->
-  <link rel="stylesheet" href="./plugins/aos/aos.min.css">
   <!-- Vendor stylesheets  -->
   <link rel="stylesheet" href="./css/main.css">
-  <!-- Custom stylesheet -->
+  <!-- The shared theme, after the template CSS so it wins. It loads its own fonts. -->
+  <link rel="stylesheet" href="../css/theme.css">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTYQ6V2CCM"></script>
   <script>
@@ -29,159 +24,269 @@
   </script>
 </head>
 
-<body data-theme-mode-panel-active data-theme="light" style="font-family: 'Mazzard H';">
-  <div class="site-wrapper overflow-hidden position-relative">
-    <!-- Site Header -->
-    <!-- Preloader -->
-    <!-- <div id="loading">
-    <div class="preloader">
-     <img src="./image/preloader.gif" alt="preloader">
-   </div>
-   </div>    -->
-    <!--Site Header Area -->
-    <header style="background-color: #466EB6;"
-      class="site-header site-header--menu-right landing-14-menu site-header--absolute site-header--sticky">
-      <div class="container">
-        <nav style=" height: 92px;" class="navbar site-navbar">
-          <!-- Brand Logo-->
-          <div class="brand-logo">
-            <a href="#">
-              <!-- <img src="image/logo/logo-black.png" alt=""> -->
-              <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">Improve Your Health … Earn Cash …
-                Live Better</h1>
-            </a>
-          </div>
-        </nav>
-      </div>
-    </header>
-    <!-- navbar- -->
-    <!-- Hero Area -->
-    <div class="hero-area-l-14 position-relative z-index-1 overflow-hidden" style="height: 100vh;">
-      <div class="container">
-        <div class="row position-relative justify-content-center">
-          <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 " data-aos="fade-right" data-aos-duration="800"
-            data-aos-once="true" style="width: 50%;">
-            <div class="content">
-              <h1 id="greeting" style="color:#466EB6; font-size: 10vh;line-height: 10vh;">Hello Christopher!</h1>
-              <p style="color:#466EB6; font-size: 5vh; line-height: 5vh;">Answer a few questions then watch a quick
-                video and get a $10 gift card sent to your home.</p>
-              <!-- <div onclick="console.log('yo')"> -->
-              <a href="./fallPrevention/" id="getStarted" class="btn focus-reset"
-                style="font-size: 5vh;border-radius:1vh;">Get
-                Started</a> <!-- </div> -->
-            </div>
-          </div>
-          <div class="col-xl-7 col-lg-5 col-md-8 " data-aos="fade-left" data-aos-duration="800" data-aos-once="true"
-            style="width: 50%;">
-            <div class="banner-image-l-14" style="position:absolute; margin-top:0">
-              <img src="./image/giftCard.svg"
-                alt="https://www.freepik.com/free-vector/gift-card-peoples-hands-flat-vector-illustration-person-giving-birthday-present-celebration-party-surprise-congratulation-holiday-concept-banner-website-design-landing-web-page_26921767.htm Image by pch.vector on Freepik"
-                class="w-100 mt-xl-n10">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="bg-shape-14"></div>
+<body class="iht iht--patient" data-theme-mode-panel-active data-theme="light">
+  <!-- The shared header, patient version: the wordmark and "Wellness Wallet", no links. -->
+  <header class="iht-header iht-header--patient">
+    <div class="iht-header__inner">
+      <h1 class="iht-brand"><span class="iht-wordmark">IHT</span> <span class="iht-brand__app">Wellness Wallet</span></h1>
     </div>
-  </div>
+  </header>
+  <main class="ww-start">
+    <div class="ww-start__grid">
+      <!-- The slogan was the old header's text. It breaks between its phrases (see the styles). -->
+      <p class="ww-slogan"><span>Improve Your Health …</span> <span>Earn Cash …</span> <span>Live Better</span></p>
+      <div class="ww-start__text">
+        <h1 id="greeting">Hello Christopher!</h1>
+        <p class="ww-lede">Answer a few questions then watch a quick video and get a <strong>$10 gift card</strong> sent to
+          your home.</p>
+        <a href="./fallPrevention/" id="getStarted" class="iht-btn iht-btn--primary iht-btn--pill">Get Started</a>
+      </div>
+      <figure class="ww-start__art">
+        <img src="./image/giftCard.svg" alt="A hand passing a gift card to another hand" width="4222" height="2667">
+      </figure>
+    </div>
+  </main>
+  <footer class="iht-footer iht-footer--slim">
+    <span>Incentive Health Technologies, LLC</span>
+    <span>Illustration by <a href="https://www.freepik.com/author/pch-vector">pch.vector on Freepik</a></span>
+  </footer>
   <style>
-    .hero-area-l-14 .content .btn {
-      border: 3px solid seagreen !important;
-      background-color: seagreen;
-      color: #fff;
-      height: 7vh;
+    /* The look (type, colours, the header, the button) is in ../css/theme.css. This is the page's
+       layout.
+
+       Landscape windows from 992px: one window, the slogan across the top, then the greeting and
+       its text beside the picture. The type is sized in vh, as before, so it follows the window's
+       height; nothing is smaller than it was. The header is fixed over the top of the page
+       (theme.css), so the page starts below it. If a larger default font makes the content taller
+       than the window, the page grows and scrolls instead of cutting it off. */
+    body.iht--patient {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100svh;
     }
 
-    .hero-area-l-14 .content .btn:hover {
-      border: 3px solid seagreen !important;
-      background-color: mediumseagreen !important;
-      /* color: limegreen !important; */
+    .ww-start {
+      flex: 1 0 auto;
+      display: flex;
+      align-items: center;
+      padding: calc(var(--iht-header-h) + 4vh) 0 5vh;
     }
 
-    /* Phones, portrait tablets and zoomed-in laptops. The two-column hero above is one window
-       tall, can't scroll and sizes its type in vh, so on narrow or portrait screens its text runs
-       off the bottom. Here the text goes above the picture, the type is sized mostly by the
-       width, and the header, hero and footer follow one another so the page can scroll.
-       !important is needed to beat the inline styles and main.css's own !important rules. */
+    .ww-start__grid {
+      display: grid;
+      /* The text's column is never narrower than "Christopher!", which can't wrap; the picture
+         takes what's left. */
+      grid-template-columns: minmax(min-content, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        "slogan slogan"
+        "text art";
+      column-gap: 3rem;
+      align-items: center;
+      width: 100%;
+      max-width: var(--iht-max);
+      margin: 0 auto;
+      padding: 0 var(--iht-gutter);
+    }
+
+    /* The old header's line, now on the page, as large as it was in the bar (Bootstrap's h1:
+       1.375rem + 1.5vw, and 2.5rem from 1200px), on one line (it's 22.3em wide). With a larger
+       default font the old one wrapped and ran off the top of the window; this one is capped
+       instead, at the largest size that still fits on one line. */
+    .ww-slogan {
+      --ww-one-line: calc((min(100vw, var(--iht-max)) - 2 * var(--iht-gutter)) / 22.8);
+      grid-area: slogan;
+      margin: 0 0 3vh;
+      color: var(--iht-ink);
+      font-family: var(--iht-display);
+      font-stretch: 100%;
+      font-weight: 700;
+      font-size: min(1.375rem + 1.5vw, var(--ww-one-line));
+      line-height: 1.15;
+      letter-spacing: -0.005em;
+      text-wrap: balance;
+    }
+
+    @media (min-width: 1200px) {
+      .ww-slogan {
+        font-size: min(2.5rem, var(--ww-one-line));
+      }
+    }
+
+    /* Archivo's Semi-expanded cut (112.5%), as on the site's other secondary headings, wherever
+       the line still fits at the full size above: it's 25.05em wide there. That's every desktop
+       window from 1024px at the default font. With a larger default font, or a window just over
+       992px, the normal cut stays, so the line isn't made smaller to fit the wider cut. */
+    @media (min-width: 64em) and (max-width: 1199.98px), (min-width: 68em) and (min-width: 1200px) {
+      .ww-slogan {
+        --ww-one-line: calc((min(100vw, var(--iht-max)) - 2 * var(--iht-gutter)) / 25.2);
+        font-stretch: 112.5%;
+      }
+    }
+
+    .ww-slogan span {
+      white-space: nowrap;
+    }
+
+    .ww-start__text {
+      grid-area: text;
+    }
+
+    #greeting {
+      margin: 0;
+      color: var(--iht-ink);
+      font-family: var(--iht-display);
+      font-stretch: 100%;
+      font-weight: 800;
+      font-size: 10vh;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+    }
+
+    /* The hero title's Expanded cut (125%), as on home and team, wherever the window is 3:2 or
+       wider: every desktop size. "Christopher!" sets the text column's width, so on squarer
+       windows the wide cut would squeeze the picture; there it's Semi-expanded (112.5%) from
+       5:4, as at 1024x768, and the normal cut below that, as at 1100x1000. The size doesn't
+       change. */
+    @media (min-aspect-ratio: 5/4) {
+      #greeting {
+        font-stretch: 112.5%;
+      }
+    }
+
+    @media (min-aspect-ratio: 3/2) {
+      #greeting {
+        font-stretch: 125%;
+      }
+    }
+
+    .ww-lede {
+      margin: 0.5em 0 0.8em;
+      color: var(--iht-ink);
+      font-size: 5vh;
+      line-height: 1.3;
+    }
+
+    /* The reward is the one thing in green. It moves to the next line as a whole rather than
+       breaking, unless it's wider than a whole line (a 280px window with a 32px default font);
+       then it wraps inside its own box instead of running off the side. */
+    .ww-lede strong {
+      display: inline-block;
+      color: var(--iht-reward);
+      font-weight: 700;
+    }
+
+    /* Go on: the filled blue pill. */
+    #getStarted {
+      min-height: max(7vh, 48px);
+      padding: 0.3em 1.15em;
+      font-size: 5vh;
+      line-height: 1.15;
+      text-align: center;
+    }
+
+    /* On wide windows the greeting's 10vh makes the text's column wide, so the picture may run
+       into the right-hand margin, stopping 4.5rem (the 2.5rem gutter plus 2rem) short of the
+       window's edge. */
+    .ww-start__art {
+      grid-area: art;
+      margin: 0 calc(-1 * max(0px, (100vw - var(--iht-max)) / 2 - 2rem)) 0 0;
+    }
+
+    .ww-start__art img {
+      display: block;
+      width: 100%;
+      max-height: 62vh;
+      object-fit: contain;
+    }
+
+    /* Phones, portrait tablets and zoomed-in laptops (PR #3's layout). The slogan, the text and
+       the picture follow one another, the type is sized mostly by the width, and the header, page
+       and footer come one after another so the page scrolls. The theme lays the header over the
+       page (absolute, or fixed from 992px), so here it goes back into the flow. */
     @media (max-width: 991.98px), (orientation: portrait) {
-      body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        min-height: 100svh;
+      .iht-header--patient {
+        position: relative;
       }
 
-      .site-wrapper {
-        flex: 1 0 auto;
+      .ww-start {
+        display: block;
+        padding: min(2rem, 32px) 0 2.5rem;
       }
 
-      header.site-header.site-header--sticky {
-        position: relative !important;
-        transform: none !important;
+      .ww-start__grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "slogan"
+          "text"
+          "art";
       }
 
-      .site-header .site-navbar {
-        height: auto !important;
-        min-height: 92px;
-      }
-
-      .hero-area-l-14 {
-        height: auto !important;
-        padding-top: 2rem;
-        padding-bottom: 2.5rem;
-      }
-
-      .hero-area-l-14 .content {
-        padding-top: 0;
-      }
-
-      .hero-area-l-14 .row > div {
-        width: 100% !important;
+      /* Master's size, as many lines as it needs, broken between its phrases. The longest,
+         "Improve Your Health …", is 10.7em wide; the cap is only a safety net, since below
+         21em (the last rule) the phrases may break instead. */
+      .ww-slogan {
+        margin-bottom: 0.5em;
+        font-stretch: 100%;
+        font-size: min(1.375rem + 1.5vw, (100vw - 2 * var(--iht-gutter)) / 10.9);
       }
 
       /* "Christopher!" can't wrap, so the width caps the size even when the browser's default
-         font size is larger than usual. */
+         font size is larger than usual. In the normal cut it's 6.1em wide, so 13vw always fits;
+         the wider cuts wouldn't at master's size. */
       #greeting {
-        font-size: min(clamp(2.5rem, 12vw, 10vh), 13vw) !important;
-        line-height: 1.1 !important;
-        letter-spacing: -.04em;
+        font-stretch: 100%;
+        font-size: min(clamp(2.5rem, 12vw, 10vh), 13vw);
+        line-height: 1.1;
       }
 
-      .hero-area-l-14 .content p {
-        font-size: clamp(1.375rem, 6.5vw, 5vh) !important;
-        line-height: 1.25 !important;
+      .ww-lede {
+        margin: 0.6em 0 0.9em;
+        font-size: clamp(1.375rem, 6.5vw, 5vh);
+        line-height: 1.25;
       }
 
-      .hero-area-l-14 .content .btn {
-        font-size: clamp(1.5rem, 7vw, 5vh) !important;
+      /* The side padding is capped, so a larger default font keeps "Get Started" on one line.
+         On phones, theme.css sets its width and label size, shared by the patient pages' main
+         buttons. */
+      #getStarted {
+        min-height: 48px;
+        padding: 0.35em min(1.1em, 5vw);
+        font-size: clamp(1.5rem, 7vw, 5vh);
         line-height: 1.2;
-        height: auto;
-        padding: .35em .8em;
-        border-radius: .2em !important;
       }
 
-      .banner-image-l-14 {
-        position: static !important;
+      .ww-start__art {
+        width: 100%;
         max-width: 34rem;
         margin: 0 auto;
         padding-top: 2.5rem;
       }
 
-      footer {
-        position: static !important;
-        transform: none !important;
+      .ww-start__art img {
+        max-height: none;
+      }
+    }
+
+    /* A window under 21em (336px at the default font, 672px with a 32px one): at master's size
+       the longest phrase wouldn't fit, so the slogan breaks between any words, as the old one
+       did, and keeps its size. */
+    @media (max-width: 20.99875em) {
+      .ww-slogan {
+        font-size: calc(1.375rem + 1.5vw);
+      }
+
+      .ww-slogan span {
+        white-space: normal;
       }
     }
   </style>
-  <!-- Footer Area -->
   <!-- Vendor Scripts -->
   <script src="./js/vendor.min.js"></script>
+  <!-- custom.js calls AOS.init(), so AOS stays, though nothing fades in any more. -->
   <script src="./plugins/aos/aos.min.js"></script>
   <!-- Activation Script -->
   <script src="./js/custom.js"></script>
 </body>
-<footer
-  style="text-align: center; font-family: Karla; padding: 5px; background-color: #466eb6; color: #fff; position: absolute; top: 100vh; transform: translateY(-100%); width: 100%;">
-  Incentive Health Technologies, LLC</footer>
 
 </html>

@@ -26,15 +26,11 @@
   <link rel="shortcut icon" href="../image/favicon.png" type="image/x-icon">
   <!-- Bootstrap , fonts & icons  -->
   <link rel="stylesheet" href="../css/bootstrap.css">
-  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
-  <!-- Plugin'stylesheets  -->
-  <link rel="stylesheet" href="../plugins/aos/aos.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <!-- Vendor stylesheets  -->
   <link rel="stylesheet" href="../css/main.css">
+  <!-- The shared theme, after the template CSS so it wins. It loads its own fonts. -->
+  <link rel="stylesheet" href="../../css/theme.css">
   <!-- Sweet Alerts -->
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <!-- Google tag (gtag.js) -->
@@ -48,7 +44,7 @@
   </script>
 </head>
 
-<body data-theme-mode-panel-active data-theme="light" style="font-family: 'Mazzard H';">
+<body class="iht iht--patient" data-theme-mode-panel-active data-theme="light">
   <div class="site-wrapper overflow-hidden position-relative">
     <!-- Site Header -->
     <!-- Preloader -->
@@ -58,18 +54,10 @@
    </div>
    </div>    -->
     <!--Site Header Area -->
-    <header style="background-color: #466EB6;"
-      class="site-header site-header--menu-right landing-14-menu site-header--absolute site-header--sticky">
-      <div class="container">
-        <nav style=" height: 92px;" class="navbar site-navbar">
-          <!-- Brand Logo-->
-          <div class="brand-logo">
-            <a href="#">
-              <!-- <img src="image/logo/logo-black.png" alt=""> -->
-              <h1 style="font-family: Rubik; color: #ffffff;" class="nav-link-item">IHT - Wellness Wallet</h1>
-            </a>
-          </div>
-        </nav>
+    <!-- The shared header, patient version: the wordmark and "Wellness Wallet", no links. -->
+    <header class="iht-header iht-header--patient">
+      <div class="iht-header__inner">
+        <h1 class="iht-brand"><span class="iht-wordmark">IHT</span> <span class="iht-brand__app">Wellness Wallet</span></h1>
       </div>
     </header>
     <!-- navbar- -->
@@ -85,27 +73,22 @@
                     things?</p>
                 </div>
                 <div id="choices">
-                  <div class="btn trans" id="zero" value="0" onclick="checkAnswer(0)"
-                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">Not at all</div>
-                  <div class="btn trans" id="one" value="1" onclick="checkAnswer(1)"
-                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">Several days</div>
-                  <div class="btn trans" id="two" value="2" onclick="checkAnswer(2)"
-                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">More than half the days</div>
-                  <div class="btn trans" id="three" value="3" onclick="checkAnswer(3)"
-                    style="font-size: 1.8em;padding:0.75em 0.25em 0.75em 0.25em;">Nearly every day</div>
+                  <div class="btn trans" id="zero" value="0" onclick="checkAnswer(0)">Not at all</div>
+                  <div class="btn trans" id="one" value="1" onclick="checkAnswer(1)">Several days</div>
+                  <div class="btn trans" id="two" value="2" onclick="checkAnswer(2)">More than half the days</div>
+                  <div class="btn trans" id="three" value="3" onclick="checkAnswer(3)">Nearly every day</div>
                 </div>
               </div>
 
               <div id="video" class="trans">
-                <h1 style="color: #466EB6;">Now, watch this quick video to learn more about depression.</h1>
+                <h1>Now, watch this quick video to learn more about depression.</h1>
                 <div id="player" style="display: block; padding-bottom: 1vh;">
                   <video id="video1" controls>
                     <source src="../video/brainGloomy.mp4" type="video/mp4">
                     Your browser does not support HTML video.
                   </video>
                 </div>
-                <button class="btn" type="submit"
-                  style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;">Continue</button>
+                <button class="btn" type="submit">Continue</button>
               </div>
               <!-- Hidden until renderQuestion() shows it from question 2 on. Invisible, it would still
                    catch taps meant for question 1's answers. -->
@@ -118,22 +101,20 @@
       <div style="display:none;" id="end" class="hero-area-l-14 position-relative z-index-1 trans">
         <div class="container">
           <div class="row position-relative justify-content-center">
-            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0 aos-init aos-animate" data-aos="fade-right"
-              data-aos-duration="800" data-aos-once="true">
+            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0">
               <div class="content">
                 <div id="crisisHelp" class="crisis" tabindex="-1" style="display: none;">If you're having thoughts of hurting yourself,
                   call or text <a href="tel:988">988</a> (Suicide &amp; Crisis Lifeline). If you're in danger, call
                   <a href="tel:911">911</a>.</div>
-                <h1 id="rememberHeading" style="color:#466EB6;font-size: 5em;">Remember:</h1>
-                <h2 style="font-size: 3em;" class="tape-helper mb4">If you're feeling depressed, talk to your doctor
+                <h1 id="rememberHeading">Remember:</h1>
+                <h2 class="tape-helper mb4">If you're feeling depressed, talk to your doctor
                   about the following:</h2>
                 <ul>
-                  <h2 style="font-size: 2.9em;"><i>✔</i> Taking prescription medication</h2>
-                  <h2 style="font-size: 2.9em;"><i>✔</i> Finding the right therapist for you</h2>
-                  <h2 style="font-size: 2.9em;"><i>✔</i> Going to a local support groups</h2>
+                  <h2><i>✔</i> Taking prescription medication</h2>
+                  <h2><i>✔</i> Finding the right therapist for you</h2>
+                  <h2><i>✔</i> Going to a local support groups</h2>
                 </ul>
-                <a class="btn center" style="font-size: 2em;padding:0.75em 0.25em 0.75em 0.25em;"
-                  onclick="finish()">Finish</a>
+                <a class="btn" onclick="finish()">Finish</a>
               </div>
             </div>
           </div>
@@ -145,67 +126,21 @@
     </div>
   </div>
   <!-- Footer Area -->
-  <!-- Vendor Scripts -->
-  <script src="../plugins/aos/aos.min.js"></script>
   <style>
-    .center {
-      margin-top: 5vh !important;
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    ul h2 {
-      font-weight: 200;
-    }
-
-    #choices .btn {
-      margin: 1%;
-    }
-
-    h2 i {
-      background-color: #72e297;
-      color: #FFF;
-      font-size: 2.5rem;
-      padding: 5px 12px;
-      margin-right: 10px;
-      border-radius: 50%;
-    }
-
-    .testFhir footer {
-      border-top: 0;
-    }
-
-    body {
-      background-image: url("../image/background.png");
-    }
-
-    .btn:hover {
-      background: #466eb6 !important;
-      color: #fff !important;
-    }
-
-    .btn {
-      background: #fff !important;
-      border: 2px solid #466eb6 !important;
-      color: #466eb6 !important;
-      padding: 25px;
-      font-size: 1em;
-    }
-
-    p {
-      color: #466EB6;
-    }
-
-    * {
-      font-family: Rubik;
-      color: #466EB6;
-    }
+    /* The look (type, colours, buttons, the end screen's check list, the crisis note's frame) is
+       in ../../css/theme.css. This block is the quiz's own layout. */
 
     #questionnaire-form {
       width: 70vw;
       height: 40vh;
+      /* The question is 1.8em of this (renderQuestion; 1.35em with question 9's note), and so are
+         the answers (below). */
       font-size: 1.7em;
+    }
+
+    /* The answers' size in theme.css: 1.8em, as before. */
+    #choices {
+      --iht-answer-size: 1.8em;
     }
 
     .testFhir {
@@ -220,42 +155,26 @@
       background-color: #ffffff00;
     }
 
-    .swal-title {
-      font-size: 7vh;
-    }
-
-    .swal-text {
-      font-size: 3vh;
-    }
-
-    .swal-button--cancel {
-      background-color: seagreen;
-      color: #fff;
-    }
-
-    .swal-button--cancel:hover {
-      background-color: mediumseagreen !important;
-    }
-
     .trans {
       transition: opacity 0.5s ease-in-out;
       /* opacity: 0; */
     }
 
-    /* Crisis information for question 9 (thoughts of self-harm). The note has fixed sizes that
-       keep question 9's answers and the end screen's Finish button within a laptop window. */
+    /* Crisis information for question 9 (thoughts of self-harm). theme.css draws it in
+       Follow-up red. At the default font it's 19px, which keeps question 9's answers and the
+       end screen's Finish button within a laptop window. With a larger default font it grows
+       too (up to 38px with a 32px font), but only as far as the window's width and height
+       allow, so on phones and short windows it stays near 19px. */
     #question p.crisis,
     #end .crisis {
-      background: #fff;
-      border: 3px solid #466eb6;
-      border-radius: 10px;
       padding: 6px 12px;
-      font-size: 19px;
+      font-size: max(19px, min(1.1875rem, 5vw, 4.5vh));
       line-height: 1.3;
-      font-weight: 500;
     }
 
+    /* Under question 9 it's centred, and no wider than two comfortable lines. */
     #question p.crisis {
+      max-width: 36em;
       margin: 6px auto 0;
     }
 
@@ -263,29 +182,37 @@
       margin: 0 0 8px;
     }
 
+    /* From 768px there's room for a little more air in the note and under it. (Phones keep the
+       tighter spacing, so Finish still shows at 360x740 when the end screen opens.) */
+    @media (min-width: 768px) {
+      #question p.crisis,
+      #end .crisis {
+        padding: 8px 16px;
+      }
+
+      #end .crisis {
+        margin-bottom: 16px;
+      }
+    }
+
     /* goToEnd() moves focus here so the note is read out; the box itself is the visible cue. */
     #crisisHelp:focus {
       outline: none;
     }
 
-    .crisis a {
-      /* The page's blue (5.04:1 on white); Bootstrap's lighter link blue is only 3.55:1. */
-      color: inherit;
-      font-weight: 700;
-      text-decoration: underline;
-    }
-
     /* Keep every screen clear of the header and the Go Back button.
        Questions and the video are centred in the window, as before, between two empty flex
        items of the same height: the room that the header and Go Back need. A screen that fits
-       stays exactly where it was. One that doesn't makes the page grow and scroll. */
+       stays in the middle of the window. One that doesn't makes the page grow and scroll. */
     .testFhir {
-      --back-bottom: 5vh;   /* Go Back's distance from the bottom of the window */
-      --back-height: 54px;  /* its 25px padding and 2px border, top and bottom */
-      --room-top: 82px;     /* the 92px header, less the 10px of padding above each question */
-      /* Less the 1% (of the 70vw form) margin under the last row of answers, and less 1.5px:
-         Go Back's 2px top border already touched the last answers in some laptop windows. */
-      --room-bottom: calc(var(--back-bottom) + var(--back-height) - 0.7vw - 1.5px);
+      --back-bottom: 5vh;   /* Go Back's distance from the foot of the quiz (the window's bottom when a screen fits) */
+      --back-height: var(--iht-back-h);  /* Go Back's height (theme.css) */
+      --room-top: calc(var(--iht-header-h) - 10px);  /* the header, less the 10px of padding above each question */
+      /* Go Back, and a gap above it for a screen that scrolls. Both empty items grow by the gap,
+         so a screen that fits stays where it was, unless the gap makes it too tall. (The old
+         "- 0.7vw - 1.5px" made up for the answers' 1% margin; the flex gap in theme.css has
+         replaced it.) Smaller windows get 12px (below). */
+      --room-bottom: calc(var(--back-bottom) + var(--back-height) + 0.3rem);
       --room: max(var(--room-top), var(--room-bottom));
     }
 
@@ -296,17 +223,30 @@
       height: var(--room);
     }
 
+    /* Centred, as wide as its label, at the foot of the quiz: in the room the bottom empty item
+       (or the end screen's) keeps for it. When a screen fits the window that is where it always
+       was; when a screen is taller, Go Back waits below its last button instead of covering it. */
     #prevAnswer {
-      position: fixed;
+      position: absolute;
       bottom: var(--back-bottom);
-      left: 45vw;
-      right: 45vw;
-      /* Above the footer, which grows over Go Back when the browser's font size is raised. */
+      left: 0;
+      right: 0;
+      width: max-content;
+      margin: 0 auto;
+      /* Above the footer, should a larger font ever make the footer taller than --back-bottom. */
       z-index: 7;
     }
 
-    /* The footer stays on top of buttons (main.css gives them z-index 5) that scroll under it. */
+    /* Go Back is placed against .testFhir, not the form's row (Bootstrap's .position-relative). */
+    .testFhir > .container > .row {
+      position: static !important;
+    }
+
+    /* The footer sits at the foot of the quiz too, under Go Back, so on a screen taller than the
+       window neither is drawn over the other or over the content. It stays on top of buttons
+       (main.css gives them z-index 5), and Go Back on top of it. */
     .testFhir footer {
+      position: absolute;
       z-index: 6;
     }
 
@@ -336,31 +276,27 @@
     #end > .container::before {
       content: "";
       flex: none;
-      height: 110px;
+      height: calc(var(--iht-header-h) + 18px);
     }
 
     /* Room for Go Back below Finish. */
     #end > .container::after {
       content: "";
       flex: none;
-      height: calc(var(--back-bottom) + var(--back-height) + 10px);
+      height: calc(var(--back-bottom) + var(--back-height) + 1.5rem);
     }
 
+    /* theme.css lines Go Back up with this column (--iht-end-col). */
     #end .col-xl-5 {
       width: 75vw;
     }
 
-    /* Finish is placed 5vh below the list and moved up by half its 60px height (see .center). */
-    #end .content {
-      padding-bottom: calc(5vh + 30px);
-    }
-
     @media (min-width: 992px) {
-      /* 225px down, as before, but higher when Go Back would otherwise cover Finish. */
+      /* 225px down, as before, but higher when the screen is short. */
       #end > .container::before {
         flex: 1 0 0;
         height: auto;
-        min-height: 110px;
+        min-height: calc(var(--iht-header-h) + 18px);
         max-height: 225px;
       }
     }
@@ -368,17 +304,9 @@
     /* Smaller windows: phones, tablets, and short or zoomed-in laptop windows. */
     @media (max-width: 1279px), (max-height: 767px) {
       .testFhir {
-        --back-bottom: max(5vh, 40px);  /* clear of the 32px footer */
-        --room-top: 100px;              /* a little space under the header */
+        --back-bottom: max(5vh, 40px);  /* clear of the footer */
+        --room-top: calc(var(--iht-header-h) + 8px);  /* a little space under the header */
         --room-bottom: calc(var(--back-bottom) + var(--back-height) + 12px);
-      }
-
-      /* Centred: 45vw from each side would leave it narrower than its 130px minimum width. */
-      #prevAnswer {
-        left: 0;
-        right: 0;
-        width: max-content;
-        margin: 0 auto;
       }
 
       /* The whole width, not Bootstrap's 540px or 720px. */
@@ -386,25 +314,11 @@
         max-width: none;
       }
 
-      /* Wide enough for "More than half the days" on one line, but within the screen; and
-         smaller type on narrow screens. */
+      /* Wide enough for "More than half the days" on one line, but within the screen. The type
+         follows the width on phones, and grows a little with a larger default font. */
       #questionnaire-form {
-        width: min(max(70vw, 40rem), 100vw - 3rem);
-        font-size: min(1.7em, 3.7vw);
-      }
-
-      /* Big enough to tap. */
-      #choices .btn {
-        min-height: 3rem;
-      }
-
-      /* The "Resume Video?" prompt's type follows the window's height: keep it readable. */
-      .swal-title {
-        font-size: max(7vh, 1.75rem);
-      }
-
-      .swal-text {
-        font-size: max(3vh, 1rem);
+        width: min(max(70vw, 40rem), 100vw - min(3rem, 48px));
+        font-size: min(1.7em, max(3.7vw, 0.6rem));
       }
     }
 
@@ -417,7 +331,7 @@
     }
 
     /* Phones up to 767px wide (upright, or sideways on smaller phones): the full width of the
-       screen, and smaller type. */
+       screen. */
     @media (max-width: 767px) {
       #video h1 {
         width: auto;
@@ -426,19 +340,14 @@
       #end .col-xl-5 {
         width: 100%;
       }
+    }
 
-      /* Capped by the width too, so a larger default font doesn't push "Remember:", which
-         can't wrap, off the sides. At the default font size the cap changes nothing. */
-      #end .content {
-        font-size: min(clamp(0.6875rem, 3.2vw, 0.8125rem), max(3.2vw, 11px));
-      }
-
-      #end .content h1 {
-        line-height: 1.1;
-      }
-
-      h2 i {
-        font-size: 1.75rem;
+    /* Phones: renderQuestion() draws question 9 at 1.35em to leave room for its crisis note,
+       which made it smaller than its own answers (1.8em). On phones there's room for 1.8em, so
+       it's as large as the other questions; the inline size needs !important to override. */
+    @media (max-width: 767.98px) {
+      #question p[style*="1.35em"] {
+        font-size: 1.8em !important;
       }
     }
   </style>

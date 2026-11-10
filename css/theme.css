@@ -1,0 +1,1485 @@
+/*
+ * iht.tools shared theme.
+ *
+ * Every page loads this one file, with a path relative to its own folder:
+ *   css/theme.css         the home page
+ *   ../css/theme.css      team/, demo/, dashboard/ and wellnesswallet/
+ *   ../../css/theme.css   the Wellness Wallet subpages
+ * The patient pages still load the template's bootstrap.css and main.css, and load this
+ * after them.
+ *
+ * Nothing here applies until a page opts in:
+ *   <body class="iht">                 site pages (home, team, dashboard)
+ *   <body class="iht iht--patient">    patient pages (Wellness Wallet and demo/)
+ * Every rule is scoped to body.iht, body.iht--patient or an iht- class.
+ *
+ * Colour is vocabulary: blue is IHT and "go on", red means a person needs follow-up, green
+ * means a reward or done. Nothing else is coloured.
+ *
+ * Sections: 1 tokens, 2 base, 3 header, 4 buttons, 5 site pages and the footer, 6 patient
+ * pages, 7 motion. Page-specific CSS stays in each page (see .claude/CLAUDE.md).
+ */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5..125,700..800&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap");
+
+/* ---------- 1. Tokens ---------- */
+
+body.iht {
+  /* Colour */
+  --iht-blue: #466eb6;       /* the brand, the bar, filled buttons, links, answer outlines. White on it 5.0:1 */
+  --iht-blue-deep: #34589c;  /* hover and pressed */
+  --iht-ink: #1c2d50;        /* all text on light grounds, 13.4:1 */
+  --iht-ink-muted: #4a5b7d;  /* secondary text and quiet outlines, 6.8:1 */
+  --iht-mist: #edf1f8;       /* pale bands and stripes */
+  --iht-rule: #c4d1ea;       /* borders */
+  --iht-followup: #b42318;   /* needs follow-up, and nothing else. 6.6:1 */
+  --iht-reward: #1e7b4f;     /* reward or done, and nothing else. White on it 5.3:1 */
+  --iht-reward-deep: #17623f;
+
+  /* Ordinal data ramp, pale to dark = less to more severe (the dashboard's charts) */
+  --iht-data-1: #c4d1ea;
+  --iht-data-2: #8aa5dc;
+  --iht-data-3: #466eb6;
+  --iht-data-4: #1c2d50;
+
+  /* Type */
+  --iht-display: "Archivo", "Arial Black", system-ui, sans-serif;  /* the instrument face */
+  --iht-text: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Layout */
+  --iht-max: 75rem;          /* the 1200px page grid */
+  --iht-gutter: 2.5rem;
+  /* The bar's height. It grows with the browser's font size, but only so far, so a larger
+     default font doesn't eat the window. The quiz layout maths read it. */
+  --iht-header-h: min(4.5rem, 56px + 2.5vw);   /* 72px at the default font */
+  --iht-radius-control: 6px;
+  --iht-radius-answer: 16px;
+  --iht-radius-band: 12px;
+
+  /* Dialogs and the open menu: the page behind is dimmed in Ink, and a dialog floats on a
+     shadow. The only shadows in the theme. */
+  --iht-scrim: rgba(28, 45, 80, 0.55);
+  --iht-shadow-dialog: 0 24px 64px rgba(28, 45, 80, 0.3);
+
+  /* Focus ring colour: Ink on light grounds; the blue regions set it to white. */
+  --focus: var(--iht-ink);
+}
+
+@media (max-width: 991.98px) {
+  body.iht {
+    --iht-gutter: min(1rem, 20px);
+    --iht-header-h: min(4rem, 48px + 6vw);     /* 64px at the default font */
+  }
+}
+
+/* Patient pages. */
+body.iht--patient {
+  /* Go Back's height. The quizzes' --back-height reads it. Capped, so a larger default font
+     doesn't turn it into a wall at the bottom of a phone. */
+  --iht-back-h: min(3.5rem, 72px);
+  /* The end screen's text column: the quizzes' 75vw, capped by Bootstrap's .container (720px
+     below 992px, 1320px at most). Go Back lines up under Finish with it (section 6). */
+  --iht-end-col: min(75vw, 1320px);
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  body.iht--patient {
+    --iht-end-col: min(75vw, 720px);
+  }
+}
+
+/* ---------- 2. Base ---------- */
+
+body.iht {
+  margin: 0;
+  background: #fff;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.iht *,
+body.iht *::before,
+body.iht *::after {
+  box-sizing: border-box;
+}
+
+/* The dialog libraries draw their icons in content-box sizing. Keep it, or the rings and ticks
+   fall out of line: sweetalert's on the gift-card page, SweetAlert2's "Downloaded!". */
+body.iht .swal-icon,
+body.iht .swal-icon *,
+body.iht .swal-icon::before,
+body.iht .swal-icon::after,
+body.iht .swal2-icon,
+body.iht .swal2-icon *,
+body.iht .swal2-icon::before,
+body.iht .swal2-icon::after {
+  box-sizing: content-box;
+}
+
+body.iht img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Links */
+body.iht a {
+  color: var(--iht-blue);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+body.iht a:hover {
+  color: var(--iht-blue-deep);
+}
+
+/* Focus: a 3px ring for keyboard focus, never removed. Only focus the browser wouldn't mark
+   (a mouse click) loses its outline; a browser without :focus-visible keeps its own. */
+body.iht :focus:not(:focus-visible) {
+  outline: none;
+}
+
+body.iht :focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+/* The skip link's target takes focus without drawing a ring round the whole page. */
+body.iht main[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+/* Skip link: the first thing in the page, shown when it gets focus. */
+.iht-skip {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1100;
+  padding: 0.625rem 1rem;
+  border-radius: var(--iht-radius-control);
+  background: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+body.iht .iht-skip {
+  --focus: #fff;
+  color: var(--iht-ink);
+}
+
+body.iht .iht-skip:focus {
+  transform: none;
+}
+
+/* The page grid */
+.iht-wrap {
+  max-width: var(--iht-max);
+  margin: 0 auto;
+  padding: 0 var(--iht-gutter);
+}
+
+/* ---------- 3. Header: one component on every page ---------- */
+
+.iht-header {
+  --focus: #fff;
+  position: relative;
+  z-index: 50;
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+.iht-header--sticky {
+  position: sticky;
+  top: 0;
+}
+
+/* The sticky bar covers the top of the window, so wherever the browser scrolls a control into
+   view (Tab, Shift+Tab, the skip link), it stops clear of the bar instead of under it. The
+   header's own links stay in the bar and need none. */
+body.iht:not(.iht--patient) :is(a, button, [tabindex]):not(.iht-header *) {
+  scroll-margin-top: calc(var(--iht-header-h) + 0.5rem);
+}
+
+.iht-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: var(--iht-max);
+  height: var(--iht-header-h);
+  margin: 0 auto;
+  padding: 0 var(--iht-gutter);
+}
+
+/* The brand: a link to the top on site pages, a plain heading on patient pages. */
+.iht-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 44px;
+  margin: 0;
+  border-radius: var(--iht-radius-control);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+body.iht .iht-brand,
+body.iht .iht-brand:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* The wordmark: Archivo at its widest and heaviest. */
+.iht-wordmark {
+  margin: 0;
+  color: #fff;
+  font-family: var(--iht-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+/* Patient pages: "IHT | Wellness Wallet". */
+.iht-brand__app {
+  padding-left: 0.875rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.6);
+  color: #fff;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+/* Site menu, from 992px up: the links sit in the bar. */
+.iht-header .menu-block-wrapper {
+  margin-left: auto;
+}
+
+.iht-header .site-menu-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.iht-header .nav-item {
+  margin: 0;
+}
+
+.iht-header .nav-link-item {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.875rem;
+  border-radius: var(--iht-radius-control);
+  color: #fff;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+body.iht .iht-header .nav-link-item:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.iht-header [aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
+/* "Request a Demo": outlined in white in the bar, so on home it doesn't repeat the hero's white
+   button just below it; it fills on hover. In the phone menu it's the filled blue button. */
+body.iht .iht-header .iht-nav-cta {
+  margin-left: 0.25rem;
+  padding: 0.5rem 1.125rem;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+}
+
+body.iht .iht-header .iht-nav-cta:hover {
+  border-color: #fff;
+  background: #fff;
+  color: var(--iht-blue);
+  text-decoration: none;
+}
+
+.iht-header .mobile-menu-head,
+.iht-header .menu-overlay,
+.iht-header .mobile-menu-trigger {
+  display: none;
+}
+
+/* Below 992px: only the wordmark and the menu button are in the bar. menu.js opens the menu
+   (.menu-block) from the right, next to its button, over a dimmed page (.menu-overlay). */
+@media (max-width: 991.98px) {
+  .iht-header .menu-block-wrapper {
+    margin-left: 0;
+  }
+
+  .iht-header .mobile-menu-trigger {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-left: auto;
+    margin-right: -4px;
+    border-radius: var(--iht-radius-control);
+    cursor: pointer;
+  }
+
+  .iht-header .mobile-menu-trigger span,
+  .iht-header .mobile-menu-trigger span::before,
+  .iht-header .mobile-menu-trigger span::after {
+    display: block;
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  .iht-header .mobile-menu-trigger span {
+    position: relative;
+  }
+
+  .iht-header .mobile-menu-trigger span::before,
+  .iht-header .mobile-menu-trigger span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .iht-header .mobile-menu-trigger span::before {
+    top: -8px;
+  }
+
+  .iht-header .mobile-menu-trigger span::after {
+    top: 8px;
+  }
+
+  .iht-header .menu-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--iht-scrim);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+
+  .iht-header .menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease;
+  }
+
+  .iht-header .menu-block {
+    --focus: var(--iht-ink);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    width: min(20rem, 86vw);
+    overflow-y: auto;
+    background: #fff;
+    color: var(--iht-ink);
+    box-shadow: -16px 0 40px rgba(28, 45, 80, 0.28);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.25s ease, visibility 0s linear 0.25s;
+  }
+
+  .iht-header .menu-block.active {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.25s ease;
+  }
+
+  /* The open menu starts with its own strip of header blue, so it reads as part of the bar. */
+  .iht-header .mobile-menu-head {
+    --focus: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: var(--iht-header-h);
+    padding: 0 var(--iht-gutter);
+    background: var(--iht-blue);
+  }
+
+  .iht-header .mobile-menu-close {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-right: -4px;
+    border-radius: var(--iht-radius-control);
+    color: #fff;
+    font-size: 2.25rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .iht-header .site-menu-main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 0;
+  }
+
+  .iht-header .menu-block .nav-item + .nav-item {
+    border-top: 2px solid var(--iht-mist);
+  }
+
+  .iht-header .menu-block .nav-link-item,
+  body.iht .iht-header .menu-block .nav-link-item:hover {
+    width: 100%;
+    min-height: 56px;
+    padding: 0.5rem var(--iht-gutter);
+    border-radius: 0;
+    color: var(--iht-ink);
+    font-size: 1.375rem;
+  }
+
+  /* The rows span the panel, so their focus ring is drawn inside them. */
+  body.iht .iht-header .menu-block .nav-link-item:not(.iht-nav-cta):focus-visible {
+    outline-offset: -3px;
+  }
+
+  /* In the menu, "Request a Demo" is the one filled button, under "Our Team". */
+  .iht-header .menu-block .nav-item.iht-nav-item--cta {
+    padding: 1rem var(--iht-gutter) 0.5rem;
+    border-top: 0;
+  }
+
+  body.iht .iht-header .menu-block .iht-nav-cta,
+  body.iht .iht-header .menu-block .iht-nav-cta:hover {
+    justify-content: center;
+    margin: 0;
+    padding: 0.625rem 1rem;
+    border: 2px solid var(--iht-blue);
+    border-radius: var(--iht-radius-control);
+    background: var(--iht-blue);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  body.iht .iht-header .menu-block .iht-nav-cta:hover {
+    border-color: var(--iht-blue-deep);
+    background: var(--iht-blue-deep);
+  }
+
+  /* The bar can't wrap, so its text is capped by the width too: a larger browser font can't
+     push it off the side. */
+  .iht-wordmark {
+    font-size: min(1.5rem, 7vw);
+  }
+
+  .iht-brand {
+    gap: min(0.875rem, 3.6vw);
+  }
+
+  .iht-brand__app {
+    padding-left: min(0.875rem, 3.6vw);
+    font-size: min(1.25rem, 5.2vw);
+  }
+}
+
+/* Patient header: laid over the screen, as the old bar was; fixed from 992px up, so the quiz
+   maths hold while a screen scrolls. */
+.iht-header--patient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+@media (min-width: 992px) {
+  .iht-header--patient {
+    position: fixed;
+  }
+}
+
+/* ---------- 4. Buttons ---------- */
+
+.iht-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.75rem 1.375rem;
+  border: 2px solid transparent;
+  border-radius: var(--iht-radius-control);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+body.iht .iht-btn:hover {
+  text-decoration: none;
+}
+
+/* Filled blue: go on. */
+body.iht .iht-btn--primary {
+  border-color: var(--iht-blue);
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+body.iht .iht-btn--primary:hover {
+  border-color: var(--iht-blue-deep);
+  background: var(--iht-blue-deep);
+  color: #fff;
+}
+
+/* White, on a blue band. */
+body.iht .iht-btn--onblue {
+  border-color: #fff;
+  background: #fff;
+  color: var(--iht-blue);
+}
+
+body.iht .iht-btn--onblue:hover {
+  border-color: var(--iht-mist);
+  background: var(--iht-mist);
+  color: var(--iht-ink);
+}
+
+/* Patient actions are pills: Get Started on the start page, Submit on the gift-card page. */
+body.iht .iht-btn--pill {
+  border-radius: 999px;
+}
+
+/* ---------- 5. Site pages: home and team, and the footer ---------- */
+
+/* The blue hero band (home) and title band (team). */
+.iht-hero {
+  --focus: #fff;
+  background: var(--iht-blue);
+  color: #fff;
+}
+
+.iht-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 3rem;
+  align-items: end;
+  padding-top: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.iht-hero__text {
+  padding-bottom: clamp(3rem, 7vw, 5.5rem);
+  /* Its width sizes the title (cqi, below). */
+  container-type: inline-size;
+}
+
+/* The one bold thing: the instrument face, wide and heavy. */
+.iht-display {
+  margin: 0 0 1.5rem;
+  color: inherit;
+  font-family: var(--iht-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  /* Capped by the width too: "Wellness" can't wrap. */
+  font-size: min(clamp(2.625rem, 1.2rem + 4.6vw, 4.75rem), 14vw);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+
+/* The hero's title is also capped by its column, so "Pro-Active" (6.37em wide) stays on one
+   line and the title takes two lines, as before. Browsers without container units keep the
+   size above. */
+.iht-hero__text .iht-display {
+  font-size: min(clamp(2.625rem, 1.2rem + 4.6vw, 4.75rem), 14vw, 100cqi / 6.4);
+}
+
+.iht-lede {
+  max-width: 34rem;
+  margin: 0 0 2rem;
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem);
+  line-height: 1.6;
+}
+
+.iht-hero .iht-btn {
+  min-height: 52px;
+  padding: 0.75rem 1.75rem;
+  font-size: 1.125rem;
+}
+
+/* The illustration stands on the band's lower edge. */
+.iht-hero__art {
+  align-self: end;
+  margin: 0;
+}
+
+.iht-hero__art img {
+  display: block;
+  width: 100%;
+}
+
+/* Team: a compact title band. */
+.iht-hero--title .iht-display {
+  margin: 0;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+/* Long words in headings break with a hyphen rather than push past a narrow screen. */
+.iht-h2,
+.iht-spec dt,
+.iht-person h3 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.iht-h2 {
+  margin: 0 0 1.25rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 112.5%;
+  font-weight: 700;
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+/* A picture beside a short text: "Not Just Rewards", and the Request a Demo block. */
+.iht-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+
+.iht-split p {
+  max-width: 32rem;
+  margin: 0;
+  font-size: 1.1875rem;
+  line-height: 1.65;
+}
+
+.iht-split__art {
+  margin: 0;
+}
+
+.iht-split__art img {
+  display: block;
+  width: 100%;
+}
+
+/* The Request a Demo block. Its id is the target of every "Request a Demo" link. */
+.iht-demo {
+  scroll-margin-top: var(--iht-header-h);
+}
+
+.iht-email {
+  font-weight: 700;
+}
+
+/* The home features as a striped term/description table, like the dashboard's patient list.
+   Not numbered: they aren't a sequence. */
+.iht-spec {
+  margin: 0;
+  border-radius: var(--iht-radius-band);
+  overflow: hidden;
+}
+
+.iht-spec__row {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 1rem 3rem;
+  padding: 1.75rem 2rem;
+}
+
+.iht-spec__row:nth-child(odd) {
+  background: var(--iht-mist);
+}
+
+.iht-spec dt {
+  margin: 0;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 112.5%;
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+.iht-spec dd {
+  max-width: 36rem;
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+/* Team: people in two columns. Circles are for people only. */
+.iht-people {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: clamp(2rem, 5vw, 4.5rem);
+  padding-top: clamp(1.5rem, 4vw, 3rem);
+}
+
+/* The photo beside the text, or above it when the text would get less than 10rem: the longest
+   name ("Christopher", 8.7rem) then never breaks, whatever the default font. */
+.iht-person {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: 2rem 0;
+  border-bottom: 2px solid var(--iht-mist);
+}
+
+.iht-person img {
+  flex: none;
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.iht-person > div {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.iht-person h3 {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 112.5%;
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+.iht-person p {
+  max-width: 34rem;
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  /* Only a word too long for a phone with a large default font breaks. */
+  overflow-wrap: break-word;
+}
+
+/* Footer: the company name on Ink, and the illustration credit on pages that use them. Home,
+   team and the dashboard use it as it is; the start page and the gift-card page use the slim
+   version (section 6). */
+.iht-footer {
+  --focus: #fff;
+  padding: 1.5rem 0;
+  background: var(--iht-ink);
+  color: #fff;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.iht-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+}
+
+body.iht .iht-footer a {
+  color: #fff;
+}
+
+body.iht .iht-footer a:hover {
+  color: var(--iht-mist);
+}
+
+/* The page blocks switch at em widths: 992px and 768px at the default font, wider with a larger
+   one, so a larger font gets one column instead of narrow ones. (Media-query em follow the
+   browser's default font size.) The header keeps its px breakpoint, which menu.js shares. */
+@media (max-width: 61.99875em) {
+  .iht-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .iht-hero__text {
+    padding-bottom: 0;
+  }
+
+  .iht-hero__art {
+    justify-self: center;
+    max-width: 34rem;
+  }
+
+  .iht-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Text first on phones; the picture follows, centred, as the hero's is. */
+  .iht-split__art {
+    order: 2;
+    justify-self: center;
+    max-width: 34rem;
+  }
+
+  .iht-people {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 47.99875em) {
+  .iht-spec__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    /* Capped by the width, like the term, so the longest word ("Deterministic", 7.2em) fits a
+       phone with a 32px default font. */
+    padding: 1.375rem min(1.25rem, 5.6vw);
+  }
+
+  .iht-spec dt {
+    font-size: min(1.25rem, 11vw);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .iht-spec {
+    margin-inline: calc(-1 * var(--iht-gutter) / 2);
+  }
+
+  .iht-footer__inner {
+    flex-direction: column;
+  }
+}
+
+/* Phones: smaller photos, capped by the width so a larger default font leaves room for
+   the text. */
+@media (max-width: 479.98px) {
+  .iht-person {
+    gap: min(1rem, 4vw);
+  }
+
+  .iht-person img {
+    width: min(4.5rem, 20vw);
+    height: min(4.5rem, 20vw);
+  }
+}
+
+/* ---------- 6. Patient pages (Wellness Wallet, demo/) ----------
+   These pages keep Bootstrap and the template's main.css underneath, and each keeps its own
+   layout maths at the end of its <style> block. This section is the look and the type sizes
+   they share. Large print: no size here is below what the pages showed before at the default
+   font. */
+
+/* main.css starts with "* { font-family: Rubik; }", which stops every element inheriting its
+   font, and Rubik is no longer loaded, so anything the theme doesn't name (a link, a span, a
+   label) would fall back to a serif. This puts inheritance back. :where() keeps it at zero
+   specificity, like main.css's rule, so it only replaces that one; any class rule, such as an
+   icon font's, still wins. main.css's other font-family rules name classes, so a page that uses
+   those classes overrides them itself. */
+:where(body.iht--patient) * {
+  font-family: inherit;
+}
+
+/* main.css also gives .btn "transition: all 0.4s", so the keyboard focus ring slid in from
+   white and reached its colour and offset only after 0.4s. A button here fades only its
+   colours; the answers and Go Back also fade in and out (their own rules, below). */
+body.iht--patient .btn {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* The question: the reading face, heavy, in Ink. Its size comes from renderQuestion()
+   (2em, or 1.8em on PHQ-9) of #questionnaire-form, whose size each page sets. */
+.iht--patient #question p {
+  margin: 0;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+/* PHQ-9's crisis note under question 9 is body text, not part of the question: drawn like the
+   end screen's #crisisHelp. Its size, line height, padding and margins stay in the page. */
+.iht--patient #question p.crisis {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-wrap: wrap;
+}
+
+.iht--patient #questionnaire-form {
+  background: transparent;
+}
+
+/* The answers sit in a row with a gap, and wrap when they must. */
+.iht--patient #choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: max(0.5em, 12px);
+  margin-top: 0.5rem;
+}
+
+/* Answers are outlined: a choice, not a step. Their size is --iht-answer-size of the form's
+   size (2em, as before; PHQ-9 sets 1.8em). The !important colours beat main.css's
+   ".btn:hover { color: #fff !important; background-color: #466eb6 !important }"; the borders
+   need none, since main.css's border there isn't !important. */
+.iht--patient #choices .btn {
+  flex: 0 1 auto;
+  height: auto;
+  min-width: min(2.75em, calc(50% - 0.5rem));
+  min-height: 48px;
+  margin: 0;
+  padding: 0.2em 0.35em;
+  border: 3px solid var(--iht-blue);
+  border-radius: var(--iht-radius-answer);
+  background: #fff !important;
+  color: var(--iht-blue) !important;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: var(--iht-answer-size, 2em);
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-align: center;
+  box-shadow: none;
+  cursor: pointer;
+  transition: opacity 0.5s ease-in-out, border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hover never looks like a choice: the next question's answer can be under the pointer.
+   With a mouse the ring only darkens; touch screens get nothing (they keep :hover after a
+   tap). Only a press fills it. */
+@media (hover: hover) {
+  .iht--patient #choices .btn:hover {
+    border-color: var(--iht-ink);
+  }
+}
+
+.iht--patient #choices .btn:active {
+  border-color: var(--iht-blue-deep);
+  background: var(--iht-blue-deep) !important;
+  color: #fff !important;
+}
+
+/* Go Back: a quiet outlined pill. Its place (centred at the foot of the quiz, above the
+   footer) is in each quiz's own layout block. */
+.iht--patient #prevAnswer {
+  height: var(--iht-back-h);
+  min-width: 0;
+  padding: 0 1.4em;
+  border: 2px solid var(--iht-ink-muted);
+  border-radius: 999px;
+  background: #fff !important;
+  color: var(--iht-ink) !important;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: min(1.25rem, 32px);
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: opacity 0.5s ease-in-out, background-color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .iht--patient #prevAnswer:hover {
+    border-color: var(--iht-ink);
+    background: var(--iht-mist) !important;
+  }
+}
+
+/* From 768px up the end screen's text is a left-aligned column, so there Go Back lines up
+   under Finish instead of sitting alone in the middle. --iht-end-col (section 1) is that
+   column's width. (goToEnd() shows #end with style="display: block".) */
+@media (min-width: 768px) {
+  .iht--patient .testFhir:has(> #end[style*="display: block"]) #prevAnswer {
+    left: calc(50% - var(--iht-end-col) / 2 + 12px);
+    right: auto;
+    margin: 0;
+  }
+}
+
+/* Phones: the quiz's screens start at the page gutter, like the header and the other patient
+   pages, instead of Bootstrap's 12px (the container's padding, less the row's negative margin,
+   plus the column's padding). The end screen also takes the whole width rather than shrinking
+   to fit "Remember:", which can't wrap; it's capped below instead, so in a very narrow window
+   the column no longer runs off both sides. */
+@media (max-width: 767.98px) {
+  body.iht--patient .testFhir > .container,
+  body.iht--patient #end > .container {
+    padding-left: var(--iht-gutter);
+    padding-right: var(--iht-gutter);
+  }
+
+  body.iht--patient .testFhir > .container > .row,
+  body.iht--patient #end > .container > .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  body.iht--patient .testFhir > .container > .row > [class*="col-"],
+  body.iht--patient #end > .container > .row > [class*="col-"] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body.iht--patient #end {
+    align-self: stretch;
+  }
+}
+
+/* The video screen */
+.iht--patient #video h1 {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.iht--patient #video1 {
+  border-radius: var(--iht-radius-band);
+  background: var(--iht-ink);
+}
+
+/* Moving on is a filled pill: blue to continue, green to finish. */
+.iht--patient #video .btn,
+.iht--patient #end .content .btn {
+  position: static;
+  height: auto;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  color: #fff !important;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-align: center;
+  transform: none;
+  cursor: pointer;
+}
+
+/* Continue: 2rem (32px), as before, but never wider than a phone. */
+.iht--patient #video .btn {
+  min-height: min(4rem, 72px);
+  padding: 0.3em min(1.1em, 4vw);
+  background: var(--iht-blue) !important;
+  font-size: min(2rem, 16vw);
+}
+
+@media (hover: hover) {
+  .iht--patient #video .btn:hover {
+    background: var(--iht-blue-deep) !important;
+  }
+}
+
+/* End screen: "Remember:" in the instrument face, a check list, then Finish under it.
+   Sizes are in em of #end .content: 1rem on desktop; on phones its size follows the width. */
+.iht--patient #end .content {
+  color: var(--iht-ink);
+}
+
+@media (max-width: 767.98px) {
+  /* Capped by the width too, so a larger default font can't push "Remember:", which can't
+     wrap, off the sides. */
+  .iht--patient #end .content {
+    font-size: min(clamp(0.6875rem, 3.2vw, 0.8125rem), max(3.2vw, 11px));
+  }
+}
+
+/* "Remember:" is 5em, as on master: 80px on desktop at the default font, and more with a larger
+   one. It can't wrap, so the cut changes instead. "Remember:" is 7.04em wide in Archivo's
+   Expanded cut (125%), 5.71em in the normal cut (100%) and 5.07em at 87.5%. */
+.iht--patient #end .content h1 {
+  margin: 0 0 0.2em;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-stretch: 100%;
+  font-weight: 800;
+  font-size: 5em;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+
+/* Phones: 5em of the capped #end .content (62px at 390px), as on master. Below 360px that would
+   be wider than the window, so there the width caps it: it may run into the right-hand gutter,
+   but stops 8px short of the window's edge. */
+@media (max-width: 767.98px) {
+  .iht--patient #end .content h1 {
+    font-size: min(5em, (100vw - 24px) / 5.72);
+  }
+}
+
+/* From 768px: the normal cut. With a larger default font it can be wider than its column; it
+   may then run into the right margin, as master's did, but it stops short of the window's edge:
+   the room from the column's left edge (50vw - --iht-end-col / 2 + 0.75rem) to 1rem from the
+   window's right edge, less 10px for a scrollbar. */
+@media (min-width: 768px) {
+  .iht--patient #end .content h1 {
+    font-size: min(5em, (50vw + var(--iht-end-col) / 2 - 1.75rem - 10px) / 5.8);
+  }
+}
+
+/* A very large default font in a window this narrow (24px up to 864px wide, 32px up to
+   1152px): the 87.5% cut, which keeps 5em on screen. */
+@media (min-width: 768px) and (max-width: 36em) {
+  .iht--patient #end .content h1 {
+    font-stretch: 87.5%;
+    font-size: min(5em, (50vw + var(--iht-end-col) / 2 - 1.75rem - 10px) / 5.15);
+  }
+}
+
+/* The Expanded cut wherever 5em of it fits the column: every desktop window at the default
+   font, and wide ones with a larger font. */
+@media (min-width: 992px) and (min-width: 48.5em) {
+  .iht--patient #end .content h1 {
+    font-stretch: 125%;
+    font-size: min(5em, (var(--iht-end-col) - 0.75rem) / 7.1);
+  }
+}
+
+.iht--patient #end .content h2 {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  letter-spacing: 0;
+}
+
+.iht--patient #end .content > h2 {
+  margin: 0 0 0.3em;
+  font-weight: 700;
+  font-size: 3em;
+  line-height: 1.15;
+}
+
+.iht--patient #end .content ul {
+  margin: 0 0 1.25em;
+  padding: 0;
+  list-style: none;
+}
+
+.iht--patient #end .content ul h2 {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35em;
+  margin: 0;
+  padding: 0.1em 0;
+  border-top: 2px solid var(--iht-mist);
+  font-weight: 400;
+  font-size: 2.9em;
+  line-height: 1.2;
+  text-wrap: pretty;
+}
+
+.iht--patient #end .content ul h2:last-child {
+  border-bottom: 2px solid var(--iht-mist);
+}
+
+/* The check: white on Reward green, drawn in CSS. The ✔ in the markup stays for screen
+   readers but is pushed out of sight, because a phone may draw it as a colour emoji. */
+.iht--patient #end .content ul h2 i {
+  position: relative;
+  flex: none;
+  display: block;
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0.05em 0 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--iht-reward);
+  color: #fff;
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1;
+  text-indent: 200%;
+  white-space: nowrap;
+}
+
+.iht--patient #end .content ul h2 i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 0.27em;
+  height: 0.52em;
+  border: solid #fff;
+  border-width: 0 0.11em 0.11em 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Finish: green, done. 2em, as before; on phones, the main buttons' rule below. */
+.iht--patient #end .content .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(3.5rem, 64px);
+  padding: 0.35em 1.5em;
+  background: var(--iht-reward) !important;
+  font-size: 2em;
+}
+
+@media (hover: hover) {
+  .iht--patient #end .content .btn:hover {
+    background: var(--iht-reward-deep) !important;
+  }
+}
+
+/* Phones: the patient pages' main buttons share one rule: Get Started, Continue (demo/'s Submit
+   too), Finish and the gift-card Submit. They span the column at the page gutter, and their label
+   is 2rem, as Continue's and Submit's were, capped by the width so the longest, "Get Started",
+   stays inside its pill with a larger default font. */
+@media (max-width: 767.98px) {
+  body.iht--patient #getStarted,
+  body.iht--patient #video .btn,
+  body.iht--patient #end .content .btn,
+  body.iht--patient .iht-btn.sub {
+    width: 100%;
+    font-size: min(2rem, (100vw - 2 * var(--iht-gutter)) / 7.5);
+  }
+}
+
+/* PHQ-9's crisis note (question 9, and the end screen's #crisisHelp): Follow-up red, the one
+   colour that means "needs follow-up". Its size and spacing stay in the PHQ-9 page. */
+.iht--patient .crisis {
+  border: 3px solid var(--iht-followup);
+  border-left-width: 10px;
+  border-radius: var(--iht-radius-band);
+  background: #fff;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 400;
+  text-align: left;
+}
+
+body.iht--patient .crisis a {
+  color: var(--iht-followup);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+/* The quiz footer (main.css fixes it to the bottom; the quizzes put it at the foot of the
+   page). One line, at most 20px, so it's at most 40px tall: the quizzes keep that much room
+   for it under Go Back, and a larger default font can't make it a band over the answers.
+   "Incentive Health Technologies, LLC" is 15.5em wide, so it keeps 16px down to a 280px
+   window and only gets smaller below that. */
+.iht--patient .testFhir footer {
+  padding: 0.3em min(1rem, 12px);
+  border-top: 0;
+  background: var(--iht-ink);
+  color: #fff;
+  font-family: var(--iht-text);
+  font-size: min(1rem, 20px, (100vw - 24px) / 15.5);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* The start page's and the gift-card page's footer: the site footer's Ink band (section 5),
+   slim, and the same size as the quizzes', so the bar doesn't change from page to page. */
+.iht-footer.iht-footer--slim {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 1.5em;
+  padding: 0.3em min(1rem, 12px);
+  font-size: min(1rem, 20px, (100vw - 24px) / 15.5);
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* main.css takes the underline off every link; the credit keeps it. */
+body.iht .iht-footer--slim a {
+  text-decoration: underline;
+}
+
+/* The dialogs (sweetalert 1): "Resume Video?" on the quizzes, and "Oops!" and "Submitted!" on
+   the gift-card page. Resume Video (the cancel button) is green, the reward; Move On and OK
+   are blue. The type follows the window's height, as before, but never gets smaller than it
+   was on small windows, except on a short window with a large default font: there the height
+   caps it too (12vh and 8vh), so the dialog still fits. That only happens below 467px tall
+   with a 32px font, or 350px with 24px. A page caps a title that can't wrap by setting
+   --iht-swal-title-max. */
+/* The same dimmed page and shadow as the dashboard's dialogs and the open menu. */
+.iht--patient .swal-overlay {
+  background-color: var(--iht-scrim);
+}
+
+.iht--patient .swal-modal {
+  border-radius: var(--iht-radius-band);
+  font-family: var(--iht-text);
+  box-shadow: var(--iht-shadow-dialog);
+}
+
+.iht--patient .swal-title {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: min(max(7vh, 1.75rem), 12vh, var(--iht-swal-title-max, 100vw));
+  line-height: 1.15;
+}
+
+.iht--patient .swal-text {
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-size: min(max(3vh, 1rem), 8vh);
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* The buttons sit in a centred row, 10px apart. ("Resume Video" and "Move On" need 298px, so
+   they share a row from a 360px window up.) Narrower, they stack at equal widths. */
+.iht--patient .swal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  text-align: center;
+}
+
+.iht--patient .swal-footer .swal-button-container {
+  margin: 0;
+}
+
+@media (max-width: 359.98px) {
+  .iht--patient .swal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .iht--patient .swal-footer .swal-button {
+    width: 100%;
+  }
+}
+
+/* Capped, so with a larger default font both buttons still fit a phone's dialog. */
+.iht--patient .swal-button {
+  min-height: min(3.5rem, 56px);
+  padding: 0 min(1.5rem, 18px);
+  border-radius: 999px;
+  color: #fff;
+  font-family: var(--iht-text);
+  font-weight: 700;
+  font-size: min(1.25rem, 20px);
+}
+
+.iht--patient .swal-button:focus {
+  box-shadow: none;
+}
+
+/* sweetalert's own :hover and :active colours apply everywhere, touch screens included (a tap
+   leaves :hover behind), and they're pale blue and red. These keep each button in its own
+   colour, a shade deeper while pressed; the deeper hover is for mice only (below). */
+.iht--patient .swal-button--cancel,
+.iht--patient .swal-button--cancel:not([disabled]):hover {
+  background-color: var(--iht-reward);
+  color: #fff;
+}
+
+.iht--patient .swal-button--danger,
+.iht--patient .swal-button--confirm,
+.iht--patient .swal-button--danger:not([disabled]):hover,
+.iht--patient .swal-button--confirm:not([disabled]):hover {
+  background-color: var(--iht-blue);
+}
+
+.iht--patient .swal-button--cancel:not([disabled]):active {
+  background-color: var(--iht-reward-deep);
+}
+
+.iht--patient .swal-button--danger:not([disabled]):active,
+.iht--patient .swal-button--confirm:not([disabled]):active {
+  background-color: var(--iht-blue-deep);
+}
+
+@media (hover: hover) {
+  .iht--patient .swal-button--cancel:not([disabled]):hover {
+    background-color: var(--iht-reward-deep);
+  }
+
+  .iht--patient .swal-button--danger:not([disabled]):hover,
+  .iht--patient .swal-button--confirm:not([disabled]):hover {
+    background-color: var(--iht-blue-deep);
+  }
+}
+
+/* A short window, such as a phone on its side: the dialog tightens its spacing and shrinks its
+   icon, so all of it, buttons included, fits the window without scrolling. */
+@media (max-height: 499.98px) {
+  .iht--patient .swal-modal {
+    margin-block: 8px;
+  }
+
+  .iht--patient .swal-icon {
+    zoom: 0.6;
+  }
+
+  .iht--patient .swal-title {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .iht--patient .swal-title:first-child {
+    margin-top: 12px;
+  }
+
+  .iht--patient .swal-title:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  .iht--patient .swal-footer {
+    margin-top: 0;
+    padding-block: 8px;
+  }
+}
+
+/* ---------- 7. Motion ----------
+   No fade-ins. The quiz fades between screens, and the dashboard's charts draw in; both stop
+   under reduced motion. */
+
+/* "Request a Demo" links to #request-a-demo; with motion allowed the page glides there. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(> body.iht) {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(> body.iht) {
+    scroll-behavior: auto;
+  }
+
+  /* A zero duration and delay start no transition at all. (Even 0.01ms would: then the menu's
+     close button is still "visibility: hidden" when menu.js focuses it, and focus stays behind
+     on the menu button.) */
+  body.iht *,
+  body.iht *::before,
+  body.iht *::after {
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

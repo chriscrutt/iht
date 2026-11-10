@@ -1,9 +1,10 @@
 /*
  * Mobile menu for the site header. Below 992px wide, the CSS hides the menu
  * links and shows the hamburger (.mobile-menu-trigger) instead. This file
- * makes the hamburger work: it slides .menu-block in from the left and dims
- * the page with .menu-overlay. The close button, a tap on the dimmed page,
- * Escape, picking a link or tabbing out of the menu closes it again.
+ * makes the hamburger work: it slides .menu-block in (from the right, next to
+ * the hamburger, in css/theme.css) and dims the page with .menu-overlay. The
+ * close button, a tap on the dimmed page, Escape, picking a link or tabbing
+ * out of the menu closes it again.
  *
  * demo/ loads this file but has no menu, so it does nothing there.
  * It's plain ES5 so it also runs on older phones and tablets.
@@ -11,8 +12,8 @@
 (function () {
   "use strict";
 
-  // Must match the mobile breakpoint in css/main.css.
-  var MOBILE_QUERY = "(max-width: 991px)";
+  // Must match the mobile breakpoint in css/theme.css.
+  var MOBILE_QUERY = "(max-width: 991.98px)";
 
   // Older browsers only give key codes, or older key names ("Esc", "Spacebar").
   var KEYS = {
