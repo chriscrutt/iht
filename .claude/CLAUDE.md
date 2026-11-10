@@ -19,28 +19,38 @@ A static site for IHT plus two demo apps, all served by GitHub Pages from this r
 ## Layout
 | Folder | Live at | Notes |
 | --- | --- | --- |
-| repo root (`index.html`, `team/`, `demo/`, `css/`, `js/`, `image/`, `plugins/`) | https://iht.tools/ | main site |
+| repo root (`index.html`, `team/`, `demo/`, `css/`, `js/`, `image/`, `plugins/`) | https://iht.tools/ | main site; `demo/` only redirects to `/wellnesswallet/` |
 | `dashboard/` | https://iht.tools/dashboard/ | clinic-side mock-up; formerly `chriscrutt/iht-dashboard` at dashboard.iht.tools |
 | `wellnesswallet/` (landing page, `fallPrevention/`, `PHQ9/`, `submitted/`) | https://iht.tools/wellnesswallet/ | patient demo; formerly `chriscrutt/iht-demo` (branch `noFhir`) at wellnesswallet.iht.tools |
 
-All 8 pages share one stylesheet, `css/theme.css` at the repo root. The dashboard also uses the main site's phone menu, `plugins/menu/menu.js`. Apart from those two files each site is self-contained: the main site and `wellnesswallet/` each have their own `css/`, `js/`, `image/` and `plugins/`, and `dashboard/` is just four files: `index.html`, `script.js`, `style.css` and `favicon.png`.
+All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was an older copy of the fall quiz; since 2026-11-10 it's a page that sends visitors on to `/wellnesswallet/`.) The dashboard also uses the main site's phone menu, `plugins/menu/menu.js`. Apart from those two files each site is self-contained: the main site and `wellnesswallet/` each have their own `css/`, `js/`, `image/` and `plugins/`, and `dashboard/` is just four files: `index.html`, `script.js`, `style.css` and `favicon.png`.
 
 ## Editing rules
 - Keep asset paths relative to the page's own folder.
   - Don't use root-absolute paths like `/css/...`.
-  - Every page loads the theme by a relative path: `css/theme.css` from the home page, `../css/theme.css` from `team/`, `demo/`, `dashboard/` and `wellnesswallet/`, and `../../css/theme.css` from the Wellness Wallet's subpages. The dashboard also loads `../plugins/menu/menu.js`.
+  - Every page loads the theme by a relative path: `css/theme.css` from the home page, `../css/theme.css` from `team/`, `dashboard/` and `wellnesswallet/`, and `../../css/theme.css` from the Wellness Wallet's subpages. The dashboard also loads `../plugins/menu/menu.js`.
   - Don't load anything else from outside `dashboard/` or `wellnesswallet/`. A `../` into the main site is what broke the Wellness Wallet landing page when it moved (fixed in 4ad7460).
 - Link to the sub-sites with a trailing slash: `/wellnesswallet/`, not `/wellnesswallet`.
 - Keep changes small and test them locally before pushing to `master`. There's no staging site.
 - The theme applies only where a page opts in with a body class:
   - `<body class="iht">` on the site pages: home, team and the dashboard.
-  - `<body class="iht iht--patient">` on the patient pages: the four Wellness Wallet pages and `demo/`.
+  - `<body class="iht iht--patient">` on the patient pages: the four Wellness Wallet pages.
   - Every rule in `css/theme.css` is scoped to one of those classes or to an `iht-` class. Keep it that way, with no bare `h1`, `.btn` or `*` rules: the patient pages still load the template's `bootstrap.css` and `main.css` underneath.
 - What goes where:
   - `css/theme.css` holds what pages share: the tokens (colours, fonts, sizes), the header, buttons, footers, and the quiz screens' type, answers, Go Back, Finish and dialogs. Its sections are listed at its top.
   - Page-specific CSS stays in the page: the dashboard's in `dashboard/style.css`, every other page's in its own `<style>` block.
-  - Leave the template's `main.css` files alone. `wellnesswallet/css/main.css` is shared by the four Wellness Wallet pages, and `demo/` loads the main site's `css/main.css`.
+  - Leave the template's `main.css` files alone. `wellnesswallet/css/main.css` is shared by the four Wellness Wallet pages.
 - Colours each mean one thing: IHT Blue is the brand and "go on", the red `--iht-followup` means a person needs follow-up, and the green `--iht-reward` means a reward or done.
+  - The owner wants the site all light blue: the header and footers are IHT Blue (`#466eb6`), the charts run from pale blue to IHT Blue, and text is the neutral near-black `--iht-ink` (`#1f2328`). Don't bring back navy (the old `#1c2d50`).
+  - Archivo (titles and figures) is used at its normal width. The owner found the Expanded and Semi-expanded cuts too stretched, so the theme no longer loads them.
+- Pictures must need no credit. The illustrations are from unDraw (https://undraw.co/license: free, no attribution), with their accent recoloured to IHT Blue; each SVG says so in a comment at its top. The old Freepik art, which needed a credit, was removed on 2026-11-10. The team photos are the team's own.
+- Accessibility: the site was brought to WCAG 2.2 AA on 2026-11-10 (axe-core finds nothing, and every flow works from the keyboard). Keep it there:
+  - Controls are real `<button>`s and links with an `href`, never `div`s with `onclick`. Inside a quiz's `<form>`, every button that isn't Continue needs `type="button"`, or it submits the form.
+  - Don't give an element an `id` that an inline `onclick` calls by the same name inside a form: there `prevAnswer()` meant Go Back's button (`id="prevAnswer"`), not the function. Go Back's click is wired in the script for that reason.
+  - Each new quiz screen takes focus (`focusOn()`): the question (`#question`), the video's heading, then "Remember:" or PHQ-9's `#crisisHelp`. Elements focused that way have `tabindex="-1"` and no ring (theme.css).
+  - After every `swal()` call, call the page's `nameDialog()`: it names the dialog and moves focus into it. theme.css hides a closed sweetalert dialog, so Tab and screen readers can't reach it.
+  - The gift cards have `aria-label`s and `aria-pressed`; the dashboard's tabs carry `aria-current`, its unfinished sub-tabs `aria-disabled`, its charts a text description (`role="img"`), and its Patient List headings are buttons with `aria-sort`.
+  - Every page has a `<main>` and its own `<title>`. The quiz videos have English captions (`wellnesswallet/video/*.vtt`, on by default), made with Whisper on this machine and checked by reading; if a video changes, its captions must change with it.
 - The header's height is the token `--iht-header-h`: 72px on desktop and 64px below 992px at the default font. It grows with a larger font, but only up to a cap. Anything that must clear the header reads the token, so don't write a header height into a page.
   - The site pages' header is sticky. Its phone layout starts below 992px (`max-width: 991.98px`), and `plugins/menu/menu.js` uses the same query, so change both together. The page layouts switch at `em` widths instead, so a larger default font gets the one-column layout sooner.
   - The patient header is laid over the page: `position: absolute` below 992px, `fixed` from 992px. The start page's stacked layout (below 992px, or a portrait window) puts it back in the flow with `position: relative`.
@@ -54,7 +64,7 @@ All 8 pages share one stylesheet, `css/theme.css` at the repo root. The dashboar
 ## Test locally
 1. From the repo root, run `python3 -m http.server 8000` (`py -m http.server 8000` on Windows). Serving from the root reproduces the paths GitHub Pages uses.
 2. Open these pages under http://localhost:8000:
-   - `/`, `/team/`, `/demo/` and `/dashboard/`, plus the phone-width menu on `/`, `/team/` and `/dashboard/`
+   - `/`, `/team/` and `/dashboard/`, plus the phone-width menu on `/`, `/team/` and `/dashboard/` (and `/demo/`, which should land on `/wellnesswallet/`)
    - `/wellnesswallet/` and its `fallPrevention/`, `PHQ9/` and `submitted/` pages
 3. Try them at these window sizes:
    - laptops and desktops: 1280x800, 1366x768, 1440x900, 1536x864 and 1920x1080, plus the windows real laptops show, such as 1366x657, 1440x789 and 1920x969
@@ -63,12 +73,13 @@ All 8 pages share one stylesheet, `css/theme.css` at the repo root. The dashboar
    - 1280x800 and 1366x768 zoomed to 125% and 150%
 4. Also try a larger default font of 20, 24 and 32px, and reduced motion. Chrome's "Large" font size is 20px and "Very large" is 24px; Firefox's font settings go higher.
 5. Check that nothing scrolls sideways, no text is cut off or under the header, Go Back never covers an answer, Continue or Finish, and the dialogs fit the window.
+6. Check accessibility: run axe-core (its WCAG 2.0–2.2 A and AA rules) on each page and on the in-between states (the video and end screens, each dialog, PHQ-9's question 9, an open Patient List), and go through every flow with the keyboard alone: Tab, Enter, Space and Escape.
 
 Some libraries load from public CDNs, and the theme's fonts from Google Fonts, so you need to be online.
 
 On Windows, several `http.server` processes can listen on the same port at once, and a test can then get another copy's files. Give each test server its own port.
 
-Don't press Submit on `demo/`: it sends the answers to the public HAPI test server. Don't confirm the "Submitted!" box on `wellnesswallet/submitted/`: it leaves for prospectmedical.com.
+Don't confirm the "Submitted!" box on `wellnesswallet/submitted/`: it leaves for prospectmedical.com.
 
 ## History
 - iht started on 2023-04-12 as the company site, built from a website template.
@@ -101,19 +112,23 @@ Don't press Submit on `demo/`: it sends the answers to the public HAPI test serv
 - PR #3 (branch `fix-ww-layout`) made the Wellness Wallet pages fit phones, tablets and zoomed laptop windows. Before, content there was cut off, covered or out of reach. At the five desktop window sizes the pages look as they did, except quiz screens that had something covered or cut off.
   - The five desktop sizes are browser viewports. A real 1366x768 laptop shows a viewport about 1366x657, so it gets the smaller-window quiz layout; that was tested too.
 - PR #4 (branch `refresh-look`) gave all 8 pages one look from a shared stylesheet, `css/theme.css`: a blue IHT header, Archivo for titles, Atkinson Hyperlegible Next for reading, and a few colours that each mean one thing. The patient pages keep their large print and now also fit larger default fonts and short windows: the header no longer spills, Go Back no longer covers a button, and the dialogs fit. The dashboard got a phone layout, and the wording changed in only a few places: a team bio and heading, the dashboard's colons, image descriptions, illustration credits and a skip link.
+- PR #5 (branch `ada-pass`, 2026-11-10) followed the owner's feedback on PR #4 and asked for the site to be ADA compliant:
+  - Archivo at its normal width (the wide cuts looked stretched), and an all light-blue palette: blue footers, a pale-to-IHT-blue chart ramp, neutral text, no navy.
+  - unDraw illustrations that need no credit in place of the Freepik ones, so the footers lost the credit.
+  - `demo/` redirects to `/wellnesswallet/`. It was a rough copy of the fall quiz, and it started its Vimeo video as soon as the page loaded, before its video screen.
+  - A WCAG 2.2 AA pass: real buttons and links in the quizzes, gift cards and Patient List; focus moved to each new quiz screen; named dialogs; captions for both quiz videos; chart descriptions; page titles; `<main>` landmarks.
 
 ## Open items
-1. Keyboard and screen readers:
-   - The quiz answers, Go Back and Finish can't be reached from the keyboard: the answers and Go Back are `div`s, and Finish is an `<a>` with no `href`.
-   - The dashboard's Patient List sorts by a column when its heading is clicked, but the headings can't be reached from the keyboard.
-   - The gift cards on `submitted/` have no accessible name or pressed state, because their logos are background pictures. Naming them needs new wording.
+1. Accessibility beyond what the checks cover:
+   - No one has tried the site with a real screen reader (NVDA, JAWS or VoiceOver) yet. axe-core and the keyboard checks pass; a screen-reader pass is the next step for a formal audit.
+   - The captions were made by machine (Whisper) and checked by reading, not by watching with the sound on. Someone should watch both videos once with captions on. Neither video has audio description; their narration seems to cover what's shown, judged from the captions.
+   - The dashboard's content has no headings, and its tabs are links marked with `aria-current` rather than the full ARIA tab pattern.
 2. Small layout problems:
    - Go Back sits at the foot of the quiz, so on a screen taller than the window it can be below the fold, or cut off by the window's bottom edge, when the screen first appears. Examples are PHQ-9's question 8 at 1280x800 and most screens at the 125% and 150% zooms. It covers nothing, and scrolling brings it into view.
    - At 280px wide (a folding phone's cover screen), the quiz end screens used to be about 34px wider than the window. "Remember:" is now capped by the window's width, and with a 32px font the start page's "$10 gift card" wraps inside its box, but neither has been re-measured at 280px.
    - On phones the quiz end screens are sized by the width, so apart from Finish they don't grow when the browser's font size is raised. The questions and answers do.
    - The dashboard's Patient List scrolls sideways where its columns don't fit. At the default font that's below about 1280px wide for PHQ-9's 13 columns, and below 1024px for the other two lists. A fade at its right edge shows there's more.
 3. Decided to leave as they are on 2026-11-05:
-   - `demo/` still POSTs its quiz answers to the public HAPI test server, under test patient 22, when someone presses Submit.
    - The Wellness Wallet stores nothing: quiz answers only go to the browser console.
    - The start page greets everyone as "Hello Christopher!".
    - `submitted/` ends on prospectmedical.com.
@@ -127,9 +142,8 @@ Don't press Submit on `demo/`: it sends the answers to the public HAPI test serv
      - Without `:has()` (Firefox before 121, Safari before 15.4), Go Back stays centred on the end screen instead of lining up under Finish, and Request a Demo jumps instead of scrolling smoothly.
      - Without container queries (Chrome before 105, Safari before 16, Firefox before 110), the Patient List's name column doesn't stay put while the table scrolls sideways, and the home page's title isn't capped by its column.
      - Without `zoom` (Firefox before 126), the dialogs' icon doesn't shrink on short windows.
-   - Playwright's WebKit on Windows doesn't apply variable-font axes, so there Archivo and Atkinson Hyperlegible Next show at their regular weight and width. Judge type in Chromium or Firefox, or in real Safari.
+   - Playwright's WebKit on Windows doesn't apply variable-font axes, so there Archivo and Atkinson Hyperlegible Next show at their regular weight. Judge type in Chromium or Firefox, or in real Safari.
 5. Left from the last review of PR #4, all minor:
    - Look: "Resume Video?" takes two lines from 1440x900 up, as on master. The site buttons' base size (17px, 48px tall) isn't the 18px and 52px the pages use. On desktop the quiz end screen's column doesn't line up with the header, as on master.
-   - Keyboard and screen readers, as on master: after the end screen's links, Tab reaches the closed "Resume Video?" buttons, and the video's own controls take a second Tab stop with no ring. The quizzes, `demo/` and `submitted/` have no `<main>`, the end-screen list is a `ul` of `h2`s, the dashboard's charts have no text alternative and its content has no headings, and every page but the dashboard is titled "IHT.tools". New: at the top of the dashboard, the top edge of a main tab's focus ring is under the bar.
    - Large fonts: the patient footers stop at 20px. At 32px the menu's × is clipped at 280 and 320px wide, the dashboard's skip link runs below the bar, and "Resume Video?" is taller than a 280 or 320px window (as on master).
-   - Code: `dashboard/script.js` adds seven globals. The start page and `submitted/` load the template's CSS and scripts though nothing uses them (about 970KB and 490KB). The fonts load through an `@import` in `theme.css`, with no preconnect. `demo/` loads `menu.js` but has no menu, `team/` keeps the unused class `yobtn`, and three pages repeat the sticky-footer body rule.
+   - Code: `dashboard/script.js` adds eight globals. The start page and `submitted/` load the template's CSS and scripts though nothing uses them (about 970KB and 490KB). The fonts load through an `@import` in `theme.css`, with no preconnect. `team/` keeps the unused class `yobtn`, and three pages repeat the sticky-footer body rule.
