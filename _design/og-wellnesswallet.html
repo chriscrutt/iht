@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<!-- Source of wellnesswallet/image/og-image.png, the link-preview picture for the Wellness Wallet
+     pages. Render it at exactly 1200x630 (see .claude/CLAUDE.md, "Icons and link previews"). -->
+<head>
+  <meta charset="utf-8">
+  <title>Wellness Wallet link preview</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700..800&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+  <style>
+    html, body { margin: 0; }
+    .card { position: relative; width: 1200px; height: 630px; overflow: hidden; background: #fff; color: #1f2328;
+            font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif; }
+    .bar { display: flex; align-items: center; gap: 22px; height: 112px; padding: 0 72px; background: #466eb6; color: #fff; }
+    .mark { font-family: "Archivo", sans-serif; font-weight: 800; font-size: 44px; letter-spacing: 0.02em; }
+    .app { padding-left: 22px; border-left: 3px solid rgba(255, 255, 255, 0.6); font-weight: 700; font-size: 36px; }
+    .text { position: absolute; left: 72px; top: 168px; width: 600px; }
+    h1 { margin: 0 0 24px; font-family: "Archivo", sans-serif; font-weight: 800; font-size: 72px; line-height: 1.04;
+         letter-spacing: -0.015em; }
+    h1 span { color: #1e7b4f; }
+    p { margin: 0; font-size: 32px; line-height: 1.35; }
+    .url { position: absolute; left: 72px; bottom: 50px; color: #555c66; font-weight: 700; font-size: 26px; }
+    .art { position: absolute; right: 40px; bottom: 40px; width: 470px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="bar"><span class="mark">IHT</span><span class="app">Wellness Wallet</span></div>
+    <div class="text">
+      <h1>Answer a few questions, get a <span>$10 gift card</span></h1>
+      <p>Watch a quick video too, and the card is sent to your home.</p>
+    </div>
+    <div class="url">iht.tools/wellnesswallet</div>
+    <img class="art" src="../wellnesswallet/image/gift-card.svg" alt="">
+  </div>
+</body>
+</html>
