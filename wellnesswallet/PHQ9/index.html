@@ -411,9 +411,28 @@
       })();
     }
 
+    // How much of the video has been seen. Reaching the end counts as finished for good, so
+    // watching to the end and then starting it again doesn't bring back "Resume Video?". Until then
+    // it's the parts actually played, wherever they are, not just where the video is now.
+    var reachedEnd = false;
+    player.addEventListener("ended", function () {
+      reachedEnd = true;
+    });
+
+    function watchedFraction() {
+      if (reachedEnd) {
+        return 1;
+      }
+      var seen = 0;
+      for (var i = 0; i < player.played.length; i++) {
+        seen += player.played.end(i) - player.played.start(i);
+      }
+      return player.duration ? Math.min(1, seen / player.duration) : 0;
+    }
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      perc = player.currentTime / player.duration;
+      perc = watchedFraction();
       if (perc < 1) {
         player.pause();
         var resume = swal({
