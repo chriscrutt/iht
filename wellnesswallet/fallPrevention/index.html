@@ -22,7 +22,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>IHT.tools</title>
+  <title>Fall Prevention Check | Wellness Wallet</title>
   <link rel="shortcut icon" href="../image/favicon.png" type="image/x-icon">
   <!-- Bootstrap , fonts & icons  -->
   <link rel="stylesheet" href="../css/bootstrap.css">
@@ -62,28 +62,31 @@
     </header>
     <!-- navbar- -->
     <!-- Hero Area -->
-    <div class="testFhir position-relative z-index-1 trans">
+    <main class="testFhir position-relative z-index-1 trans">
       <div class="container" style="text-align: center;">
         <div class="row position-relative justify-content-center">
           <div class="col-md-10 pr-0" style="width:auto;">
             <form id="myForm" method="type">
               <div id="questionnaire-form" style="opacity: 0;" class="trans">
-                <div id="question" class="trans">
+                <!-- Each new question takes focus (renderQuestion), so it's read out. -->
+                <div id="question" class="trans" tabindex="-1">
                   <p>Do you have a problem with your balance?</p>
                 </div>
+                <!-- type="button": inside the form, a plain button would submit it. -->
                 <div id="choices">
-                  <div class="btn trans" id="Yes" value="Yes" onclick="checkAnswer('yes')">Yes</div>
-                  <div class="btn trans" id="No" value="No" onclick="checkAnswer('no')">No</div>
+                  <button type="button" class="btn trans" id="Yes" onclick="checkAnswer('yes')">Yes</button>
+                  <button type="button" class="btn trans" id="No" onclick="checkAnswer('no')">No</button>
                 </div>
               </div>
 
               <div id="video" class="trans">
-                <h1>Now, watch this quick video to learn more about fall
+                <h1 tabindex="-1">Now, watch this quick video to learn more about fall
                   prevention.</h1>
                 <!-- <h3>Now, watch this quick video to learn more about fall prevention.</h3> -->
                 <div id="player" style="display: block; padding-bottom: 1vh;">
                   <video id="video1" controls>
                     <source src="../video/sixSteps.mp4" type="video/mp4">
+                    <track kind="captions" src="../video/sixSteps.vtt" srclang="en" label="English" default>
                     Your browser does not support HTML video.
                   </video>
                 </div>
@@ -91,8 +94,8 @@
               </div>
               <!-- Hidden until renderQuestion() shows it from question 2 on. Invisible, it would still
                    catch taps meant for question 1's answers. -->
-              <div class="btn" id="prevAnswer" class="trans" onclick="prevAnswer()" style="opacity:0;display:none;">Go
-                Back</div>
+              <button type="button" class="btn" id="prevAnswer" style="opacity:0;display:none;">Go
+                Back</button>
             </form>
           </div>
         </div>
@@ -102,15 +105,15 @@
           <div class="row position-relative justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 pr-0">
               <div class="content">
-                <h1>Remember:</h1>
+                <h1 tabindex="-1">Remember:</h1>
                 <h2 class="tape-helper mb4">If you feel you're at risk, talk to your doctor
                   about the following:</h2>
                 <ul>
-                  <h2><i>✔</i> Using a cane or walker</h2>
-                  <h2><i>✔</i> Physical therapy programs</h2>
-                  <h2><i>✔</i> Any medical conditions that might be causing it</h2>
+                  <li><i aria-hidden="true">✔</i> Using a cane or walker</li>
+                  <li><i aria-hidden="true">✔</i> Physical therapy programs</li>
+                  <li><i aria-hidden="true">✔</i> Any medical conditions that might be causing it</li>
                 </ul>
-                <a class="btn" onclick="finish()">Finish</a>
+                <a class="btn" href="../submitted/" onclick="finish(); return false;">Finish</a>
               </div>
             </div>
           </div>
@@ -119,7 +122,7 @@
       <footer>
         Incentive Health Technologies, LLC
       </footer>
-    </div>
+    </main>
   </div>
   <!-- Footer Area -->
   <style>
@@ -303,21 +306,61 @@
     const player = document.getElementById("video1");
     var perc = 0;
     const form = document.querySelector('#myForm');
+
+    // Keyboard and screen-reader users: each new screen takes focus, so it's read out and Tab
+    // goes on from there. Nothing scrolls, and a mouse user sees no ring (theme.css).
+    function focusOn(element) {
+      element.focus({ preventScroll: true });
+    }
+
+    // sweetalert's dialog has no accessible name: this gives it its title, and its text as the
+    // description. Call it straight after swal(), which builds the dialog at once.
+    function nameDialog() {
+      var modal = document.querySelector(".swal-modal");
+      var title = modal && modal.querySelector(".swal-title");
+      var text = modal && modal.querySelector(".swal-text");
+      if (title) {
+        title.id = "swal-title";
+        modal.setAttribute("aria-labelledby", "swal-title");
+      }
+      if (text) {
+        text.id = "swal-text";
+        modal.setAttribute("aria-describedby", "swal-text");
+      }
+      // sweetalert focuses its last button at once but shows the dialog a moment later, and a
+      // closed dialog is hidden (theme.css), so that focus is lost. Move it in once it shows.
+      var tries = 0;
+      (function focusIn() {
+        var buttons = modal ? modal.querySelectorAll(".swal-button") : [];
+        if (document.querySelector(".swal-overlay--show-modal") && buttons.length) {
+          if (!modal.contains(document.activeElement)) {
+            buttons[buttons.length - 1].focus();
+          }
+        } else if (++tries < 10) {
+          setTimeout(focusIn, 20);
+        }
+      })();
+    }
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       perc = player.currentTime / player.duration;
       if (perc < 1) {
         player.pause();
-        swal({
+        var resume = swal({
           title: "Resume Video?",
           text: `You have only watched ${Math.round(perc * 100)}% of the video. If you continue, you might miss out on the reward at the end. Would you like to resume the video?`,
           // icon: "warning",
           buttons: ["Resume Video", "Move On"],
           dangerMode: true,
-        })
+        });
+        nameDialog();
+        resume
           .then((submit) => {
             if (!submit) {
               player.play();
+              // Back to Continue, where the dialog was opened from.
+              focusOn(form.querySelector("#video .btn"));
             } else {
               // answer(perc);
               goToEnd();
@@ -349,6 +392,11 @@
     const choiceA = document.getElementById("Yes");
     const choiceB = document.getElementById("No");
     const prev = document.getElementById("prevAnswer");
+    // Wired here, not in an onclick: inside the form, "prevAnswer" there would mean this button
+    // (the form's control with that id), not the function.
+    prev.addEventListener("click", function () {
+      prevAnswer();
+    });
 
     // create our questions
     let questions = [
@@ -398,6 +446,7 @@
         question.innerHTML = "<p style=\"font-size:2em;\">" + q.question + "</p>";
         choiceA.innerHTML = q.choiceA;
         choiceB.innerHTML = q.choiceB;
+        focusOn(question);
 
         if (runningQuestion > 0) {
           prev.style.opacity = 1;
@@ -442,8 +491,8 @@
           player.currentTime = 0;
           document.getElementById("questionnaire-form").style.display = "table-cell";
           document.getElementById("questionnaire-form").style.opacity = 1;
-          // setTimeout(function () {
-          // }, 500);
+          // From the video screen the question was drawn while still hidden, so focus it now.
+          focusOn(question);
         }, 500);
       } else if (runningQuestion == lastQuestion) {
         document.getElementById("questionnaire-form").style.opacity = 0;
@@ -455,6 +504,7 @@
           player.play();
           vidBlock.style.display = "block";
           vidBlock.style.opacity = 1;
+          focusOn(vidBlock.querySelector("h1"));
           renderQuestion();
         }, 500);
       }
@@ -477,6 +527,7 @@
           document.getElementById("questionnaire-form").style.display = "none";
           setTimeout(function () {
             vidBlock.style.display = "block";
+            focusOn(vidBlock.querySelector("h1"));
             setTimeout(function () {
               vidBlock.style.opacity = 1;
               player.play();
@@ -493,6 +544,7 @@
       vidBlock.style.display = "none";
       document.getElementById("end").style.display = "block";
       document.getElementById("end").style.opacity = 1;
+      focusOn(document.querySelector("#end h1"));
       runningQuestion++;
     }
 
