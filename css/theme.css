@@ -5,8 +5,9 @@
  *   css/theme.css         the home page
  *   ../css/theme.css      team/, dashboard/ and wellnesswallet/
  *   ../../css/theme.css   the Wellness Wallet subpages
- * The patient pages still load the template's bootstrap.css and main.css, and load this
- * after them.
+ * The patient pages first load what they use from the template they were built on, Bootstrap
+ * and its main.css (wellnesswallet/css/template.css), and load this after it. Where a comment
+ * below says "main.css", it means that file's part of template.css.
  *
  * Nothing here applies until a page opts in:
  *   <body class="iht">                 site pages (home, team, dashboard)
@@ -20,7 +21,68 @@
  * Sections: 1 tokens, 2 base, 3 header, 4 buttons, 5 site pages and the footer, 6 patient
  * pages, 7 motion. Page-specific CSS stays in each page (see .claude/CLAUDE.md).
  */
-@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@700..800&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap");
+/* The fonts are kept in the site (../fonts/), so a page needs no other server: Archivo (weights
+   700 to 800 in one file) and Atkinson Hyperlegible Next (400 and 700 in one file). These are
+   the files and the rules Google Fonts serves. Each face is split by alphabet, and a browser
+   fetches only the parts a page has characters for: today, the two "latin" files. Every page
+   also asks for those two straight away, with <link rel="preload"> tags in its head. Both
+   families are under the SIL Open Font License (../fonts/OFL-*.txt). */
+/* latin-ext */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 700 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("../fonts/archivo-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 700 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("../fonts/archivo-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* ---------- 1. Tokens ---------- */
 
@@ -212,7 +274,7 @@ body.iht .iht-skip:focus {
 /* The sticky bar covers the top of the window, so wherever the browser scrolls a control into
    view (Tab, Shift+Tab, the skip link), it stops clear of the bar instead of under it. The
    header's own links stay in the bar and need none. */
-body.iht:not(.iht--patient) :is(a, button, [tabindex]):not(.iht-header *) {
+body.iht:not(.iht--patient) :is(a, button, select, input, textarea, summary, [tabindex]):not(.iht-header *) {
   scroll-margin-top: calc(var(--iht-header-h) + 0.5rem);
 }
 
@@ -1372,10 +1434,10 @@ body.iht .iht-footer a:hover {
 }
 
 /* ---------- 6. Patient pages (the Wellness Wallet) ----------
-   These pages keep Bootstrap and the template's main.css underneath, and each keeps its own
-   layout maths at the end of its <style> block. This section is the look and the type sizes
-   they share. Large print: no size here is below what the pages showed before at the default
-   font. */
+   These pages keep what they use of Bootstrap and the template's main.css underneath
+   (template.css), and each keeps its own layout maths at the end of its <style> block. This
+   section is the look and the type sizes they share. Large print: no size here is below what
+   the pages showed before at the default font. */
 
 /* main.css starts with "* { font-family: Rubik; }", which stops every element inheriting its
    font, and Rubik is no longer loaded, so anything the theme doesn't name (a link, a span, a
@@ -1599,8 +1661,17 @@ body.iht--patient .btn {
 }
 
 /* "Remember:" is 5em, as on master: 80px on desktop at the default font, and more with a larger
-   one. It can't wrap, so where 5em wouldn't fit, the width caps it. It's 5.71em wide. */
+   one. It's one word, 5.71em wide, so where 5em wouldn't fit, the room it has caps its size
+   (--iht-remember-room, set below for phones and for wider windows).
+
+   Its box is as wide as the word, up to that room and 6px more, so it never breaks at its
+   proper size. Only if something makes the word wider all the same (a reader's own wider letter
+   spacing, WCAG 1.4.12) does it break onto a second line, rather than run off the window's edge
+   and be cut off. The second limit is that edge: the column is centred in the window, so
+   50% + 50vw from the column's left side is the window's right side. */
 .iht--patient #end .content h1 {
+  width: max-content;
+  max-width: min(calc(var(--iht-remember-room) + 6px), calc(50% + 50vw - 2px));
   margin: 0 0 0.2em;
   color: var(--iht-ink);
   font-family: var(--iht-display);
@@ -1608,7 +1679,7 @@ body.iht--patient .btn {
   font-size: 5em;
   line-height: 1;
   letter-spacing: -0.015em;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 /* Phones: 5em of the capped #end .content (62px at 390px), as on master. Below 360px that would
@@ -1616,7 +1687,8 @@ body.iht--patient .btn {
    but stops 8px short of the window's edge. */
 @media (max-width: 767.98px) {
   .iht--patient #end .content h1 {
-    font-size: min(5em, (100vw - 24px) / 5.72);
+    --iht-remember-room: calc(100vw - 24px);
+    font-size: min(5em, var(--iht-remember-room) / 5.72);
   }
 }
 
@@ -1626,7 +1698,8 @@ body.iht--patient .btn {
    less 10px for a scrollbar. */
 @media (min-width: 768px) {
   .iht--patient #end .content h1 {
-    font-size: min(5em, (50vw + var(--iht-end-col) / 2 - 1.75rem - 10px) / 5.8);
+    --iht-remember-room: calc(50vw + var(--iht-end-col) / 2 - 1.75rem - 10px);
+    font-size: min(5em, var(--iht-remember-room) / 5.8);
   }
 }
 

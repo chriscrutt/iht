@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
     content="Meet the innovative team at IHT.tools, dedicated to revolutionizing healthcare through technology. Request a demo to learn more about our unique solutions for integrating healthcare systems, enhancing communication, and improving efficiency.">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Our Team | IHT</title>
   <link rel="icon" href="../image/favicon.ico" sizes="32x32">
   <link rel="icon" href="../image/favicon.svg" type="image/svg+xml">
@@ -24,25 +23,18 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="IHT: Pro-Active Wellness. Cash rewards that motivate older patients to make healthy choices.">
   <meta name="twitter:card" content="summary_large_image">
+  <!-- The two font files every page needs, asked for straight away (the theme names them too). -->
+  <link rel="preload" href="../fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/atkinson-hyperlegible-next-latin.woff2" as="font" type="font/woff2" crossorigin>
   <!-- The shared theme. It loads its own fonts. -->
   <link rel="stylesheet" href="../css/theme.css">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTYQ6V2CCM"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-BTYQ6V2CCM');
-  </script>
 </head>
 
 <body class="iht">
   <a class="iht-skip" href="#main">Skip to content</a>
   <header class="iht-header iht-header--sticky">
     <div class="iht-header__inner">
-      <a class="iht-brand" href="../"
-        onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-home'})">
+      <a class="iht-brand" href="../">
         <h1 class="iht-wordmark">IHT</h1>
       </a>
       <div class="menu-block-wrapper">
@@ -53,12 +45,11 @@
           </div>
           <ul class="site-menu-main">
             <li class="nav-item">
-              <a href="#" onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-team'})"
-                class="nav-link-item yobtn" aria-current="page">Our Team</a>
+              <a href="#" class="nav-link-item" aria-current="page">Our Team</a>
             </li>
             <li class="nav-item iht-nav-item--cta">
               <a href="#request-a-demo" class="nav-link-item iht-nav-cta"
-                onclick="window.scrollTo(0, 10000000); gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-demo-nav'})">Request
+                onclick="window.scrollTo(0, 10000000);">Request
                 a Demo</a>
             </li>
           </ul>
@@ -142,8 +133,7 @@
         </figure>
         <div>
           <h2 class="iht-h2">Request a Demo</h2>
-          <p>Email <a class="iht-email" href="mailto:info@iht.tools"
-              onclick="gtag('event', 'click', {'event_category': 'button', 'event_label': 'team-email'})">info@iht.tools</a>
+          <p>Email <a class="iht-email" href="mailto:info@iht.tools">info@iht.tools</a>
             to request a demo.</p>
         </div>
       </div>

@@ -684,6 +684,22 @@ body.iht .dash-program__name a {
   }
 }
 
+/* Windows' high-contrast mode takes background colours away, and the bars, strips and keys are
+   nothing but background colour: all but the two palest tones (which have a border) would vanish.
+   So they keep their own colours there. Their numbers are text either way. */
+@media (forced-colors: active) {
+  .dash-bar__fill,
+  .dash-strip span,
+  .dash-answer__strip span,
+  .dash-key__swatch,
+  .dash-nav__count::before,
+  .dash-figure--followup dt::before,
+  .dash-figure--reward dt::before,
+  .dash-program__numbers .is-followup dt::before {
+    forced-color-adjust: none;
+  }
+}
+
 /* ---------- 8. On paper ---------- */
 
 /* Only the view prints: no list of programs, picker or download button. Its bars, strips and

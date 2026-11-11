@@ -1,27 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- 
-  1. [x] add intro
-  2. [x] green button
-  3. [x] previous
-  4. [x] are you sure?
-  5. [x] "finish"
-  5. [x] close
-  6. [x] reward
-  7. [ ] progress bar
-  8. [x] set video to 0 and pause it if they choose to go back once they get there
- ̶ ̶9̶.̶ ̶[̶ ̶]̶ ̶y̶e̶s̶/̶n̶o̶ ̶b̶u̶t̶t̶o̶n̶s̶ ̶s̶h̶o̶u̶l̶d̶ ̶s̶t̶a̶y̶ ̶i̶n̶ ̶s̶a̶m̶e̶ ̶s̶p̶o̶t̶
-  10.[x] go back button should in same spot and lower
-  11.[x] put patient id in URL
-  12.[x] bigger font and less text
-  13.[ ] add three options of giftcards wallgreens cvs rite aid
- -->
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Fall Prevention Check | Wellness Wallet</title>
   <link rel="icon" href="../image/favicon.ico" sizes="32x32">
   <link rel="icon" href="../image/favicon.svg" type="image/svg+xml">
@@ -40,36 +22,19 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="IHT Wellness Wallet: answer a few questions, get a $10 gift card.">
   <meta name="twitter:card" content="summary_large_image">
-  <!-- Bootstrap , fonts & icons  -->
-  <link rel="stylesheet" href="../css/bootstrap.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <!-- Vendor stylesheets  -->
-  <link rel="stylesheet" href="../css/main.css">
+  <!-- The two font files every page needs, asked for straight away (the theme names them too). -->
+  <link rel="preload" href="../../fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../fonts/atkinson-hyperlegible-next-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- What these pages use from the template they were built on (Bootstrap and its theme). -->
+  <link rel="stylesheet" href="../css/template.css">
   <!-- The shared theme, after the template CSS so it wins. It loads its own fonts. -->
   <link rel="stylesheet" href="../../css/theme.css">
-  <!-- Sweet Alerts -->
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VMM3KZFGGE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-VMM3KZFGGE');
-  </script>
+  <!-- The dialogs: sweetalert 2.1.2, kept in the site so the page needs no other server. -->
+  <script src="../plugins/sweetalert/sweetalert.min.js"></script>
 </head>
 
 <body class="iht iht--patient" data-theme-mode-panel-active data-theme="light">
   <div class="site-wrapper overflow-hidden position-relative">
-    <!-- Site Header -->
-    <!-- Preloader -->
-    <!-- <div id="loading">
-    <div class="preloader">
-     <img src="../image/preloader.gif" alt="preloader">
-   </div>
-   </div>    -->
-    <!--Site Header Area -->
     <!-- The shared header, patient version: the wordmark and "Wellness Wallet", no links. -->
     <header class="iht-header iht-header--patient">
       <div class="iht-header__inner">
@@ -98,9 +63,10 @@
               <div id="video" class="trans">
                 <h1 tabindex="-1">Now, watch this quick video to learn more about fall
                   prevention.</h1>
-                <!-- <h3>Now, watch this quick video to learn more about fall prevention.</h3> -->
                 <div id="player" style="display: block; padding-bottom: 1vh;">
-                  <video id="video1" controls>
+                  <!-- preload="none": the video isn't fetched while the page itself loads. The script
+                       starts it once the page has loaded (window.onload). -->
+                  <video id="video1" controls preload="none">
                     <source src="../video/sixSteps.mp4" type="video/mp4">
                     <track kind="captions" src="../video/sixSteps.vtt" srclang="en" label="English" default>
                     Your browser does not support HTML video.
@@ -213,7 +179,7 @@
 
     /* The footer sits at the foot of the quiz too, under Go Back, so on a screen taller than the
        window neither is drawn over the other or over the content. It stays on top of buttons
-       (main.css gives them z-index 5), and Go Back on top of it. */
+       (the template's CSS gives them z-index 5), and Go Back on top of it. */
     .testFhir footer {
       position: absolute;
       z-index: 6;
@@ -225,6 +191,9 @@
 
     #video1 {
       height: 50vh;
+      /* Its shape before the video's own size has been fetched (both videos are 16:9), so the
+         screen doesn't shift when that arrives. */
+      aspect-ratio: 16 / 9;
     }
 
     /* The end screen keeps its own room (below), so it sits over the two empty items and
@@ -590,6 +559,9 @@
     window.onload = (event) => {
       // renderQuestion();
       document.getElementById("questionnaire-form").style.opacity = 1
+      // The page has loaded, so now fetch the start of the video. (preload="none" kept it from
+      // holding up the page.) It's ready well before the questions have been answered.
+      player.preload = "metadata";
     };
 
   </script>
