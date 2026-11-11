@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Choose Your Gift Card | Wellness Wallet</title>
     <link rel="icon" href="../image/favicon.ico" sizes="32x32">
     <link rel="icon" href="../image/favicon.svg" type="image/svg+xml">
@@ -23,24 +22,15 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="IHT Wellness Wallet: answer a few questions, get a $10 gift card.">
     <meta name="twitter:card" content="summary_large_image">
-    <!-- Bootstrap , fonts & icons  -->
-    <link rel="stylesheet" href="../css/bootstrap.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <!-- Vendor stylesheets  -->
-    <link rel="stylesheet" href="../css/main.css">
+    <!-- The two font files every page needs, asked for straight away (the theme names them too). -->
+    <link rel="preload" href="../../fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../../fonts/atkinson-hyperlegible-next-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- What these pages use from the template they were built on (Bootstrap and its theme). -->
+    <link rel="stylesheet" href="../css/template.css">
     <!-- The shared theme, after the template CSS so it wins. It loads its own fonts. -->
     <link rel="stylesheet" href="../../css/theme.css">
-    <!-- Sweet Alerts -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VMM3KZFGGE"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-VMM3KZFGGE');
-    </script>
+    <!-- The dialogs: sweetalert 2.1.2, kept in the site so the page needs no other server. -->
+    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
 </head>
 
 <body class="iht iht--patient" data-theme-mode-panel-active data-theme="light">
@@ -268,12 +258,14 @@
         }
     </style>
     <script>
-        $(document).ready(function () {
-            $('.option').click(function () {
-                // Remove 'active' class from all buttons
-                $('.option').removeClass('active').attr('aria-pressed', 'false');
-                // Add 'active' class to the clicked button
-                $(this).addClass('active').attr('aria-pressed', 'true');
+        // Choosing a card marks it "active" (the styles above) and pressed, and the others not.
+        var options = document.querySelectorAll(".option");
+        options.forEach(function (option) {
+            option.addEventListener("click", function () {
+                options.forEach(function (other) {
+                    other.classList.toggle("active", other === option);
+                    other.setAttribute("aria-pressed", other === option ? "true" : "false");
+                });
             });
         });
 
@@ -309,7 +301,7 @@
 
         function finish() {
             // Check if a reward option is selected
-            if ($('.option.active').length === 0) {
+            if (!document.querySelector(".option.active")) {
                 var oops = swal({
                     title: "Oops!",
                     text: "Please select an option before submitting.",

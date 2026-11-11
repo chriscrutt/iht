@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Wellness Wallet | IHT</title>
   <link rel="icon" href="./image/favicon.ico" sizes="32x32">
   <link rel="icon" href="./image/favicon.svg" type="image/svg+xml">
@@ -23,21 +22,13 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="IHT Wellness Wallet: answer a few questions, get a $10 gift card.">
   <meta name="twitter:card" content="summary_large_image">
-  <!-- Bootstrap , fonts & icons  -->
-  <link rel="stylesheet" href="./css/bootstrap.css">
-  <!-- Vendor stylesheets  -->
-  <link rel="stylesheet" href="./css/main.css">
+  <!-- The two font files every page needs, asked for straight away (the theme names them too). -->
+  <link rel="preload" href="../fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/atkinson-hyperlegible-next-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- What these pages use from the template they were built on (Bootstrap and its theme). -->
+  <link rel="stylesheet" href="./css/template.css">
   <!-- The shared theme, after the template CSS so it wins. It loads its own fonts. -->
   <link rel="stylesheet" href="../css/theme.css">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTYQ6V2CCM"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-BTYQ6V2CCM');
-  </script>
 </head>
 
 <body class="iht iht--patient" data-theme-mode-panel-active data-theme="light">
@@ -127,8 +118,12 @@
       }
     }
 
+    /* Each phrase is a box of its own, so the line breaks between phrases, never inside one.
+       (Not "nowrap": if a reader's own wider letter spacing ever makes a phrase wider than the
+       page, WCAG 1.4.12, it wraps inside its box instead of running off the side.) */
     .ww-slogan span {
-      white-space: nowrap;
+      display: inline-block;
+      max-width: 100%;
     }
 
     .ww-start__text {
@@ -216,10 +211,13 @@
       }
 
       /* "Christopher!" can't wrap, so the width caps the size even when the browser's default
-         font size is larger than usual. It's 6.1em wide, so 13vw always fits. */
+         font size is larger than usual. It's 6.1em wide, so 13vw always fits. With a reader's
+         own wider letter spacing (WCAG 1.4.12) it wouldn't, so then the name breaks rather than
+         run off the side. */
       #greeting {
         font-size: min(clamp(2.5rem, 12vw, 10vh), 13vw);
         line-height: 1.1;
+        overflow-wrap: break-word;
       }
 
       .ww-lede {
@@ -259,16 +257,10 @@
       }
 
       .ww-slogan span {
-        white-space: normal;
+        display: inline;
       }
     }
   </style>
-  <!-- Vendor Scripts -->
-  <script src="./js/vendor.min.js"></script>
-  <!-- custom.js calls AOS.init(), so AOS stays, though nothing fades in any more. -->
-  <script src="./plugins/aos/aos.min.js"></script>
-  <!-- Activation Script -->
-  <script src="./js/custom.js"></script>
 </body>
 
 </html>
