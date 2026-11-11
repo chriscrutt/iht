@@ -2,191 +2,86 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | IHT</title>
-    <link rel="icon" href="favicon.ico" sizes="32x32">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <meta name="theme-color" content="#466eb6">
-    <meta name="description" content="A clinic dashboard that shows patients' check-in results and who needs follow-up.">
-    <!-- Link previews (texts, chats, social posts): the picture and words a shared link shows.
-         These URLs must be absolute, so they name iht.tools. -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="IHT">
-    <meta property="og:title" content="Dashboard | IHT">
-    <meta property="og:description" content="A clinic dashboard that shows patients' check-in results and who needs follow-up.">
-    <meta property="og:url" content="https://iht.tools/dashboard/">
-    <meta property="og:image" content="https://iht.tools/image/og-image.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="IHT: Pro-Active Wellness. Cash rewards that motivate older patients to make healthy choices.">
-    <meta name="twitter:card" content="summary_large_image">
-    <!-- The shared theme. It loads its own fonts. -->
-    <link rel="stylesheet" href="../css/theme.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | IHT</title>
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#466eb6">
+  <meta name="description" content="A clinic dashboard that shows patients' check-in results and how many need follow-up.">
+  <!-- Link previews (texts, chats, social posts): the picture and words a shared link shows.
+       These URLs must be absolute, so they name iht.tools. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="IHT">
+  <meta property="og:title" content="Dashboard | IHT">
+  <meta property="og:description" content="A clinic dashboard that shows patients' check-in results and how many need follow-up.">
+  <meta property="og:url" content="https://iht.tools/dashboard/">
+  <meta property="og:image" content="https://iht.tools/image/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="IHT: Pro-Active Wellness. Cash rewards that motivate older patients to make healthy choices.">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- The shared theme. It loads its own fonts. -->
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="iht">
-    <a class="iht-skip" href="#main">Skip to content</a>
-    <header class="iht-header iht-header--sticky">
-        <div class="iht-header__inner">
-            <a class="iht-brand" href="../">
-                <h1 class="iht-wordmark">IHT</h1>
-            </a>
-            <div class="menu-block-wrapper">
-                <div class="menu-overlay"></div>
-                <nav class="menu-block" id="append-menu-header">
-                    <div class="mobile-menu-head">
-                        <div class="mobile-menu-close">&times;</div>
-                    </div>
-                    <ul class="site-menu-main">
-                        <li class="nav-item">
-                            <a href="../team/" class="nav-link-item">Our Team</a>
-                        </li>
-                        <li class="nav-item iht-nav-item--cta">
-                            <a href="../#request-a-demo" class="nav-link-item iht-nav-cta">Request a Demo</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="mobile-menu-trigger">
-                <span></span>
-            </div>
-        </div>
-    </header>
+  <a class="iht-skip" href="#main">Skip to content</a>
+  <header class="iht-header iht-header--sticky">
+    <div class="iht-header__inner">
+      <a class="iht-brand" href="../">
+        <h1 class="iht-wordmark">IHT</h1>
+      </a>
+      <div class="menu-block-wrapper">
+        <div class="menu-overlay"></div>
+        <nav class="menu-block" id="append-menu-header">
+          <div class="mobile-menu-head">
+            <div class="mobile-menu-close">&times;</div>
+          </div>
+          <ul class="site-menu-main">
+            <li class="nav-item">
+              <a href="../team/" class="nav-link-item">Our Team</a>
+            </li>
+            <li class="nav-item iht-nav-item--cta">
+              <a href="../#request-a-demo" class="nav-link-item iht-nav-cta">Request a Demo</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="mobile-menu-trigger">
+        <span></span>
+      </div>
+    </div>
+  </header>
 
-    <!-- script.js finds the tabs and panels by the classes navbar, secondary-navbar and content.
-         aria-current marks the chosen tab and sub-tab; the sub-tabs that don't work yet are
-         aria-disabled. -->
+  <!-- The programs down the left, one view on the right. script.js fills the sidebar, the phone's
+       picker and the views from its sample data. -->
+  <div class="dash-shell">
+    <nav class="dash-nav" aria-label="Programs" id="dash-nav"></nav>
     <main id="main" tabindex="-1" class="dash">
-        <div class="dash-tabs">
-            <div class="navbar">
-                <a id="mainTab1" class="selected" href="#" aria-current="true"
-                    onclick="switchTab(event, 'mainTab1', 'secondaryTab1')">Mental
-                    Health Assessments</a>
-                <a id="mainTab2" href="#" onclick="switchTab(event, 'mainTab2', 'secondaryTab2')">HEDIS-Related
-                    Assessments</a>
-                <a id="mainTab3" href="#" onclick="switchTab(event, 'mainTab3', 'secondaryTab3')">Incentive Programs</a>
-            </div>
-            <div class="dash-subtabs">
-                <div id="secondaryTab1" class="secondary-navbar">
-                    <a id="tab1-1" class="selectedSub" href="#" aria-current="true" onclick="switchContent('content1', 'tab1-1')">PHQ-9</a>
-                    <a id="tab1-2" href="#" aria-disabled="true" onclick="/*switchContent('content2', 'tab1-2')*/">GAD-7</a>
-                    <a id="tab1-3" href="#" aria-disabled="true" onclick="/*switchContent('content3', 'tab1-3')*/">PCL-5</a>
-                    <a id="tab1-4" href="#" aria-disabled="true" aria-label="Add a screening">(+)</a>
-                </div>
-                <div id="secondaryTab2" class="secondary-navbar hidden">
-                    <a id="tab2-1" href="#" onclick="switchContent('content4', 'tab2-1')">Breast Cancer Screening</a>
-                    <a id="tab2-2" href="#" aria-disabled="true" onclick="/*switchContent('content5', 'tab2-2')*/">Colorectal Cancer
-                        Screening</a>
-                    <a id="tab2-3" href="#" aria-disabled="true" onclick="/*switchContent('content6', 'tab2-3')*/">Comprehensive Diabetes
-                        Care</a>
-                    <a id="tab2-4" href="#" aria-disabled="true" aria-label="Add a screening">(+)</a>
-
-                </div>
-                <div id="secondaryTab3" class="secondary-navbar hidden">
-                    <a id="tab3-1" href="#" onclick="switchContent('content7', 'tab3-1')">Fall Prevention</a>
-                    <a id="tab3-2" href="#" aria-disabled="true" onclick="/*switchContent('content8', 'tab3-2')*/">Incontinence</a>
-                    <a id="tab3-3" href="#" aria-disabled="true" onclick="/*switchContent('content9', 'tab3-3')*/">Medication Adherence</a>
-                    <a id="tab3-4" href="#" aria-disabled="true" aria-label="Add a screening">(+)</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Each panel: the figures, then the chart. A red key marks the figure that is the chart's
-             red slice (Actionable); a green one marks rewards paid. -->
-        <div id="content1" class="content">
-            <div class="info">
-                <dl class="dash-figures">
-                    <div class="dash-figure">
-                        <dt>Total Responses</dt>
-                        <dd>123,456</dd>
-                    </div>
-                    <div class="dash-figure dash-figure--followup">
-                        <dt>Actionable</dt>
-                        <dd>23,456</dd>
-                    </div>
-                </dl>
-                <button type="button" class="iht-btn iht-btn--primary" onclick="phq9PatientList()">Patient List</button>
-            </div>
-            <figure class="dash-chart">
-                <figcaption class="dash-chart__title">PHQ-9 Responses</figcaption>
-                <div class="dash-chart__body">
-                    <div class="dash-chart__donut"><canvas id="phq9Chart"></canvas></div>
-                    <ul class="dash-legend"></ul>
-                </div>
-            </figure>
-        </div>
-        <div id="content2" class="content hidden">Content for tab 2</div>
-        <div id="content3" class="content hidden">Content for tab 3</div>
-        <div id="content4" class="content hidden">
-            <div class="info">
-                <dl class="dash-figures">
-                    <div class="dash-figure">
-                        <dt>Total Responses</dt>
-                        <dd>11,233</dd>
-                    </div>
-                    <div class="dash-figure dash-figure--followup">
-                        <dt>Actionable</dt>
-                        <dd>5,432</dd>
-                    </div>
-                </dl>
-                <button type="button" class="iht-btn iht-btn--primary" onclick="breastCancerPatientList()">Patient List</button>
-            </div>
-            <figure class="dash-chart">
-                <figcaption class="dash-chart__title">Breast Cancer Screening Results</figcaption>
-                <div class="dash-chart__body">
-                    <div class="dash-chart__donut"><canvas id="breastCancerChart"></canvas></div>
-                    <ul class="dash-legend"></ul>
-                </div>
-            </figure>
-        </div>
-        <div id="content5" class="content hidden">Content for tab 5</div>
-        <div id="content6" class="content hidden">Content for tab 6</div>
-        <div id="content7" class="content hidden">
-            <div class="info">
-                <dl class="dash-figures">
-                    <div class="dash-figure">
-                        <dt>Total Responses</dt>
-                        <dd>32,015</dd>
-                    </div>
-                    <div class="dash-figure dash-figure--followup">
-                        <dt>Actionable</dt>
-                        <dd>6,321</dd>
-                    </div>
-                    <div class="dash-figure dash-figure--reward">
-                        <dt>Reward Payouts</dt>
-                        <dd>$16,075</dd>
-                    </div>
-                </dl>
-                <button type="button" class="iht-btn iht-btn--primary" onclick="fallPatientList()">Patient List</button>
-            </div>
-            <figure class="dash-chart">
-                <figcaption class="dash-chart__title">Patient Risk Levels</figcaption>
-                <div class="dash-chart__body">
-                    <div class="dash-chart__donut"><canvas id="fallChart"></canvas></div>
-                    <ul class="dash-legend"></ul>
-                </div>
-            </figure>
-        </div>
-        <div id="content8" class="content hidden">Content for tab 8</div>
-        <div id="content9" class="content hidden">Content for tab 9</div>
+      <!-- Below 992px the sidebar gives way to this picker. -->
+      <div class="dash-pick">
+        <label for="dash-program">Program</label>
+        <select id="dash-program"></select>
+      </div>
+      <div class="dash-views" id="dash-views"></div>
+      <noscript>
+        <p>This dashboard needs JavaScript to show its numbers.</p>
+      </noscript>
     </main>
+  </div>
 
-    <footer class="iht-footer">
-        <div class="iht-wrap iht-footer__inner">
-            <span>Incentive Health Technologies, LLC</span>
-        </div>
-    </footer>
+  <footer class="iht-footer">
+    <div class="iht-wrap iht-footer__inner">
+      <span>Incentive Health Technologies, LLC</span>
+    </div>
+  </footer>
 
-    <!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="script.js"></script>
-    <!-- The shared header's phone menu. -->
-    <script src="../plugins/menu/menu.js"></script>
-
+  <script src="script.js"></script>
+  <!-- The shared header's phone menu. -->
+  <script src="../plugins/menu/menu.js"></script>
 </body>
 
 </html>
