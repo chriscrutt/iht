@@ -8,8 +8,8 @@
  * the last two sections sit side by side from 75em (1200px), and bars put their labels above
  * them below 48em (768px).
  *
- * Sections: 1 the shell and sidebar, 2 titles, 3 headline figures, 4 bars, 5 follow up first,
- * 6 how patients answered, 7 the overview, 8 narrower windows, 9 on paper.
+ * Sections: 1 the shell and sidebar, 2 titles and the download button, 3 headline figures,
+ * 4 bars, 5 by clinic and how patients answered, 6 the overview, 7 narrower windows, 8 on paper.
  */
 
 /* ---------- 1. The shell and the sidebar ---------- */
@@ -115,8 +115,7 @@ body.iht .dash-nav a[aria-current="page"] {
 .dash-nav__count::before,
 .dash-figure--followup dt::before,
 .dash-figure--reward dt::before,
-.dash-program__numbers .is-followup dt::before,
-.dash-flag::before {
+.dash-program__numbers .is-followup dt::before {
   content: "";
   flex: none;
   width: 0.75rem;
@@ -159,14 +158,39 @@ body.iht .dash-nav a[aria-current="page"] {
   display: none;
 }
 
-/* ---------- 2. Titles ---------- */
+/* ---------- 2. Titles, and the download button ---------- */
 
+/* A view's name and its "Sample data" note, with the download button across from them. Where
+   they don't fit one line, the button goes under the name. */
 .dash-title {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 1rem;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
   margin: 0 0 1.75rem;
+}
+
+.dash-title__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+/* A quiet button: outlined, since it isn't what the page is for. */
+body.iht .dash-quiet {
+  min-height: 44px;
+  padding: 0.5rem 1.125rem;
+  border-color: var(--iht-ink-muted);
+  background: #fff;
+  color: var(--iht-ink);
+  font-size: 1rem;
+}
+
+body.iht .dash-quiet:hover {
+  border-color: var(--iht-ink);
+  background: var(--iht-mist);
 }
 
 .dash-h1 {
@@ -205,8 +229,7 @@ body.iht .dash-nav a[aria-current="page"] {
 }
 
 /* A line under a heading that says what the section shows. */
-.dash-caption,
-.dash-follow__caption {
+.dash-caption {
   margin: -0.5rem 0 1rem;
   color: var(--iht-ink-muted);
   font-size: 1rem;
@@ -378,148 +401,7 @@ body.iht .dash-nav a[aria-current="page"] {
   border-radius: 2px;
 }
 
-/* ---------- 5. Follow up first ---------- */
-
-.dash-follow {
-  margin-top: 2.75rem;
-}
-
-/* The heading, with the search and Download across from it. */
-.dash-follow__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.dash-follow__head .dash-h2 {
-  margin: 0;
-}
-
-.dash-follow__tools {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.75rem;
-}
-
-.dash-follow__tools label {
-  color: var(--iht-ink-muted);
-  font-weight: 700;
-  font-size: 1rem;
-}
-
-.dash-follow__tools input {
-  width: 15rem;
-  max-width: 100%;
-  min-height: 44px;
-  padding: 0 0.875rem;
-  border: 2px solid var(--iht-ink-muted);
-  border-radius: var(--iht-radius-control);
-  background: #fff;
-  color: var(--iht-ink);
-  font-family: var(--iht-text);
-  font-size: 1rem;
-}
-
-.dash-follow__tools input::placeholder {
-  color: var(--iht-ink-muted);
-  opacity: 1;
-}
-
-.dash-follow__caption {
-  margin-top: 0;
-}
-
-/* A quiet button: outlined, for what isn't the main thing to do (Download). */
-body.iht .dash-quiet {
-  min-height: 44px;
-  padding: 0.5rem 1.125rem;
-  border-color: var(--iht-ink-muted);
-  background: #fff;
-  color: var(--iht-ink);
-  font-size: 1rem;
-}
-
-body.iht .dash-quiet:hover {
-  border-color: var(--iht-ink);
-  background: var(--iht-mist);
-}
-
-/* The table scrolls sideways inside its box where it doesn't fit, with the names staying put.
-   The box is the positioning parent of what's inside it: otherwise the hidden screen-reader text
-   in a wide table (absolutely positioned) would stick out past the box and widen the page. */
-.dash-table-wrap {
-  position: relative;
-  overflow-x: auto;
-  border: 2px solid var(--iht-rule);
-  border-radius: var(--iht-radius-band);
-  container: dash-table / inline-size;
-}
-
-.dash-table-wrap[hidden] {
-  display: none;
-}
-
-.dash-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 1rem;
-  line-height: 1.35;
-  font-variant-numeric: tabular-nums;
-}
-
-.dash-table th,
-.dash-table td {
-  padding: 0.625rem 0.75rem;
-  background: #fff;
-  font-weight: 400;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.dash-table tbody tr:nth-child(even) > * {
-  background: var(--iht-mist);
-}
-
-.dash-table tbody th {
-  font-weight: 700;
-}
-
-/* Headings: white on IHT blue. */
-.dash-table thead th {
-  background: var(--iht-blue);
-  color: #fff;
-  font-weight: 700;
-}
-
-/* The names stay put while the table scrolls sideways, where there's room for that. */
-@container dash-table (min-width: 30em) {
-  .dash-table thead th:first-child,
-  .dash-table tbody th {
-    position: sticky;
-    left: 0;
-    z-index: 1;
-    border-right: 2px solid var(--iht-rule);
-  }
-
-  .dash-table thead th:first-child {
-    border-right-color: var(--iht-blue-deep);
-  }
-}
-
-/* Why a patient is Actionable: the red key beside the words. */
-.dash-flag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4375rem;
-  font-weight: 700;
-}
-
-/* ---------- 6. By clinic, and how patients answered ---------- */
+/* ---------- 5. By clinic, and how patients answered ---------- */
 
 /* Side by side where there's room for both. */
 .dash-pair {
@@ -620,7 +502,7 @@ body.iht .dash-quiet:hover {
   margin: 0 0 0.375rem;
 }
 
-/* ---------- 7. The overview: a row per program ---------- */
+/* ---------- 6. The overview: a row per program ---------- */
 
 /* The whole row is its link. */
 .dash-programs {
@@ -699,7 +581,7 @@ body.iht .dash-program__name a {
   line-height: 1.5;
 }
 
-/* ---------- 8. Narrower windows, or a larger default font ---------- */
+/* ---------- 7. Narrower windows, or a larger default font ---------- */
 
 /* Below 1200px: by clinic, then the answers under it. */
 @media (max-width: 74.99875em) {
@@ -779,20 +661,6 @@ body.iht .dash-program__name a {
   .dash-figure {
     flex-basis: 9.5rem;
   }
-
-  .dash-follow__tools,
-  .dash-follow__tools input {
-    width: 100%;
-  }
-
-  .dash-follow__tools label {
-    width: 100%;
-  }
-
-  .dash-table th,
-  .dash-table td {
-    padding: 0.5625rem 0.625rem;
-  }
 }
 
 /* Where a list of bars is narrower still (a phone set to a large font), the count and share
@@ -816,11 +684,11 @@ body.iht .dash-program__name a {
   }
 }
 
-/* ---------- 9. On paper ---------- */
+/* ---------- 8. On paper ---------- */
 
-/* Only the view prints: no list of programs, picker or search. Its bars, strips, keys and table
-   keep their colours (a browser leaves backgrounds off paper unless told otherwise), and bars
-   still waiting to grow in are drawn. */
+/* Only the view prints: no list of programs, picker or download button. Its bars, strips and
+   keys keep their colours (a browser leaves backgrounds off paper unless told otherwise), and
+   bars still waiting to grow in are drawn. */
 @media print {
   .dash-shell {
     grid-template-columns: minmax(0, 1fr);
@@ -828,7 +696,7 @@ body.iht .dash-program__name a {
 
   .dash-nav,
   .dash-pick,
-  .dash-follow__tools {
+  .dash-quiet {
     display: none;
   }
 

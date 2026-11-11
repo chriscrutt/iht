@@ -4,10 +4,10 @@
  * says which (#phq-9, #fall-prevention, ...), so the browser's Back button works and a view can be
  * linked to.
  *
- * It's laid out for real numbers. A program has tens of thousands of patients, so nothing lists
- * them all: a program's view has its totals, its results as bars, the few patients to follow up
- * first (with a search for anyone else, and a download of the whole list), the same count by
- * clinic, and how patients answered each question.
+ * It's laid out for real numbers. A program has tens of thousands of patients, so no page shows
+ * any of them, not even a few: a program's view has its totals, its results as bars, the
+ * Actionable count by clinic, and how patients answered each question. The patients themselves
+ * are a download ("Download responses" saves the sample's, as a CSV file).
  *
  * No libraries, and nothing here is global.
  */
@@ -20,7 +20,8 @@
   const CLINICS = ["Downtown Clinic", "Eastside Clinic", "Lakeside Clinic", "Northgate Clinic", "Riverside Clinic", "Westside Clinic"];
 
   // The sample patients: name, patient ID, age, and their clinic (an index into CLINICS). Each
-  // program's answers below are in the same order.
+  // program's answers below are in the same order. No page shows them: they're what "Download
+  // responses" saves.
   const PATIENTS = [
     ["Mary Johnson", "123456791", 55, 2],
     ["Robert Lee", "123456792", 61, 2],
@@ -215,8 +216,6 @@
       .join("-");
   }
 
-  const ago = (days) => (days === 0 ? "Today" : days === 1 ? "Yesterday" : days + " days ago");
-
   // ---------- The programs ----------
   // A program has:
   //   total, actionable, payouts  its headline counts
@@ -225,10 +224,10 @@
   //   clinics     its responses and Actionable count at each clinic
   //   questions   how patients answered: each question's answers and their shares (%). With
   //               sharedKey, every question has the same answers, so one key serves them all.
-  //   rows        its sample patients. result says where a patient stands, actionable whether
-  //               they need follow-up, and order() puts first the ones to follow up first.
-  //   firstBy     what that order is, for the list's caption: "highest-scoring", "most recent".
-  //   columns     what Download saves for each patient: a heading and how to read it off a row.
+  //   rows        its sample responses, one per sample patient, for the download. actionable
+  //               says whether the patient needs follow-up, and order() sorts the file.
+  //   columns     what the download saves for each response: a heading and how to read it off
+  //               a row.
 
   const person = (i) => ({ name: PATIENTS[i][0], id: PATIENTS[i][1], age: PATIENTS[i][2], clinic: CLINICS[PATIENTS[i][3]] });
   const newestFirst = (a, b) => a.responded - b.responded;
@@ -262,7 +261,6 @@
     ["Psychomotor", [54, 25, 13, 8]],
     ["Suicidal Thoughts", [77, 14, 5, 4]],
   ];
-  const BREAST_RESULTS = { Unknown: "Awaiting screening", Positive: "Has breast cancer", Negative: "Does not have breast cancer" };
   // The sample's fall-risk level: one step up for each of problems with balance, a recent fall,
   // and not having talked to a doctor.
   const FALL_RISKS = ["None", "Mild", "Moderate", "Severe"];
@@ -294,13 +292,11 @@
           severity: severity,
           answers: given.slice(1, 10),
           responded: given[10],
-          result: "Score " + given[0] + " (" + severity.toLowerCase() + ")",
           actionable: given[0] >= 20,
         });
       }),
       // The highest scores first, and of two the same, the newer.
       order: (a, b) => b.score - a.score || a.responded - b.responded,
-      firstBy: "highest-scoring",
       columns: COLUMNS.concat([["Score", (row) => String(row.score)], ["Severity", (row) => row.severity]],
         PHQ9_ITEMS.map((item, k) => [item[0], (row) => String(row.answers[k])])),
     },
@@ -332,12 +328,10 @@
           plan: given[2],
           frequency: given[3],
           responded: given[4],
-          result: BREAST_RESULTS[given[0]],
           actionable: given[0] === "Unknown",
         });
       }),
       order: newestFirst,
-      firstBy: "most recent",
       columns: COLUMNS.concat([
         ["Breast Cancer Status", (row) => row.status],
         ["Last Screening", (row) => row.screened],
@@ -379,12 +373,10 @@
           video: given[3] + "%",
           reward: given[4],
           responded: given[5],
-          result: risk === "None" ? "No fall risk" : risk + " fall risk",
           actionable: risk === "Severe",
         });
       }),
       order: newestFirst,
-      firstBy: "most recent",
       columns: COLUMNS.concat([
         ["Risk Level", (row) => row.risk],
         ["Problems with Balance", (row) => row.balance],
@@ -489,88 +481,20 @@
     }
   }
 
-  // ---------- Follow up first ----------
+  // ---------- The download ----------
 
-  const URGENT = 8;
-
-  // What marks a patient as Actionable: the red key, and the word for screen readers.
-  const flagged = (text) => h("span", { class: "dash-flag" }, text, h("span", { class: "iht-sr-only" }, " (actionable)"));
-
-  // The few Actionable patients to contact first (the caption says in what order). The search
-  // finds any patient by name or ID, whatever their result. The button saves the whole list,
-  // which here is the sample.
-  function followUp(program) {
-    const urgent = program.rows.filter((row) => row.actionable).sort(program.order).slice(0, URGENT);
-    const body = h("tbody");
-    const caption = h("p", { class: "dash-follow__caption", role: "status" });
-    const find = h("input", { type: "search", id: "find-" + program.id, placeholder: "Name or patient ID",
-      autocomplete: "off", spellcheck: "false" });
-    const download = h("button", { type: "button", class: "iht-btn dash-quiet" }, "Download full list");
-    const table = h("div", { class: "dash-table-wrap", role: "region", "aria-label": program.name + " patients" },
-      h("table", { class: "dash-table" },
-        h("thead", null, h("tr", null, ["Name", "Result", "Responded", "Clinic", "Patient ID", "Age"]
-          .map((heading) => h("th", { scope: "col" }, heading)))),
-        body));
-
-    function draw() {
-      const asked = find.value.trim();
-      const query = asked.toLowerCase();
-      const list = query
-        ? program.rows.filter((row) => row.name.toLowerCase().includes(query) || row.id.includes(query)).sort(program.order)
-        : urgent;
-      caption.textContent = !query
-        ? "The " + urgent.length + " " + program.firstBy + " of " + count(program.actionable) + " Actionable patients."
-        : list.length === 0
-          ? "No sample patient matches “" + asked + "”."
-          : list.length + " of " + program.rows.length + " sample patients match" + (list.length === 1 ? "es" : "") +
-            " “" + asked + "”.";
-      table.hidden = list.length === 0;
-      body.replaceChildren.apply(body, list.map((row) =>
-        h("tr", null,
-          h("th", { scope: "row" }, row.name),
-          h("td", null, row.actionable ? flagged(row.result) : row.result),
-          h("td", null, ago(row.responded)),
-          h("td", null, row.clinic),
-          h("td", null, row.id),
-          h("td", null, String(row.age)))));
-    }
-
-    // Where the table is wider than its box, the box scrolls sideways, and takes focus so the
-    // arrow keys can scroll it. Where it fits, it's not a stop for Tab. (Without ResizeObserver
-    // it always is.)
-    function reach() {
-      if (!("ResizeObserver" in window) || table.scrollWidth > table.clientWidth) {
-        table.setAttribute("tabindex", "0");
-      } else {
-        table.removeAttribute("tabindex");
-      }
-    }
-
-    if ("ResizeObserver" in window) {
-      new ResizeObserver(reach).observe(table);
-    }
-
-    find.addEventListener("input", () => {
-      draw();
-      reach();
-    });
-    download.addEventListener("click", () => {
-      saveCsv(program.id + "-patients.csv",
+  // No patient is shown on a page. This button saves a program's responses as a file instead
+  // (here the sample's), with the patients who need follow-up at the top.
+  function download(program) {
+    const button = h("button", { type: "button", class: "iht-btn dash-quiet" }, "Download responses");
+    button.addEventListener("click", () => {
+      saveCsv(program.id + "-responses.csv",
         program.columns.map((column) => column[0]),
-        program.rows.slice().sort(program.order).map((row) => program.columns.map((column) => column[1](row))));
+        program.rows.slice()
+          .sort((a, b) => b.actionable - a.actionable || program.order(a, b))
+          .map((row) => program.columns.map((column) => column[1](row))));
     });
-    draw();
-    reach();
-
-    return h("section", { class: "dash-follow", "aria-labelledby": "follow-" + program.id },
-      h("div", { class: "dash-follow__head" },
-        h("h2", { class: "dash-h2", id: "follow-" + program.id }, "Follow up first"),
-        h("div", { class: "dash-follow__tools" },
-          h("label", { for: "find-" + program.id }, "Find a patient"),
-          find,
-          download)),
-      caption,
-      table);
+    return button;
   }
 
   // Save rows as a CSV file, the way a spreadsheet expects it.
@@ -617,10 +541,16 @@
   const links = Object.create(null);   // name -> its sidebar link
   const sample = () => h("span", { class: "dash-sample" }, "Sample data");
 
+  // A view's title with the "Sample data" note beside it, and across from them what the view
+  // offers to do (a program's download).
+  const titleRow = (name, action) => h("div", { class: "dash-title" },
+    h("div", { class: "dash-title__name" }, h("h1", { class: "dash-h1", tabindex: "-1" }, name), sample()),
+    action);
+
   // Everything at a glance: the totals, then a row per program that leads to its view.
   function overview() {
     return h("section", { id: "view-overview", class: "dash-view" },
-      h("div", { class: "dash-title" }, h("h1", { class: "dash-h1", tabindex: "-1" }, "Overview"), sample()),
+      titleRow("Overview"),
       figuresFor(totals),
       h("h2", { class: "dash-h2 dash-view__h2" }, "Programs"),
       h("ul", { class: "dash-programs", role: "list" }, programs.map((program) =>
@@ -635,16 +565,15 @@
       h("p", { class: "dash-note" }, "Not part of this demo: " + notInDemo.join(", ") + "."));
   }
 
-  // One program: its numbers, its results, who to follow up first, then the same by clinic and
-  // by question.
+  // One program: its numbers and its results, then the Actionable count by clinic and the
+  // answers by question.
   function programView(program) {
     return h("section", { id: "view-" + program.id, class: "dash-view" },
       h("p", { class: "dash-group" }, program.group),
-      h("div", { class: "dash-title" }, h("h1", { class: "dash-h1", tabindex: "-1" }, program.name), sample()),
+      titleRow(program.name, download(program)),
       figuresFor(program),
       h("h2", { class: "dash-h2 dash-view__h2" }, program.chartTitle),
       results(program),
-      followUp(program),
       h("div", { class: "dash-pair" },
         h("section", { "aria-labelledby": "clinics-" + program.id },
           h("h2", { class: "dash-h2", id: "clinics-" + program.id }, "By clinic"),

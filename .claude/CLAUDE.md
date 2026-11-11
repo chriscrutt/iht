@@ -27,12 +27,12 @@ All 7 pages share one stylesheet, `css/theme.css` at the repo root. (`demo/` was
 
 The dashboard was rebuilt on 2026-11-10 as a sidebar app. `dashboard/index.html` holds only the shell, and `dashboard/script.js` draws everything from made-up sample data:
 - The programs are listed down the left (a picker below 992px), and one view shows at a time, chosen by the address's `#name`: `#overview` (or no `#name`), `#phq-9`, `#breast-cancer-screening` and `#fall-prevention`. The six other programs are listed dimmed. Each view's own `id` is `view-` plus its name, so the browser finds nothing to jump to and the script does the scrolling.
-- It's laid out for real numbers. The owner's point: a real program has around 100,000 patients, so a list of them is no use, even 25 to a page. Nothing lists them all, and a full patient list shouldn't come back. A program's view has:
+- It's laid out for real numbers, and it shows no patients at all. The owner's point: a real program has around 100,000 patients, so a list of them is no use, even 25 to a page, and neither is a handful ("the 8 highest-scoring of 23,456"). Don't bring back a patient list, long or short, or a patient search. A program's view has:
   - its totals, and its results as bars
-  - "Follow up first": the 8 Actionable patients to contact first (PHQ-9's highest scores; the newest responses in the other two), a search by name or patient ID for anyone else, and "Download full list"
   - "By clinic": the Actionable count at each clinic, and its share of that clinic's responses
   - how patients answered each question, as strips
-- The sample is 29 made-up patients (the old dashboard's, with its placeholder dashes filled in) and six made-up clinics, and every view says "Sample data". The totals are the old mock-up's figures, not counts of the 29. The search and the download cover only the 29; the download is a real CSV file.
+  - "Download responses", across from its title: the only way to the patients themselves
+- The sample is 29 made-up patients (the old dashboard's, with its placeholder dashes filled in) and six made-up clinics, and every view says "Sample data". The totals are the old mock-up's figures, not counts of the 29. The 29 appear only in the download: a real CSV file, with the patients who need follow-up first.
 - No libraries: the charts are HTML bars and strips with their numbers as text beside them, and nothing in `script.js` is global. `style.css` also has print rules, so a printed view keeps its colours.
 - `dashboard-options/` (PR #16) held three working layouts for the owner to choose from. The owner chose the sidebar one. The other two (one scrolling page, and a follow-up worklist) are in git history, in 2dda538.
 
@@ -71,7 +71,7 @@ The dashboard was rebuilt on 2026-11-10 as a sidebar app. `dashboard/index.html`
   - Each new quiz screen takes focus (`focusOn()`): the question (`#question`), the video's heading, then "Remember:" or PHQ-9's `#crisisHelp`. Elements focused that way have `tabindex="-1"` and no ring (theme.css).
   - After every `swal()` call, call the page's `nameDialog()`: it names the dialog and moves focus into it. theme.css hides a closed sweetalert dialog, so Tab and screen readers can't reach it.
   - The gift cards have `aria-label`s and `aria-pressed`.
-  - On the dashboard, the sidebar link of the view that's showing carries `aria-current="page"`, and a newly chosen view starts at its top with focus on its title. The bars and strips are `aria-hidden`: their numbers are text beside them (hidden text where a strip's shares are written inside it). The search's result line is a `role="status"`, and the patient table's box is a named region that takes focus only where it scrolls sideways. The bars grow in once as they come into view, only when the device allows motion.
+  - On the dashboard, the sidebar link of the view that's showing carries `aria-current="page"`, and a newly chosen view starts at its top with focus on its title. The bars and strips are `aria-hidden`: their numbers are text beside them (hidden text where a strip's shares are written inside it). The bars grow in once as they come into view, only when the device allows motion.
   - The home page's motion is started by its inline script, only when the device allows motion.
     - The phone preview loops for 14 seconds: text message, two questions, thank-you. The matching "How it works" step lights up as it plays. It has a Pause button (WCAG 2.2.2 requires one for motion over 5 seconds), and it holds still while off screen. Its play state is on the `.iht-how` section.
     - Once each, as they come into view: the figures count up, and the lines above them draw in. (A bar chart of the 1.9× finding was tried and dropped: the owner found it overkill for two numbers.)
@@ -102,7 +102,7 @@ The dashboard was rebuilt on 2026-11-10 as a sidebar app. `dashboard/index.html`
    - 1280x800 and 1366x768 zoomed to 125% and 150%
 4. Also try a larger default font of 20, 24 and 32px, and reduced motion. Chrome's "Large" font size is 20px and "Very large" is 24px; Firefox's font settings go higher.
 5. Check that nothing scrolls sideways, no text is cut off or under the header, Go Back never covers an answer, Continue or Finish, and the dialogs fit the window.
-6. Check accessibility: run axe-core (its WCAG 2.0–2.2 A and AA rules) on each page and on the in-between states (the video and end screens, each dialog, PHQ-9's question 9, each dashboard view, and a search with and without a match), and go through every flow with the keyboard alone: Tab, Enter, Space and Escape.
+6. Check accessibility: run axe-core (its WCAG 2.0–2.2 A and AA rules) on each page and on the in-between states (the video and end screens, each dialog, PHQ-9's question 9, and each dashboard view), and go through every flow with the keyboard alone: Tab, Enter, Space and Escape.
 
 Some libraries load from public CDNs, and the theme's fonts from Google Fonts, so you need to be online.
 
@@ -146,7 +146,7 @@ Don't confirm the "Submitted!" box on `wellnesswallet/submitted/`: it leaves for
   - unDraw illustrations that need no credit in place of the Freepik ones, so the footers lost the credit.
   - `demo/` redirects to `/wellnesswallet/`. It was a rough copy of the fall quiz, and it started its Vimeo video as soon as the page loaded, before its video screen.
   - A WCAG 2.2 AA pass: real buttons and links in the quizzes, gift cards and Patient List; focus moved to each new quiz screen; named dialogs; captions for both quiz videos; chart descriptions; page titles; `<main>` landmarks.
-- PRs #16 and #17 (2026-11-10) rebuilt the dashboard. The owner didn't like its layout (main tabs, sub-tabs, donut charts, and a pop-up before each Patient List) and asked for a drastic change, so #16 put three working layouts at `/dashboard-options/` to choose from. The owner chose the sidebar one, and pointed out that a real patient list would be around 100,000 people. #17 made it `/dashboard/`, with "Follow up first", "By clinic" and the answers where the list was (see Layout), and removed the options.
+- PRs #16 and #17 (2026-11-10) rebuilt the dashboard. The owner didn't like its layout (main tabs, sub-tabs, donut charts, and a pop-up before each Patient List) and asked for a drastic change, so #16 put three working layouts at `/dashboard-options/` to choose from. The owner chose the sidebar one, and pointed out that a real patient list would be around 100,000 people. #17 made it `/dashboard/` and removed the options. Its first draft kept a table of the 8 patients to follow up first, with a patient search; the owner saw no point in showing any patients, so it shows none, and "By clinic" and the answers are where the list was (see Layout).
 
 ## Open items
 1. Accessibility beyond what the checks cover:
@@ -156,7 +156,6 @@ Don't confirm the "Submitted!" box on `wellnesswallet/submitted/`: it leaves for
    - Go Back sits at the foot of the quiz, so on a screen taller than the window it can be below the fold, or cut off by the window's bottom edge, when the screen first appears. Examples are PHQ-9's question 8 at 1280x800 and most screens at the 125% and 150% zooms. It covers nothing, and scrolling brings it into view.
    - At 280px wide (a folding phone's cover screen), the quiz end screens used to be about 34px wider than the window. "Remember:" is now capped by the window's width, and with a 32px font the start page's "$10 gift card" wraps inside its box, but neither has been re-measured at 280px.
    - On phones the quiz end screens are sized by the width, so apart from Finish they don't grow when the browser's font size is raised. The questions and answers do.
-   - The dashboard's patient table scrolls sideways inside its box where its six columns don't fit. At the default font that's below about 790px wide, and from 992px (where the sidebar appears) to about 1150px. The names stay put while it scrolls, where the box is at least 30em wide.
 3. Decided to leave as they are on 2026-11-05:
    - The Wellness Wallet stores nothing: quiz answers only go to the browser console.
    - The start page greets everyone as "Hello Christopher!".
@@ -165,12 +164,12 @@ Don't confirm the "Submitted!" box on `wellnesswallet/submitted/`: it leaves for
    - Check the home page's figures once a year (next: November 2027). CDC updates its falls pages; the Health Affairs figure is from 2015 data, so a newer study may replace it.
    - An unpinned CDN library: `sweetalert` on the Wellness Wallet. The theme styles its dialogs, so a new major version could break the look. It was built against sweetalert 2.1.2. (The dashboard no longer loads any library.)
    - Google Analytics is split: the Wellness Wallet start page reports to G-BTYQ6V2CCM and its subpages to G-VMM3KZFGGE.
-   - The dashboard's numbers are made up, and its totals aren't counts of its 29 sample patients. The same 29 are in all three programs, so the breast cancer screening sample includes men and people under 40.
+   - The dashboard's numbers are made up, and its totals aren't counts of its 29 sample patients. The same 29 are in all three programs' downloads, so the breast cancer screening file includes men and people under 40.
    - Rite Aid, one of the gift-card choices, closed in 2025.
    - PHQ-9's first question is drawn at 2em when the page loads, but at 1.8em when Go Back returns to it, because the static markup lacks the inline size that `renderQuestion()` sets.
    - Older browsers get a plainer version of a few details:
      - Without `:has()` (Firefox before 121, Safari before 15.4), Go Back stays centred on the end screen instead of lining up under Finish, and Request a Demo jumps instead of scrolling smoothly.
-     - Without container queries (Chrome before 105, Safari before 16, Firefox before 110), the dashboard table's names don't stay put while it scrolls sideways, its bars don't restack on a narrow phone set to a large font, and the home page's title isn't capped by its column.
+     - Without container queries (Chrome before 105, Safari before 16, Firefox before 110), the dashboard's bars don't restack on a narrow phone set to a large font, and the home page's title isn't capped by its column.
      - Without `zoom` (Firefox before 126), the dialogs' icon doesn't shrink on short windows.
    - Playwright's WebKit on Windows doesn't apply variable-font axes, so there Archivo and Atkinson Hyperlegible Next show at their regular weight. Judge type in Chromium or Firefox, or in real Safari.
 5. Left from the last review of PR #4, all minor:
