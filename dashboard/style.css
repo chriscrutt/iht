@@ -1,630 +1,843 @@
-/* The clinic dashboard's layout, and the Patient List dialog. Colours, type, the header, the
-   buttons and the footer come from the shared theme (../css/theme.css).
+/*
+ * The clinic dashboard: the programs down the left on a Mist panel, one view on the right.
+ * Colours, type, the header, buttons and the footer come from the shared theme
+ * (../css/theme.css); script.js draws everything inside the shell.
+ *
+ * The layout switches follow the browser's font size as well as the window (media-query em
+ * follow the default font): the sidebar gives way to a picker below 62em (992px at a 16px font),
+ * the last two sections sit side by side from 75em (1200px), and bars put their labels above
+ * them below 48em (768px).
+ *
+ * Sections: 1 the shell and sidebar, 2 titles, 3 headline figures, 4 bars, 5 follow up first,
+ * 6 how patients answered, 7 the overview, 8 narrower windows, 9 on paper.
+ */
 
-   Layout switches follow the browser's font size as well as the window (media-query em follow
-   the default font): two columns from 62em (992px at a 16px font), the figures as rows below
-   that, and the stacked phone layout below 48em (768px). */
+/* ---------- 1. The shell and the sidebar ---------- */
 
 /* The footer stays at the foot of a tall window. */
 body.iht {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* The bar spans the window here, so the wordmark lines up with the sidebar under it. */
+body.iht .iht-header__inner {
+  max-width: none;
+}
+
+.dash-shell {
+  flex: 1 0 auto;
+  display: grid;
+  grid-template-columns: 19.5rem minmax(0, 1fr);
+}
+
+.dash-nav {
+  background: var(--iht-mist);
+}
+
+/* It stays in view while a long view scrolls, and scrolls itself in a short window. Its links'
+   own padding brings their text in line with the wordmark. */
+.dash-nav__inner {
+  position: sticky;
+  top: var(--iht-header-h);
+  max-height: calc(100vh - var(--iht-header-h));
+  overflow-y: auto;
+  padding: 1.5rem 1rem 2rem calc(var(--iht-gutter) - 0.75rem);
+}
+
+.dash-nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dash-nav__group {
+  margin: 1.5rem 0 0.25rem;
+  padding: 0 0.75rem;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+.dash-nav a,
+.dash-nav__off {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--iht-radius-control);
+  font-size: 1.0625rem;
+  line-height: 1.25;
+}
+
+body.iht .dash-nav a {
+  position: relative;
+  color: var(--iht-ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+body.iht .dash-nav a:hover {
+  background: #fff;
+}
+
+/* Where you are: a white row with a blue bar at its left edge. */
+body.iht .dash-nav a[aria-current="page"] {
+  background: #fff;
+}
+
+.dash-nav a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 0;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--iht-blue);
+}
+
+/* A program's Actionable count, with the red key. */
+.dash-nav__count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The keys: red means these people need follow-up, green means rewards paid. */
+.dash-nav__count::before,
+.dash-figure--followup dt::before,
+.dash-figure--reward dt::before,
+.dash-program__numbers .is-followup dt::before,
+.dash-flag::before {
+  content: "";
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+  background: var(--iht-followup);
+}
+
+.dash-figure--reward dt::before {
+  background: var(--iht-reward);
+}
+
+/* A program that isn't part of the demo: listed, dimmed, not a link. */
+.dash-nav__off {
+  color: var(--iht-ink-muted);
+}
+
+.dash-nav__note {
+  margin: 1.5rem 0 0;
+  padding: 0 0.75rem;
+  color: var(--iht-ink-muted);
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
 
 .dash {
-    flex: 1 0 auto;
+  min-width: 0;
+  padding: 2.25rem var(--iht-gutter) 4rem;
 }
 
-/* script.js shows one set of sub-tabs and one panel at a time. */
-.hidden {
-    display: none !important;
+.dash-views {
+  max-width: 68rem;
 }
 
-/* ---------- Tabs ---------- */
-
-/* Main tabs on white: where you are is Ink with a blue bar under it. */
-.dash-tabs .navbar {
-    display: flex;
-    gap: 0 2.25rem;
-    max-width: var(--iht-max);
-    margin: 0 auto;
-    padding: 0 var(--iht-gutter);
+.dash-view[hidden] {
+  display: none;
 }
 
-.dash-tabs .navbar a {
-    display: flex;
-    align-items: center;
-    min-height: 3.75rem;
-    padding: 0.75rem 0 0.5rem;
-    border-bottom: 4px solid transparent;
-    color: var(--iht-ink-muted);
-    font-weight: 700;
-    font-size: 1.1875rem;
-    line-height: 1.2;
-    text-decoration: none;
+.dash-pick {
+  display: none;
 }
 
-.dash-tabs .navbar a:hover {
-    color: var(--iht-ink);
-    border-bottom-color: var(--iht-rule);
+/* ---------- 2. Titles ---------- */
+
+.dash-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1.75rem;
 }
 
-.dash-tabs .navbar a.selected {
-    color: var(--iht-ink);
-    border-bottom-color: var(--iht-blue);
+.dash-h1 {
+  margin: 0;
+  color: var(--iht-blue);
+  font-family: var(--iht-display);
+  font-weight: 800;
+  /* Capped by the window's width, so the longest word ("Prevention") still fits a narrow phone
+     set to a large font. */
+  font-size: min(clamp(2rem, 1.5rem + 1.8vw, 2.75rem), (100vw - 2 * var(--iht-gutter)) / 5.6);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
 }
 
-/* The tabs start right under the sticky bar, so their focus ring is drawn inside them, where
-   the bar can't cover its top edge. */
-body.iht .dash-tabs .navbar a:focus-visible {
-    outline-offset: -3px;
+/* The group a program belongs to, above its name. */
+.dash-group {
+  margin: 0 0 0.25rem;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
 }
 
-/* Sub-tabs on a Mist track: the chosen one is filled blue. */
-.dash-subtabs {
-    background: var(--iht-mist);
+.dash-h2 {
+  margin: 0 0 1rem;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
 }
 
-.dash-subtabs .secondary-navbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    max-width: var(--iht-max);
-    margin: 0 auto;
-    padding: 0.75rem var(--iht-gutter);
+.dash-view__h2 {
+  margin-top: 2.75rem;
 }
 
-.dash-subtabs .secondary-navbar a {
-    display: inline-flex;
-    align-items: center;
-    max-width: 100%;
-    min-height: 44px;
-    padding: 0.375rem 1rem;
-    border: 2px solid transparent;
-    border-radius: var(--iht-radius-control);
-    color: var(--iht-ink);
-    font-weight: 700;
-    font-size: 1rem;
-    line-height: 1.2;
-    text-decoration: none;
+/* A line under a heading that says what the section shows. */
+.dash-caption,
+.dash-follow__caption {
+  margin: -0.5rem 0 1rem;
+  color: var(--iht-ink-muted);
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
-.dash-subtabs .secondary-navbar a:hover {
-    background: #fff;
-    color: var(--iht-ink);
+/* Says the patients aren't real. */
+.dash-sample {
+  padding: 0.125rem 0.75rem;
+  border: 2px solid var(--iht-rule);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 
-.dash-subtabs .secondary-navbar a.selectedSub {
-    border-color: var(--iht-blue);
-    background: var(--iht-blue);
-    color: #fff;
-}
+/* ---------- 3. Headline figures ---------- */
 
-/* (+) is a placeholder for adding a screening: dashed, not filled. */
-.dash-subtabs .secondary-navbar a[id$="-4"] {
-    border: 2px dashed var(--iht-ink-muted);
-}
-
-/* ---------- A panel: the figures, then the chart ---------- */
-
-.content {
-    display: grid;
-    grid-template-columns: minmax(15rem, 4fr) minmax(0, 8fr);
-    gap: 2.5rem 3rem;
-    align-items: start;
-    max-width: var(--iht-max);
-    margin: 0 auto;
-    padding: clamp(1.75rem, 4vw, 3rem) var(--iht-gutter) 3rem;
-}
-
-/* A ledger: the label in the reading face, the read-out in the instrument face. */
 .dash-figures {
-    margin: 0 0 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem clamp(1.5rem, 4vw, 3rem);
+  margin: 0;
 }
 
 .dash-figure {
-    margin: 0 0 1.25rem;
-    padding: 0 0 1.25rem;
-    border-bottom: 2px solid var(--iht-mist);
+  flex: 0 1 13rem;
+  padding-top: 0.875rem;
+  border-top: 3px solid var(--iht-blue);
 }
 
 .dash-figure dt {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--iht-ink-muted);
-    font-weight: 700;
-    font-size: 1.0625rem;
-    line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
 }
 
 .dash-figure dd {
-    margin: 0.375rem 0 0;
-    color: var(--iht-ink);
-    font-family: var(--iht-display);
-    font-weight: 800;
-    font-size: clamp(2.5rem, 1.6rem + 2.4vw, 3.75rem);
-    font-variant-numeric: tabular-nums lining-nums;
-    line-height: 1;
-    letter-spacing: -0.01em;
+  margin: 0.125rem 0 0;
+  color: var(--iht-ink);
+  font-family: var(--iht-display);
+  font-weight: 800;
+  /* Capped the same way: a six-figure number fits the narrowest window. */
+  font-size: min(clamp(2rem, 1.5rem + 1.6vw, 2.75rem), (100vw - 2 * var(--iht-gutter)) / 4.4);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 
-/* The keys tie a figure to its meaning: red is the chart's Actionable slice, green is rewards
-   paid. The figure itself stays Ink. */
-.dash-figure--followup dt::before,
-.dash-figure--reward dt::before {
-    content: "";
-    flex: none;
-    width: 0.875em;
-    height: 0.875em;
-    border-radius: 3px;
-    background: var(--iht-followup);
+.dash-figure dd.dash-figure__note {
+  color: var(--iht-ink-muted);
+  font-family: var(--iht-text);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
-.dash-figure--reward dt::before {
-    background: var(--iht-reward);
+/* ---------- 4. Bars ---------- */
+
+/* The colours: the Actionable group is red, the rest run from IHT blue to pale. The two palest
+   are under 3:1 against white, so they carry an IHT blue outline. */
+.dash-tone--followup {
+  background: var(--iht-followup);
 }
 
-.info .iht-btn {
-    min-height: 52px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1.125rem;
+.dash-tone--4 {
+  background: var(--iht-data-4);
 }
 
-/* The chart: its title, then the donut with the legend beside it. */
-.dash-chart {
-    min-width: 0;
-    margin: 0;
+.dash-tone--3 {
+  background: var(--iht-data-3);
 }
 
-/* A heading, so the instrument face, as the dialog's title and the team names are. */
-.dash-chart__title {
-    margin: 0 0 1rem;
-    color: var(--iht-ink);
-    font-family: var(--iht-display);
-    font-weight: 700;
-    font-size: 1.375rem;
-    line-height: 1.25;
+.dash-tone--2 {
+  border: 2px solid var(--iht-blue);
+  background: var(--iht-data-2);
 }
 
-.dash-chart__body {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem 2.5rem;
+.dash-tone--1 {
+  border: 2px solid var(--iht-blue);
+  background: var(--iht-data-1);
 }
 
-/* Chart.js keeps the donut square, as wide as this box. It also fits the window's height
-   with the bar, the tabs and the title above it. It holds no text, so its caps are in px: a
-   larger default font enlarges the legend, not the picture. */
-.dash-chart__donut {
-    position: relative;
-    flex: 0 1 auto;
-    width: min(448px, max(240px, 100vh - 21rem));
-    min-width: 200px;
+/* A program's results, and its count by clinic: a label, a bar, a count and a share per row. */
+.dash-bars {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  container: dash-bars / inline-size;
 }
 
-.dash-legend {
-    flex: 0 1 auto;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+.dash-bar {
+  display: grid;
+  grid-template-columns: minmax(7rem, 13.5rem) minmax(3rem, 1fr) 4.5rem 3rem;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.3;
 }
 
-/* Each entry hides or shows its slice (script.js). */
-.dash-legend__item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.625rem;
-    min-height: 2.75rem;
-    margin: 0 0 0 -0.5rem;
-    padding: 0.25rem 0.5rem;
-    border: 0;
-    border-radius: var(--iht-radius-control);
-    background: none;
-    color: var(--iht-ink);
-    font: inherit;
-    font-size: 1rem;
-    line-height: 1.3;
-    text-align: left;
-    cursor: pointer;
+/* A smaller line under a label: a clinic's responses, or who a question covers. */
+.dash-bar__label small,
+.dash-answer__label small {
+  display: block;
+  color: var(--iht-ink-muted);
+  font-size: 0.875rem;
 }
 
-.dash-legend__item:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.2em;
+.dash-bar__track {
+  display: block;
 }
 
-.dash-legend__key {
-    flex: none;
-    width: 1em;
-    height: 1em;
-    border-radius: 3px;
+.dash-bar__fill {
+  display: block;
+  box-sizing: border-box;
+  min-width: 6px;
+  height: 1.5rem;
+  border-radius: 4px;
+  transform-origin: left;
 }
 
-/* The pale steps are under 3:1 against white, so they carry an IHT blue outline, as their
-   slices do. */
-.dash-legend__key--outlined {
-    border: 2px solid var(--iht-blue);
+.dash-bar__count,
+.dash-bar__share {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
-/* A hidden slice: its entry is struck through and its key left hollow. */
-.dash-legend__item[aria-pressed="false"] {
-    color: var(--iht-ink-muted);
-    text-decoration: line-through;
+.dash-bar__count {
+  font-weight: 700;
 }
 
-.dash-legend__item[aria-pressed="false"] .dash-legend__key {
-    border: 2px solid var(--iht-ink-muted);
-    background: #fff !important;
+.dash-bar__share {
+  color: var(--iht-ink-muted);
 }
 
-/* ---------- Narrower windows, or a larger default font: one column ---------- */
-
-@media (max-width: 61.99875em) {
-    /* The three main tabs still fit one line down to 48em. */
-    .dash-tabs .navbar {
-        gap: 0 1.75rem;
-    }
-
-    .dash-tabs .navbar a {
-        font-size: 1.0625rem;
-    }
-
-    .content {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 2.5rem;
-    }
-
-    /* Narrow enough that each number stays near its label. */
-    .info {
-        max-width: 26rem;
-    }
-
-    /* The figures line up as label/number rows. A number that can't fit beside its label
-       goes under it, still at the right. */
-    .dash-figures {
-        margin-bottom: 1.5rem;
-    }
-
-    .dash-figure {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 0.25rem 1rem;
-        margin: 0;
-        padding: 0.875rem 0;
-    }
-
-    .dash-figure dd {
-        margin: 0 0 0 auto;
-        font-size: min(2.5rem, 11vw);
-    }
-
-    /* The page scrolls here anyway, so the donut needn't fit the window's height. */
-    .dash-chart__donut {
-        width: min(100%, 384px);
-    }
+/* The bars grow in once (script.js marks them); the theme stops it under reduced motion. */
+.dash-bars.is-waiting .dash-bar__fill {
+  transform: scaleX(0);
 }
 
-/* ---------- Phones ---------- */
-
-@media (max-width: 47.99875em) {
-    /* The main tabs stack as a full-width list; the bar moves to the left edge. */
-    .dash-tabs .navbar {
-        flex-direction: column;
-        gap: 0;
-        padding: 0;
-    }
-
-    .dash-tabs .navbar a {
-        min-height: 3.25rem;
-        padding: 0.625rem var(--iht-gutter) 0.625rem calc(var(--iht-gutter) - 4px);
-        border-bottom: 0;
-        border-left: 4px solid transparent;
-        font-size: 1.125rem;
-    }
-
-    .dash-tabs .navbar a + a {
-        border-top: 1px solid var(--iht-mist);
-    }
-
-    .dash-tabs .navbar a:hover {
-        border-left-color: var(--iht-rule);
-    }
-
-    .dash-tabs .navbar a.selected {
-        border-left-color: var(--iht-blue);
-    }
-
-    .dash-subtabs .secondary-navbar a {
-        padding: 0.375rem 0.75rem;
-    }
-
-    .content {
-        gap: 2rem;
-        padding-top: 1.5rem;
-    }
-
-    /* 36px at the default font, beside the label; with a larger font it moves under the label
-       and may grow a little. */
-    .dash-figure dd {
-        font-size: min(2.25rem, 13vw);
-    }
-
-    /* The legend goes under the donut, unless there's room beside it (a wide window with a
-       large default font). */
-    .dash-chart__body {
-        flex-wrap: wrap;
-    }
-
-    .dash-chart__donut {
-        width: min(100%, 352px);
-        min-width: 0;
-    }
+.dash-bars.is-drawn .dash-bar__fill {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* ---------- The Patient List dialog (SweetAlert2) ----------
-   SweetAlert2 adds its own styles at run time, all at low specificity, so these win. */
+.dash-bars.is-drawn .dash-bar:nth-child(2) .dash-bar__fill { transition-delay: 0.06s; }
+.dash-bars.is-drawn .dash-bar:nth-child(3) .dash-bar__fill { transition-delay: 0.12s; }
+.dash-bars.is-drawn .dash-bar:nth-child(4) .dash-bar__fill { transition-delay: 0.18s; }
+.dash-bars.is-drawn .dash-bar:nth-child(5) .dash-bar__fill { transition-delay: 0.24s; }
+.dash-bars.is-drawn .dash-bar:nth-child(6) .dash-bar__fill { transition-delay: 0.3s; }
 
-/* The same dimmed page and shadow as the open menu and the patient pages' dialogs (theme.css). */
-body.iht .swal2-container.swal2-backdrop-show {
-    background: var(--iht-scrim);
+/* A program's groups as one thin strip (the overview). */
+.dash-strip {
+  display: flex;
+  gap: 2px;
+  height: 0.875rem;
 }
 
-body.iht .swal2-popup {
-    border-radius: var(--iht-radius-band);
-    color: var(--iht-ink);
-    font-family: var(--iht-text);
-    box-shadow: var(--iht-shadow-dialog);
+.dash-strip span {
+  box-sizing: border-box;
+  min-width: 4px;
+  border-radius: 2px;
 }
 
-body.iht .swal2-popup .swal2-title {
-    color: var(--iht-ink);
-    font-family: var(--iht-display);
-    font-weight: 700;
-    font-size: min(1.75rem, 9vw);
-    line-height: 1.15;
+/* ---------- 5. Follow up first ---------- */
+
+.dash-follow {
+  margin-top: 2.75rem;
 }
 
-body.iht .swal2-popup .swal2-html-container {
-    color: var(--iht-ink);
-    font-size: 1.0625rem;
-    line-height: 1.5;
+/* The heading, with the search and Download across from it. */
+.dash-follow__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
 }
 
-body.iht .swal2-popup .swal2-actions {
-    gap: 0.75rem;
-    margin: 1.25rem 0 0;
-    padding: 0 1.5rem;
+.dash-follow__head .dash-h2 {
+  margin: 0;
 }
 
-body.iht .swal2-popup .swal2-styled {
-    min-height: 48px;
-    margin: 0;
-    padding: 0.625rem 1.5rem;
-    border: 2px solid transparent;
-    border-radius: var(--iht-radius-control);
-    box-shadow: none;
-    font-family: var(--iht-text);
-    font-weight: 700;
-    font-size: 1.0625rem;
-    line-height: 1.2;
+.dash-follow__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
 }
 
-/* Download (and OK after it): filled IHT Blue. */
-body.iht .swal2-popup .swal2-styled.swal2-confirm {
-    border-color: var(--iht-blue);
-    background-color: var(--iht-blue);
-    color: #fff;
+.dash-follow__tools label {
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 1rem;
 }
 
-body.iht .swal2-popup .swal2-styled.swal2-confirm:hover {
-    border-color: var(--iht-blue-deep);
-    background-color: var(--iht-blue-deep);
+.dash-follow__tools input {
+  width: 15rem;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0 0.875rem;
+  border: 2px solid var(--iht-ink-muted);
+  border-radius: var(--iht-radius-control);
+  background: #fff;
+  color: var(--iht-ink);
+  font-family: var(--iht-text);
+  font-size: 1rem;
 }
 
-/* Cancel: outlined, quiet. */
-body.iht .swal2-popup .swal2-styled.swal2-cancel {
-    border-color: var(--iht-ink-muted);
-    background-color: #fff;
-    color: var(--iht-ink);
+.dash-follow__tools input::placeholder {
+  color: var(--iht-ink-muted);
+  opacity: 1;
 }
 
-body.iht .swal2-popup .swal2-styled.swal2-cancel:hover {
-    background-color: var(--iht-mist);
+.dash-follow__caption {
+  margin-top: 0;
 }
 
-/* "Downloaded!": done, so its check is Reward green. */
-body.iht .swal2-popup .swal2-icon.swal2-success {
-    border-color: var(--iht-reward);
-    color: var(--iht-reward);
+/* A quiet button: outlined, for what isn't the main thing to do (Download). */
+body.iht .dash-quiet {
+  min-height: 44px;
+  padding: 0.5rem 1.125rem;
+  border-color: var(--iht-ink-muted);
+  background: #fff;
+  color: var(--iht-ink);
+  font-size: 1rem;
 }
 
-body.iht .swal2-popup .swal2-icon.swal2-success [class^="swal2-success-line"] {
-    background-color: var(--iht-reward);
+body.iht .dash-quiet:hover {
+  border-color: var(--iht-ink);
+  background: var(--iht-mist);
 }
 
-body.iht .swal2-popup .swal2-icon.swal2-success .swal2-success-ring {
-    border-color: rgba(30, 123, 79, 0.3);
+/* The table scrolls sideways inside its box where it doesn't fit, with the names staying put.
+   The box is the positioning parent of what's inside it: otherwise the hidden screen-reader text
+   in a wide table (absolutely positioned) would stick out past the box and widen the page. */
+.dash-table-wrap {
+  position: relative;
+  overflow-x: auto;
+  border: 2px solid var(--iht-rule);
+  border-radius: var(--iht-radius-band);
+  container: dash-table / inline-size;
 }
 
-/* The list: the table takes the room between the title and the buttons, and scrolls both
-   ways inside it. On desktop the dialog spans the page grid (and never less than 80vw), so
-   every column of all three lists fits from 1280px up at the default font. The table box and
-   the buttons sit --dash-list-inset in from the edges; the cells' own padding then lines their
-   text up with the title. */
-body.iht .swal2-popup.dash-list {
-    --dash-list-inset: 1rem;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    width: max(80vw, min(var(--iht-max), 100vw - 2 * var(--iht-gutter)));
-    height: 80vh;
-    padding: 0 0 1.5rem;
+.dash-table-wrap[hidden] {
+  display: none;
 }
 
-/* Placed by hand, so the cue below can share the table box's cell. */
-body.iht .dash-list > .swal2-title {
-    grid-row: 1;
-    grid-column: 1;
-    padding: 1.5rem 1.5rem 0;
-    text-align: left;
+.dash-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
 }
 
-body.iht .dash-list > .swal2-html-container {
-    grid-row: 2;
-    grid-column: 1;
-    /* Sized by the dialog, so it can be a container (the sticky name column, below). */
-    container: dash-list / inline-size;
-    margin: 1rem var(--dash-list-inset) 0;
-    padding: 0;
-    overflow: auto;
-    text-align: left;
-    overflow-wrap: normal;
-    word-break: normal;
+.dash-table th,
+.dash-table td {
+  padding: 0.625rem 0.75rem;
+  background: #fff;
+  font-weight: 400;
+  text-align: left;
+  white-space: nowrap;
 }
 
-body.iht .dash-list > .swal2-actions {
-    grid-row: 3;
-    grid-column: 1;
-    justify-content: flex-end;
-    padding: 0 var(--dash-list-inset);
+.dash-table tbody tr:nth-child(even) > * {
+  background: var(--iht-mist);
 }
 
-/* While more columns are off to the right, the box's right edge fades (script.js sets
-   dash-list--more, and the scrollbars' sizes so the fade stops short of them). The box can
-   take focus; its ring is drawn outside it, so the fade never covers the ring. */
-body.iht .swal2-popup.dash-list::after {
-    content: "";
-    grid-row: 2;
-    grid-column: 1;
-    justify-self: end;
-    z-index: 4;
-    width: 2.5rem;
-    margin-top: 1rem;
-    margin-right: calc(var(--dash-list-inset) + var(--dash-scrollbar-w, 0px));
-    margin-bottom: var(--dash-scrollbar-h, 0px);
-    background: linear-gradient(to right, rgba(70, 110, 182, 0), rgba(70, 110, 182, 0.3));
-    pointer-events: none;
-    visibility: hidden;
+.dash-table tbody th {
+  font-weight: 700;
 }
 
-body.iht .swal2-popup.dash-list.dash-list--more::after {
-    visibility: visible;
+/* Headings: white on IHT blue. */
+.dash-table thead th {
+  background: var(--iht-blue);
+  color: #fff;
+  font-weight: 700;
 }
 
-body.iht .dash-list table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: 1rem;
-    line-height: 1.35;
-    font-variant-numeric: tabular-nums;
-}
-
-/* No wrapping inside a cell: the table scrolls sideways instead. Headings may wrap, between
-   words only, so long ones don't push columns out of view. */
-body.iht .dash-list th,
-body.iht .dash-list td {
-    padding: 0.625rem 0.5rem;
-    border: 0;
-    background: #fff;
-    text-align: left;
-    white-space: nowrap;
-}
-
-body.iht .dash-list th {
-    white-space: normal;
-    vertical-align: bottom;
-}
-
-body.iht .dash-list tbody tr:nth-child(even) td {
-    background: var(--iht-mist);
-}
-
-/* The header row, white on IHT blue, stays in view while the table scrolls. Clicking a heading
-   sorts by it; each heading's text is a button (script.js), so the keyboard can sort too. */
-body.iht .dash-list th {
-    --focus: #fff;
+/* The names stay put while the table scrolls sideways, where there's room for that. */
+@container dash-table (min-width: 30em) {
+  .dash-table thead th:first-child,
+  .dash-table tbody th {
     position: sticky;
-    top: 0;
-    z-index: 2;
-    background: var(--iht-blue);
-    color: #fff;
+    left: 0;
+    z-index: 1;
+    border-right: 2px solid var(--iht-rule);
+  }
+
+  .dash-table thead th:first-child {
+    border-right-color: var(--iht-blue-deep);
+  }
+}
+
+/* Why a patient is Actionable: the red key beside the words. */
+.dash-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font-weight: 700;
+}
+
+/* ---------- 6. By clinic, and how patients answered ---------- */
+
+/* Side by side where there's room for both. */
+.dash-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.75rem clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+  margin-top: 2.75rem;
+}
+
+/* In half the width, a bar's label column is narrower. */
+.dash-pair .dash-bar {
+  grid-template-columns: minmax(6rem, 9rem) minmax(2.5rem, 1fr) 3.75rem 2.75rem;
+  gap: 0.25rem 0.75rem;
+}
+
+/* The answers' key: a swatch and a name each. */
+.dash-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+/* Plain text after its swatch, so a long name wraps where it has to (a narrow phone set to a
+   large font). */
+.dash-key li {
+  overflow-wrap: anywhere;
+}
+
+.dash-key__swatch {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 0.8125rem;
+  height: 0.8125rem;
+  margin-right: 0.375rem;
+  border-radius: 3px;
+  vertical-align: -0.08em;
+}
+
+/* An answer's share, set apart from its name. */
+.dash-key b {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-answer-list {
+  display: grid;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A question: its name, then a strip split by answer. */
+.dash-answer {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.25rem 0.875rem;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.dash-answer__strip {
+  display: flex;
+  gap: 2px;
+  height: 1.75rem;
+}
+
+/* Each part of a strip, with its share written in it where it's wide enough. Ink reads on the
+   three paler tones; white on IHT blue and on red. */
+.dash-answer__strip span {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-width: 4px;
+  overflow: hidden;
+  border-radius: 3px;
+  color: var(--iht-ink);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-answer__strip .dash-tone--4,
+.dash-answer__strip .dash-tone--followup {
+  color: #fff;
+}
+
+/* A question's own answers and shares, under its strip. */
+.dash-answer .dash-key {
+  grid-column: 2;
+  margin: 0 0 0.375rem;
+}
+
+/* ---------- 7. The overview: a row per program ---------- */
+
+/* The whole row is its link. */
+.dash-programs {
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--iht-mist);
+  list-style: none;
+}
+
+.dash-program {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.2fr) auto minmax(8rem, 1fr);
+  align-items: center;
+  gap: 1rem clamp(1.5rem, 4vw, 3rem);
+  padding: 1.25rem 0.75rem;
+  border-bottom: 2px solid var(--iht-mist);
+}
+
+@media (hover: hover) {
+  .dash-program:hover {
+    background: var(--iht-mist);
+  }
+}
+
+body.iht .dash-program__name a {
+  font-family: var(--iht-display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.dash-program__name a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.dash-program__name span {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--iht-ink-muted);
+  font-size: 0.9375rem;
+}
+
+.dash-program__numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem clamp(1.5rem, 3vw, 2.5rem);
+  margin: 0;
+}
+
+.dash-program__numbers dt {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--iht-ink-muted);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.dash-program__numbers dd {
+  margin: 0;
+  font-family: var(--iht-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-note {
+  margin: 1.5rem 0 0;
+  color: var(--iht-ink-muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ---------- 8. Narrower windows, or a larger default font ---------- */
+
+/* Below 1200px: by clinic, then the answers under it. */
+@media (max-width: 74.99875em) {
+  .dash-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Below 992px: no sidebar, a picker instead. */
+@media (max-width: 61.99875em) {
+  .dash-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dash-nav {
+    display: none;
+  }
+
+  .dash {
+    padding-top: 0;
+  }
+
+  .dash-pick {
+    display: block;
+    margin: 0 calc(-1 * var(--iht-gutter)) 1.75rem;
+    padding: 0.875rem var(--iht-gutter) 1rem;
+    background: var(--iht-mist);
+  }
+
+  .dash-pick label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--iht-ink-muted);
     font-weight: 700;
-    cursor: pointer;
-}
+    font-size: 0.9375rem;
+  }
 
-body.iht .dash-list .dash-sort {
-    display: inline;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: inherit;
-    font: inherit;
-    text-align: inherit;
-    white-space: inherit;
-    cursor: pointer;
-}
-
-body.iht .dash-list th:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.2em;
-}
-
-body.iht .dash-list td:first-child {
+  .dash-pick select {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 0.75rem;
+    border: 2px solid var(--iht-blue);
+    border-radius: var(--iht-radius-control);
+    background: #fff;
+    color: var(--iht-ink);
+    font-family: var(--iht-text);
     font-weight: 700;
+    font-size: 1.0625rem;
+  }
+
+  .dash-program {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-inline: 0;
+  }
 }
 
-/* So does the name, while the table scrolls sideways, when there's room for it: at least
-   twice the name column's width (about 10em). With a large default font on a phone, the
-   names would cover every other column, so there they scroll with the rest. */
-@container dash-list (min-width: 20em) {
-    body.iht .dash-list th:first-child,
-    body.iht .dash-list td:first-child {
-        position: sticky;
-        left: 0;
-        z-index: 1;
-        border-right: 2px solid var(--iht-rule);
-    }
-
-    body.iht .dash-list th:first-child {
-        z-index: 3;
-        border-right-color: var(--iht-blue-deep);
-    }
-}
-
+/* Below 768px: each bar's label goes above it, and each question's name above its strip. */
 @media (max-width: 47.99875em) {
-    body.iht .swal2-popup.dash-list {
-        --dash-list-inset: 0.75rem;
-        width: 100%;
-        height: 90vh;
-        height: 90dvh;
-        padding-bottom: 1rem;
-    }
+  .dash-bar,
+  .dash-pair .dash-bar {
+    grid-template-columns: minmax(0, 1fr) 4.5rem 3rem;
+  }
 
-    body.iht .dash-list > .swal2-title {
-        padding: 1.25rem 1.25rem 0;
-    }
+  .dash-bar__label {
+    grid-column: 1 / -1;
+  }
 
-    body.iht .dash-list > .swal2-html-container,
-    body.iht .swal2-popup.dash-list::after {
-        margin-top: 0.75rem;
-    }
+  .dash-answer {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-    /* The table scrolls sideways here whatever the headings do, so they stay on one line
-       and the header row stays short. */
-    body.iht .dash-list th {
-        white-space: nowrap;
-    }
+  .dash-answer .dash-key {
+    grid-column: 1;
+  }
 
-    /* Both buttons share the width, and stack if a large font needs it. */
-    body.iht .dash-list .swal2-styled {
-        flex: 1 1 8rem;
-        padding: 0.625rem 0.75rem;
-    }
+  .dash-figure {
+    flex-basis: 9.5rem;
+  }
+
+  .dash-follow__tools,
+  .dash-follow__tools input {
+    width: 100%;
+  }
+
+  .dash-follow__tools label {
+    width: 100%;
+  }
+
+  .dash-table th,
+  .dash-table td {
+    padding: 0.5625rem 0.625rem;
+  }
+}
+
+/* Where a list of bars is narrower still (a phone set to a large font), the count and share
+   would squeeze the bar to nothing: so the label, then the bar across the full width, then its
+   count and share. */
+@container dash-bars (max-width: 15.5em) {
+  .dash-bar,
+  .dash-pair .dash-bar {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.25rem 0.75rem;
+  }
+
+  .dash-bar__label,
+  .dash-bar__track {
+    grid-column: 1 / -1;
+  }
+
+  .dash-bar__count,
+  .dash-bar__share {
+    text-align: left;
+  }
+}
+
+/* ---------- 9. On paper ---------- */
+
+/* Only the view prints: no list of programs, picker or search. Its bars, strips, keys and table
+   keep their colours (a browser leaves backgrounds off paper unless told otherwise), and bars
+   still waiting to grow in are drawn. */
+@media print {
+  .dash-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dash-nav,
+  .dash-pick,
+  .dash-follow__tools {
+    display: none;
+  }
+
+  .dash {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .dash-bars.is-waiting .dash-bar__fill {
+    transform: none;
+  }
 }

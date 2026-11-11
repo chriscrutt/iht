@@ -1,1482 +1,745 @@
-function switchTab(event, mainTabId, secondaryTabId) {
-    // The tabs are links to "#": don't jump to the top of the page.
-    event.preventDefault();
-    var tabs = document.getElementsByClassName("content");
-    for (var i = 0; i < tabs.length; i++) {
-        tabs[i].classList.add("hidden");
-    }
-
-    // aria-current tells screen readers which tab is chosen, as the underline shows.
-    var mainTabs = document.getElementsByClassName("navbar")[0].getElementsByTagName("a");
-    for (var i = 0; i < mainTabs.length; i++) {
-        mainTabs[i].classList.remove("selected");
-        mainTabs[i].removeAttribute("aria-current");
-    }
-    document.getElementById(mainTabId).classList.add("selected");
-    document.getElementById(mainTabId).setAttribute("aria-current", "true");
-
-    var secondaryTabs = document.getElementsByClassName("secondary-navbar");
-    for (var i = 0; i < secondaryTabs.length; i++) {
-        secondaryTabs[i].classList.add("hidden");
-    }
-    document.getElementById(secondaryTabId).classList.remove("hidden");
-
-    var secondaryTabLinks = document.querySelectorAll(".secondary-navbar a");
-    for (var i = 0; i < secondaryTabLinks.length; i++) {
-        secondaryTabLinks[i].classList.remove("selectedSub");
-        secondaryTabLinks[i].removeAttribute("aria-current");
-    }
-    let clickedId = event.target.id;
-    var firstSub = document.querySelectorAll(`[id*="${clickedId.slice(-3)}-1"]`)[0];
-    firstSub.classList.add("selectedSub");
-    firstSub.setAttribute("aria-current", "true");
-
-    if (clickedId.slice(-1) == "1") {
-        document.getElementById("content1").classList.remove("hidden");
-    } else if (clickedId.slice(-1) == "2") {
-        document.getElementById("content4").classList.remove("hidden");
-    } else {
-        document.getElementById("content7").classList.remove("hidden");
-    }
-
-    return false;
-}
-
-function switchContent(contentId, tabId) {
-    var contents = document.getElementsByClassName("content");
-    for (var i = 0; i < contents.length; i++) {
-        contents[i].classList.add("hidden");
-    }
-    document.getElementById(contentId).classList.remove("hidden");
-
-    var secondaryTabs = document.querySelectorAll(".secondary-navbar a");
-    for (var i = 0; i < secondaryTabs.length; i++) {
-        secondaryTabs[i].classList.remove("selectedSub");
-        secondaryTabs[i].removeAttribute("aria-current");
-    }
-    document.getElementById(tabId).classList.add("selectedSub");
-    document.getElementById(tabId).setAttribute("aria-current", "true");
-
-    return false;
-}
-
-// Every tab is a link to "#". None of them should jump to the top of the page, including the
-// sub-tabs that don't work yet.
-document.querySelectorAll('.dash-tabs a[href="#"]').forEach(function (tab) {
-    tab.addEventListener("click", function (event) {
-        event.preventDefault();
-    });
-});
-
-function phq9PatientList() {
-    const tableHTML = `
-    <table id="phq9-table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Patient ID</th>
-            <th>Age</th>
-            <th>Score</th>
-            <th>Anhedonia</th>
-            <th>Depression</th>
-            <th>Sleep</th>
-            <th>Fatigue</th>
-            <th>Appetite</th>
-            <th>Self-Worth</th>
-            <th>Concentration</th>
-            <th>Psychomotor</th>
-            <th>Suicidal Thoughts</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Mary Johnson</td>
-            <td>123456791</td>
-            <td>55</td>
-            <td>10</td>
-            <td>0</td>
-            <td>1</td>
-            <td>2</td>
-            <td>2</td>
-            <td>1</td>
-            <td>1</td>
-            <td>2</td>
-            <td>1</td>
-            <td>0</td>
-        </tr>
-        <tr>
-            <td>Robert Lee</td>
-            <td>123456792</td>
-            <td>61</td>
-            <td>22</td>
-            <td>2</td>
-            <td>3</td>
-            <td>2</td>
-            <td>2</td>
-            <td>2</td>
-            <td>3</td>
-            <td>2</td>
-            <td>3</td>
-            <td>3</td>
-        </tr>
-        <tr>
-            <td>Emily Chen</td>
-            <td>123456793</td>
-            <td>45</td>
-            <td>8</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Michael Brown</td>
-            <td>123456794</td>
-            <td>39</td>
-            <td>5</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Sarah Wilson</td>
-            <td>123456795</td>
-            <td>50</td>
-            <td>12</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>David Martin</td>
-            <td>123456796</td>
-            <td>63</td>
-            <td>17</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Linda Anderson</td>
-            <td>123456797</td>
-            <td>69</td>
-            <td>19</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>William Taylor</td>
-            <td>123456798</td>
-            <td>78</td>
-            <td>24</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ava Lewis</td>
-            <td>123456799</td>
-            <td>34</td>
-            <td>3</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>James Clark</td>
-            <td>123456700</td>
-            <td>56</td>
-            <td>13</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Sophia Martinez</td>
-            <td>123456701</td>
-            <td>41</td>
-            <td>7</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Joseph Hernandez</td>
-            <td>123456702</td>
-            <td>59</td>
-            <td>18</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Olivia Nelson</td>
-            <td>123456703</td>
-            <td>48</td>
-            <td>11</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>John Doe</td>
-            <td>123456704</td>
-            <td>32</td>
-            <td>2</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Emma Adams</td>
-            <td>123456705</td>
-            <td>29</td>
-            <td>1</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Michaela King</td>
-            <td>123456706</td>
-            <td>60</td>
-            <td>16</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Alexander Turner</td>
-            <td>123456707</td>
-            <td>64</td>
-            <td>21</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Grace Miller</td>
-            <td>123456708</td>
-            <td>52</td>
-            <td>9</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ethan Parker</td>
-            <td>123456709</td>
-            <td>46</td>
-            <td>6</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Chloe Brooks</td>
-            <td>123456710</td>
-            <td>37</td>
-            <td>4</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Andrew Scott</td>
-            <td>123456711</td>
-            <td>44</td>
-            <td>7</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Zoe Adams</td>
-            <td>123456712</td>
-            <td>57</td>
-            <td>12</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Mason Sanchez</td>
-            <td>123456713</td>
-            <td>51</td>
-            <td>10</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Leah Allen</td>
-            <td>123456714</td>
-            <td>49</td>
-            <td>9</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>William Turner</td>
-            <td>123456715</td>
-            <td>62</td>
-            <td>16</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Abigail Foster</td>
-            <td>123456716</td>
-            <td>47</td>
-            <td>8</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Lucas Simmons</td>
-            <td>123456717</td>
-            <td>36</td>
-            <td>5</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ella Watson</td>
-            <td>123456718</td>
-            <td>53</td>
-            <td>11</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Oliver Carter</td>
-            <td>123456719</td>
-            <td>31</td>
-            <td>2</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-    </tbody>
-    </table>
-  
-    `;
-
-    // Initialize the sorting functionality before displaying the table
-    const tableWrapper = document.createElement("div");
-    tableWrapper.innerHTML = tableHTML;
-    const table = tableWrapper.querySelector("#phq9-table");
-    const tbody = table.querySelector("tbody");
-    const ths = table.querySelectorAll("th");
-    let sortOrder = 1; // 1 for ascending, -1 for descending
-
-    ths.forEach((th) => {
-        th.addEventListener("click", () => {
-            const colIndex = th.cellIndex;
-            const rows = Array.from(tbody.querySelectorAll("tr"));
-
-            rows.sort((a, b) => {
-                const aValue = a.cells[colIndex].textContent;
-                const bValue = b.cells[colIndex].textContent;
-                return sortOrder * aValue.localeCompare(bValue, undefined, { numeric: true });
-            });
-
-            tbody.innerHTML = "";
-            rows.forEach((row) => tbody.appendChild(row));
-
-            sortOrder = -sortOrder; // Reverse the sort order for the next click
-        });
-    });
-
-    // Display the table in SweetAlert2 modal
-    showPatientList(tableWrapper);
-}
-
-function breastCancerPatientList() {
-    const tableHTML = `
-    <table id="breastCancer-table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Patient ID</th>
-            <th>Age</th>
-            <th>Breast Cancer Status</th>
-            <th>Last Screening</th>
-            <th>Treatment Plan</th>
-            <th>Mammogram Frequency</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Mary Johnson</td>
-            <td>123456791</td>
-            <td>55</td>
-            <td>Positive</td>
-            <td>07-21-2023</td>
-            <td>Chemotherapy</td>
-            <td>Bi-Yearly</td>
-        </tr>
-        <tr>
-            <td>Robert Lee</td>
-            <td>123456792</td>
-            <td>61</td>
-            <td>Negative</td>
-            <td>10-07-2022</td>
-            <td>None</td>
-            <td>Yearly</td>
-        </tr>
-        <tr>
-            <td>Emily Chen</td>
-            <td>123456793</td>
-            <td>45</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Michael Brown</td>
-            <td>123456794</td>
-            <td>39</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Sarah Wilson</td>
-            <td>123456795</td>
-            <td>50</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>David Martin</td>
-            <td>123456796</td>
-            <td>63</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Linda Anderson</td>
-            <td>123456797</td>
-            <td>69</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>William Taylor</td>
-            <td>123456798</td>
-            <td>78</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ava Lewis</td>
-            <td>123456799</td>
-            <td>34</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>James Clark</td>
-            <td>123456700</td>
-            <td>56</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Sophia Martinez</td>
-            <td>123456701</td>
-            <td>41</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Joseph Hernandez</td>
-            <td>123456702</td>
-            <td>59</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Olivia Nelson</td>
-            <td>123456703</td>
-            <td>48</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>John Doe</td>
-            <td>123456704</td>
-            <td>32</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Emma Adams</td>
-            <td>123456705</td>
-            <td>29</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Michaela King</td>
-            <td>123456706</td>
-            <td>60</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Alexander Turner</td>
-            <td>123456707</td>
-            <td>64</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Grace Miller</td>
-            <td>123456708</td>
-            <td>52</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ethan Parker</td>
-            <td>123456709</td>
-            <td>46</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Chloe Brooks</td>
-            <td>123456710</td>
-            <td>37</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Andrew Scott</td>
-            <td>123456711</td>
-            <td>44</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Zoe Adams</td>
-            <td>123456712</td>
-            <td>57</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Mason Sanchez</td>
-            <td>123456713</td>
-            <td>51</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Leah Allen</td>
-            <td>123456714</td>
-            <td>49</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>William Turner</td>
-            <td>123456715</td>
-            <td>62</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Abigail Foster</td>
-            <td>123456716</td>
-            <td>47</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Lucas Simmons</td>
-            <td>123456717</td>
-            <td>36</td>
-            <td>Positive</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ella Watson</td>
-            <td>123456718</td>
-            <td>53</td>
-            <td>Unknown</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Oliver Carter</td>
-            <td>123456719</td>
-            <td>31</td>
-            <td>Negative</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-    </tbody>
-    </table>
-  
-    `;
-
-    // Initialize the sorting functionality before displaying the table
-    const tableWrapper = document.createElement("div");
-    tableWrapper.innerHTML = tableHTML;
-    const table = tableWrapper.querySelector("#breastCancer-table");
-    const tbody = table.querySelector("tbody");
-    const ths = table.querySelectorAll("th");
-    let sortOrder = 1; // 1 for ascending, -1 for descending
-
-    ths.forEach((th) => {
-        th.addEventListener("click", () => {
-            const colIndex = th.cellIndex;
-            const rows = Array.from(tbody.querySelectorAll("tr"));
-
-            rows.sort((a, b) => {
-                const aValue = a.cells[colIndex].textContent;
-                const bValue = b.cells[colIndex].textContent;
-                return sortOrder * aValue.localeCompare(bValue, undefined, { numeric: true });
-            });
-
-            tbody.innerHTML = "";
-            rows.forEach((row) => tbody.appendChild(row));
-
-            sortOrder = -sortOrder; // Reverse the sort order for the next click
-        });
-    });
-
-    // Display the table in SweetAlert2 modal
-    showPatientList(tableWrapper);
-}
-
-function fallPatientList() {
-    const tableHTML = `
-    <table id="fall-table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Patient ID</th>
-            <th>Age</th>
-            <th>Problems with Balance</th>
-            <th>Fallen Recently</th>
-            <th>Talked to Doctor</th>
-            <th>Watched Video</th>
-            <th>Reward Type</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Mary Johnson</td>
-            <td>123456791</td>
-            <td>55</td>
-            <td>No</td>
-            <td>Yes</td>
-            <td>No</td>
-            <td>100%</td>
-            <td>Target</td>
-        </tr>
-        <tr>
-            <td>Robert Lee</td>
-            <td>123456792</td>
-            <td>61</td>
-            <td>Yes</td>
-            <td>No</td>
-            <td>Yes</td>
-            <td>78%</td>
-            <td>Walgreens</td>
-        </tr>
-        <tr>
-            <td>Emily Chen</td>
-            <td>123456793</td>
-            <td>45</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Michael Brown</td>
-            <td>123456794</td>
-            <td>39</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Sarah Wilson</td>
-            <td>123456795</td>
-            <td>50</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>David Martin</td>
-            <td>123456796</td>
-            <td>63</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Linda Anderson</td>
-            <td>123456797</td>
-            <td>69</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>William Taylor</td>
-            <td>123456798</td>
-            <td>78</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ava Lewis</td>
-            <td>123456799</td>
-            <td>34</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>James Clark</td>
-            <td>123456700</td>
-            <td>56</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Sophia Martinez</td>
-            <td>123456701</td>
-            <td>41</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Joseph Hernandez</td>
-            <td>123456702</td>
-            <td>59</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Olivia Nelson</td>
-            <td>123456703</td>
-            <td>48</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>John Doe</td>
-            <td>123456704</td>
-            <td>32</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Emma Adams</td>
-            <td>123456705</td>
-            <td>29</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Michaela King</td>
-            <td>123456706</td>
-            <td>60</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Alexander Turner</td>
-            <td>123456707</td>
-            <td>64</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Grace Miller</td>
-            <td>123456708</td>
-            <td>52</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ethan Parker</td>
-            <td>123456709</td>
-            <td>46</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Chloe Brooks</td>
-            <td>123456710</td>
-            <td>37</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Andrew Scott</td>
-            <td>123456711</td>
-            <td>44</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Zoe Adams</td>
-            <td>123456712</td>
-            <td>57</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Mason Sanchez</td>
-            <td>123456713</td>
-            <td>51</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Leah Allen</td>
-            <td>123456714</td>
-            <td>49</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>William Turner</td>
-            <td>123456715</td>
-            <td>62</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Abigail Foster</td>
-            <td>123456716</td>
-            <td>47</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Lucas Simmons</td>
-            <td>123456717</td>
-            <td>36</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Ella Watson</td>
-            <td>123456718</td>
-            <td>53</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td>Oliver Carter</td>
-            <td>123456719</td>
-            <td>31</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-    </tbody>
-    </table>
-    `;
-
-    // Initialize the sorting functionality before displaying the table
-    const tableWrapper = document.createElement("div");
-    tableWrapper.innerHTML = tableHTML;
-    const table = tableWrapper.querySelector("#fall-table");
-    const tbody = table.querySelector("tbody");
-    const ths = table.querySelectorAll("th");
-    let sortOrder = 1; // 1 for ascending, -1 for descending
-
-    ths.forEach((th) => {
-        th.addEventListener("click", () => {
-            const colIndex = th.cellIndex;
-            const rows = Array.from(tbody.querySelectorAll("tr"));
-
-            rows.sort((a, b) => {
-                const aValue = a.cells[colIndex].textContent;
-                const bValue = b.cells[colIndex].textContent;
-                return sortOrder * aValue.localeCompare(bValue, undefined, { numeric: true });
-            });
-
-            tbody.innerHTML = "";
-            rows.forEach((row) => tbody.appendChild(row));
-
-            sortOrder = -sortOrder; // Reverse the sort order for the next click
-        });
-    });
-
-    // Display the table in SweetAlert2 modal
-    showPatientList(tableWrapper);
-}
-
-// ---------- The Patient List dialog ----------
-// One dialog for all three lists. The table scrolls inside it (style.css), so its box takes
-// focus as well: Tab reaches it, and the arrow keys and Page Up/Down scroll it. Screen readers
-// name it by the dialog's title. While more columns are off to the right, the box's right edge
-// fades (dash-list--more).
-function showPatientList(tableWrapper) {
-    var observer = null;
-    sortableFromKeyboard(tableWrapper.querySelector("table"));
-    Swal.fire({
-        title: "Patient List",
-        html: tableWrapper, // Use the table wrapper with sortable features
-        showCancelButton: true,
-        confirmButtonText: "Download",
-        // Themed in style.css: Download is IHT Blue, Cancel is outlined.
-        customClass: { popup: "dash-list" },
-        didOpen: function (popup) {
-            var box = Swal.getHtmlContainer();
-            box.tabIndex = 0;
-            box.setAttribute("role", "region");
-            box.setAttribute("aria-labelledby", Swal.getTitle().id);
-            var update = function () {
-                // The fade stops short of the scrollbars, where a system draws them.
-                popup.style.setProperty("--dash-scrollbar-w", box.offsetWidth - box.clientWidth + "px");
-                popup.style.setProperty("--dash-scrollbar-h", box.offsetHeight - box.clientHeight + "px");
-                popup.classList.toggle("dash-list--more",
-                    box.scrollLeft + box.clientWidth < box.scrollWidth - 1);
-            };
-            box.addEventListener("scroll", update, { passive: true });
-            if (window.ResizeObserver) {
-                observer = new ResizeObserver(update);
-                observer.observe(box);
-                observer.observe(box.querySelector("table"));
-            }
-            update();
-        },
-        willClose: function () {
-            if (observer) {
-                observer.disconnect();
-            }
-        },
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire("Downloaded!", "Your file has been downloaded.", "success");
-        }
-    });
-}
-
-// Each list sorts by a column when its heading is clicked (the click handlers in the three list
-// functions, which flip the order on every click). This puts each heading's text in a button, so
-// the keyboard can sort too (the button's click reaches the heading's handler), and keeps
-// aria-sort on the heading the list is sorted by.
-function sortableFromKeyboard(table) {
-    var order = 1; // the next click's order, as the list functions keep it: 1 = ascending
-    table.querySelectorAll("th").forEach(function (th) {
-        var button = document.createElement("button");
-        button.type = "button";
-        button.className = "dash-sort";
-        button.textContent = th.textContent;
-        th.textContent = "";
-        th.appendChild(button);
-        th.addEventListener("click", function () {
-            table.querySelectorAll("th[aria-sort]").forEach(function (other) {
-                other.removeAttribute("aria-sort");
-            });
-            th.setAttribute("aria-sort", order === 1 ? "ascending" : "descending");
-            order = -order;
-        });
-    });
-}
-
-// The charts and the focus handling below keep their names to themselves (no globals); only
-// the functions the page's onclick attributes call, showPatientList and sortableFromKeyboard are
-// global.
+/*
+ * The clinic dashboard: a mock-up, drawn from the sample data below. The programs are listed down
+ * the left, and one view shows on the right: the overview, or one program. The address's #name
+ * says which (#phq-9, #fall-prevention, ...), so the browser's Back button works and a view can be
+ * linked to.
+ *
+ * It's laid out for real numbers. A program has tens of thousands of patients, so nothing lists
+ * them all: a program's view has its totals, its results as bars, the few patients to follow up
+ * first (with a search for anyone else, and a download of the whole list), the same count by
+ * clinic, and how patients answered each question.
+ *
+ * No libraries, and nothing here is global.
+ */
 (function () {
+  "use strict";
 
-// ---------- Charts ----------
-// Colours from the shared theme (../css/theme.css). Severity runs pale blue to IHT blue, less to
-// more severe. The group counted as "Actionable" is Follow-up red, the same red as the key
-// beside that figure.
-var THEME = {
-    ink: "#1f2328",
-    blue: "#466eb6",
-    followUp: "#b42318",
-    // --iht-data-1 to -4. The two pale steps are under 3:1 against white, so their slices
-    // and legend keys get a 2px IHT blue outline.
-    data: ["#d3def2", "#a6bce5", "#7393cf", "#466eb6"],
-    text: '"Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif',
-};
-var OUTLINED = [THEME.data[0], THEME.data[1]];
+  // ---------- Sample data (all of it made up) ----------
 
-// Canvas text (the tooltips) in the reading face, at the browser's default font size.
-var remPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-Chart.defaults.font.family = THEME.text;
-Chart.defaults.font.size = remPx;
-Chart.defaults.color = THEME.ink;
-// The draw-in is the page's only motion; none when the reader asks for less.
-if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    Chart.defaults.animation = false;
-}
+  // The clinics the sample's patients belong to.
+  const CLINICS = ["Downtown Clinic", "Eastside Clinic", "Lakeside Clinic", "Northgate Clinic", "Riverside Clinic", "Westside Clinic"];
 
-// The legend is HTML (.dash-legend, beside the donut or under it; see style.css), so it wraps,
-// grows with the browser's font size and can be read aloud. Pressing an entry hides or shows its
-// slice, as Chart.js's own legend did.
-var htmlLegend = {
-    id: "htmlLegend",
-    afterUpdate: function (chart) {
-        var list = chart.canvas.closest(".dash-chart").querySelector(".dash-legend");
-        var items = chart.options.plugins.legend.labels.generateLabels(chart);
-        if (list.children.length !== items.length) {
-            list.textContent = "";
-            items.forEach(function (item) {
-                var button = document.createElement("button");
-                button.type = "button";
-                button.className = "dash-legend__item";
-                var key = document.createElement("span");
-                key.className = "dash-legend__key";
-                key.style.backgroundColor = item.fillStyle;
-                if (OUTLINED.indexOf(item.fillStyle) !== -1) {
-                    key.classList.add("dash-legend__key--outlined");
-                }
-                button.appendChild(key);
-                button.appendChild(document.createTextNode(item.text));
-                button.addEventListener("click", function () {
-                    chart.toggleDataVisibility(item.index);
-                    chart.update();
-                });
-                var entry = document.createElement("li");
-                entry.appendChild(button);
-                list.appendChild(entry);
-            });
-        }
-        items.forEach(function (item, i) {
-            list.children[i].firstChild.setAttribute("aria-pressed", item.hidden ? "false" : "true");
+  // The sample patients: name, patient ID, age, and their clinic (an index into CLINICS). Each
+  // program's answers below are in the same order.
+  const PATIENTS = [
+    ["Mary Johnson", "123456791", 55, 2],
+    ["Robert Lee", "123456792", 61, 2],
+    ["Emily Chen", "123456793", 45, 1],
+    ["Michael Brown", "123456794", 39, 1],
+    ["Sarah Wilson", "123456795", 50, 1],
+    ["David Martin", "123456796", 63, 0],
+    ["Linda Anderson", "123456797", 69, 2],
+    ["William Taylor", "123456798", 78, 3],
+    ["Ava Lewis", "123456799", 34, 4],
+    ["James Clark", "123456700", 56, 4],
+    ["Sophia Martinez", "123456701", 41, 1],
+    ["Joseph Hernandez", "123456702", 59, 1],
+    ["Olivia Nelson", "123456703", 48, 4],
+    ["John Doe", "123456704", 32, 5],
+    ["Emma Adams", "123456705", 29, 5],
+    ["Michaela King", "123456706", 60, 4],
+    ["Alexander Turner", "123456707", 64, 0],
+    ["Grace Miller", "123456708", 52, 2],
+    ["Ethan Parker", "123456709", 46, 0],
+    ["Chloe Brooks", "123456710", 37, 3],
+    ["Andrew Scott", "123456711", 44, 1],
+    ["Zoe Adams", "123456712", 57, 1],
+    ["Mason Sanchez", "123456713", 51, 4],
+    ["Leah Allen", "123456714", 49, 3],
+    ["William Turner", "123456715", 62, 1],
+    ["Abigail Foster", "123456716", 47, 2],
+    ["Lucas Simmons", "123456717", 36, 2],
+    ["Ella Watson", "123456718", 53, 0],
+    ["Oliver Carter", "123456719", 31, 0],
+  ];
+
+  // PHQ-9: the total score, the nine answers (0 to 3) in the questionnaire's order, then how many
+  // days ago the patient responded.
+  const PHQ9_ANSWERS = [
+    [10, 0, 1, 2, 2, 1, 1, 2, 1, 0, 15],
+    [22, 2, 3, 2, 2, 2, 3, 2, 3, 3, 0],
+    [8, 1, 1, 2, 3, 1, 0, 0, 0, 0, 18],
+    [5, 0, 0, 3, 1, 1, 0, 0, 0, 0, 25],
+    [12, 0, 2, 1, 2, 3, 2, 1, 1, 0, 15],
+    [23, 3, 3, 3, 3, 3, 2, 3, 2, 1, 0],
+    [26, 3, 3, 3, 3, 3, 3, 2, 3, 3, 1],
+    [24, 3, 3, 3, 3, 3, 1, 3, 3, 2, 1],
+    [3, 0, 0, 1, 1, 0, 0, 0, 1, 0, 15],
+    [13, 2, 3, 0, 3, 1, 2, 2, 0, 0, 17],
+    [7, 1, 2, 2, 0, 1, 0, 1, 0, 0, 19],
+    [25, 3, 3, 3, 3, 3, 3, 3, 1, 3, 2],
+    [11, 3, 3, 3, 1, 0, 0, 1, 0, 0, 7],
+    [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 6],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 26],
+    [20, 3, 2, 3, 3, 3, 3, 0, 3, 0, 3],
+    [21, 2, 3, 3, 3, 3, 3, 3, 1, 0, 4],
+    [9, 2, 3, 0, 1, 1, 1, 0, 1, 0, 17],
+    [6, 0, 0, 2, 0, 2, 2, 0, 0, 0, 16],
+    [4, 1, 1, 1, 0, 0, 1, 0, 0, 0, 21],
+    [7, 1, 1, 3, 1, 0, 1, 0, 0, 0, 20],
+    [12, 2, 3, 3, 1, 1, 1, 1, 0, 0, 26],
+    [10, 2, 1, 1, 1, 2, 1, 2, 0, 0, 6],
+    [9, 2, 0, 3, 1, 0, 1, 1, 1, 0, 4],
+    [20, 3, 1, 3, 3, 1, 3, 3, 0, 3, 6],
+    [8, 1, 2, 3, 0, 1, 0, 1, 0, 0, 15],
+    [5, 1, 1, 1, 2, 0, 0, 0, 0, 0, 10],
+    [11, 3, 0, 0, 3, 1, 1, 3, 0, 0, 5],
+    [2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 3],
+  ];
+
+  // Breast cancer screening: status, days since the last screening (null: none on record),
+  // treatment plan, mammogram frequency, days since responding.
+  const BREAST_ANSWERS = [
+    ["Positive", 134, "Chemotherapy", "Bi-Yearly", 16],
+    ["Negative", 330, "None", "Yearly", 9],
+    ["Negative", 30, "None", "Yearly", 22],
+    ["Negative", 87, "None", "Yearly", 17],
+    ["Unknown", null, "-", "-", 0],
+    ["Unknown", null, "-", "-", 0],
+    ["Negative", 314, "None", "Yearly", 22],
+    ["Positive", 37, "Radiation", "Bi-Yearly", 12],
+    ["Positive", 159, "Radiation", "Bi-Yearly", 5],
+    ["Negative", 169, "None", "Yearly", 13],
+    ["Negative", 101, "None", "Yearly", 1],
+    ["Negative", 295, "None", "Yearly", 12],
+    ["Unknown", null, "-", "-", 1],
+    ["Unknown", null, "-", "-", 1],
+    ["Unknown", null, "-", "-", 2],
+    ["Positive", 30, "Chemotherapy", "Bi-Yearly", 16],
+    ["Positive", 161, "Hormone therapy", "Bi-Yearly", 9],
+    ["Negative", 131, "None", "Yearly", 21],
+    ["Positive", 27, "Radiation", "Bi-Yearly", 26],
+    ["Negative", 109, "None", "Yearly", 15],
+    ["Negative", 119, "None", "Yearly", 23],
+    ["Negative", 236, "None", "Yearly", 20],
+    ["Positive", 133, "Surgery", "Bi-Yearly", 8],
+    ["Positive", 134, "Hormone therapy", "Bi-Yearly", 18],
+    ["Unknown", null, "-", "-", 3],
+    ["Unknown", null, "-", "-", 4],
+    ["Positive", 101, "Chemotherapy", "Bi-Yearly", 1],
+    ["Unknown", null, "-", "-", 6],
+    ["Negative", 211, "None", "Yearly", 22],
+  ];
+
+  // Fall prevention: problems with balance, fallen recently, talked to a doctor, share of the
+  // video watched (%), reward chosen, days since responding.
+  const FALL_ANSWERS = [
+    ["No", "Yes", "No", 100, "Target", 9],
+    ["Yes", "No", "Yes", 78, "Walgreens", 10],
+    ["Yes", "Yes", "No", 100, "Walgreens", 0],
+    ["No", "No", "No", 100, "Walgreens", 22],
+    ["Yes", "Yes", "No", 92, "Walgreens", 0],
+    ["No", "No", "No", 96, "Target", 22],
+    ["No", "No", "No", 100, "Target", 26],
+    ["No", "Yes", "Yes", 100, "Target", 6],
+    ["No", "No", "Yes", 100, "Target", 21],
+    ["No", "Yes", "Yes", 100, "Target", 8],
+    ["Yes", "Yes", "No", 100, "Walgreens", 1],
+    ["Yes", "No", "Yes", 100, "Walgreens", 22],
+    ["No", "No", "Yes", 100, "Walgreens", 5],
+    ["Yes", "Yes", "No", 51, "Target", 1],
+    ["No", "No", "Yes", 100, "Walgreens", 8],
+    ["No", "No", "No", 100, "Walgreens", 21],
+    ["No", "No", "Yes", 100, "Target", 24],
+    ["Yes", "Yes", "No", 100, "Walgreens", 2],
+    ["Yes", "Yes", "No", 92, "Target", 3],
+    ["Yes", "No", "No", 100, "Walgreens", 6],
+    ["Yes", "Yes", "No", 37, "Walgreens", 4],
+    ["No", "No", "No", 100, "Target", 5],
+    ["No", "Yes", "No", 92, "Target", 3],
+    ["No", "No", "Yes", 100, "Walgreens", 18],
+    ["Yes", "Yes", "Yes", 100, "Walgreens", 7],
+    ["No", "No", "No", 100, "Target", 24],
+    ["Yes", "No", "Yes", 96, "Walgreens", 10],
+    ["No", "No", "Yes", 100, "Walgreens", 1],
+    ["Yes", "Yes", "No", 100, "Target", 6],
+  ];
+
+  // Each program's responses and Actionable count at each clinic, in CLINICS' order. They add up
+  // to the program's totals.
+  const PHQ9_CLINICS = [
+    [28396, 6555],
+    [24691, 4112],
+    [22222, 4542],
+    [18518, 2733],
+    [16049, 3098],
+    [13580, 2416],
+  ];
+
+  const BREAST_CLINICS = [
+    [2583, 1371],
+    [2247, 861],
+    [2022, 1013],
+    [1685, 778],
+    [1460, 875],
+    [1236, 534],
+  ];
+
+  const FALL_CLINICS = [
+    [7363, 1482],
+    [6403, 1188],
+    [5763, 1388],
+    [4802, 834],
+    [4162, 887],
+    [3522, 542],
+  ];
+
+  // ---------- Small helpers ----------
+
+  // Build an element: h("p", { class: "x" }, "text", node, [more, nodes]). Strings go in as text,
+  // never as markup. Attributes that are null or false are left out.
+  function h(tag, attrs) {
+    const el = document.createElement(tag);
+    Object.keys(attrs || {}).forEach((name) => {
+      if (attrs[name] != null && attrs[name] !== false) {
+        el.setAttribute(name, attrs[name]);
+      }
+    });
+    Array.prototype.slice.call(arguments, 2).flat(Infinity).forEach((child) => {
+      if (child != null && child !== false) {
+        el.append(child);
+      }
+    });
+    return el;
+  }
+
+  const count = (n) => n.toLocaleString("en-US");
+  const share = (part, whole) => Math.round((100 * part) / whole) + "%";
+
+  // The date n days before today, as MM-DD-YYYY, so the sample never looks out of date.
+  function daysAgo(n) {
+    const date = new Date();
+    date.setDate(date.getDate() - n);
+    return [date.getMonth() + 1, date.getDate(), date.getFullYear()]
+      .map((part) => String(part).padStart(2, "0"))
+      .join("-");
+  }
+
+  const ago = (days) => (days === 0 ? "Today" : days === 1 ? "Yesterday" : days + " days ago");
+
+  // ---------- The programs ----------
+  // A program has:
+  //   total, actionable, payouts  its headline counts
+  //   categories  the groups its bar chart shows. tone is the step of the blue ramp (4 = IHT
+  //               blue, 1 = palest); the group counted as Actionable is red instead.
+  //   clinics     its responses and Actionable count at each clinic
+  //   questions   how patients answered: each question's answers and their shares (%). With
+  //               sharedKey, every question has the same answers, so one key serves them all.
+  //   rows        its sample patients. result says where a patient stands, actionable whether
+  //               they need follow-up, and order() puts first the ones to follow up first.
+  //   firstBy     what that order is, for the list's caption: "highest-scoring", "most recent".
+  //   columns     what Download saves for each patient: a heading and how to read it off a row.
+
+  const person = (i) => ({ name: PATIENTS[i][0], id: PATIENTS[i][1], age: PATIENTS[i][2], clinic: CLINICS[PATIENTS[i][3]] });
+  const newestFirst = (a, b) => a.responded - b.responded;
+  // A question: its name, its answers as [name, share, tone], and a note on who it covers, if not
+  // everyone.
+  const answer = (label, parts, note) => ({
+    label: label,
+    note: note,
+    parts: parts.map((part) => ({ label: part[0], share: part[1], tone: part[2] })),
+  });
+  const COLUMNS = [
+    ["Name", (row) => row.name],
+    ["Patient ID", (row) => row.id],
+    ["Age", (row) => String(row.age)],
+    ["Clinic", (row) => row.clinic],
+    ["Responded", (row) => daysAgo(row.responded)],
+    ["Actionable", (row) => (row.actionable ? "Yes" : "No")],
+  ];
+
+  const PHQ9_BANDS = [[20, "Severe"], [15, "Moderately severe"], [10, "Moderate"], [5, "Mild"], [0, "Minimal"]];
+  const PHQ9_CHOICES = ["Not at all", "Several days", "More than half the days", "Nearly every day"];
+  // Each question, and the share of patients (%) who gave each of the four answers.
+  const PHQ9_ITEMS = [
+    ["Anhedonia", [30, 28, 19, 23]],
+    ["Depression", [31, 27, 18, 24]],
+    ["Sleep", [24, 26, 21, 29]],
+    ["Fatigue", [22, 26, 22, 30]],
+    ["Appetite", [36, 29, 19, 16]],
+    ["Self-Worth", [39, 27, 19, 15]],
+    ["Concentration", [40, 28, 19, 13]],
+    ["Psychomotor", [54, 25, 13, 8]],
+    ["Suicidal Thoughts", [77, 14, 5, 4]],
+  ];
+  const BREAST_RESULTS = { Unknown: "Awaiting screening", Positive: "Has breast cancer", Negative: "Does not have breast cancer" };
+  // The sample's fall-risk level: one step up for each of problems with balance, a recent fall,
+  // and not having talked to a doctor.
+  const FALL_RISKS = ["None", "Mild", "Moderate", "Severe"];
+
+  const programs = [
+    {
+      id: "phq-9",
+      name: "PHQ-9",
+      group: "Mental Health Assessments",
+      total: 123456,
+      actionable: 23456,
+      chartTitle: "PHQ-9 Responses",
+      categories: [
+        { label: "20-27 (severe)", count: 23456, actionable: true },
+        { label: "15-19 (moderately severe)", count: 12345, tone: 4 },
+        { label: "10-14 (moderate)", count: 15432, tone: 3 },
+        { label: "5-9 (mild)", count: 35678, tone: 2 },
+        { label: "0-4 (minimal)", count: 36545, tone: 1 },
+      ],
+      clinics: PHQ9_CLINICS,
+      answersTitle: "How patients answered",
+      sharedKey: true,
+      questions: PHQ9_ITEMS.map((item) => answer(item[0], PHQ9_CHOICES.map((choice, k) => [choice, item[1][k], k + 1]))),
+      rows: PATIENTS.map((patient, i) => {
+        const given = PHQ9_ANSWERS[i];
+        const severity = PHQ9_BANDS.find((band) => given[0] >= band[0])[1];
+        return Object.assign(person(i), {
+          score: given[0],
+          severity: severity,
+          answers: given.slice(1, 10),
+          responded: given[10],
+          result: "Score " + given[0] + " (" + severity.toLowerCase() + ")",
+          actionable: given[0] >= 20,
         });
+      }),
+      // The highest scores first, and of two the same, the newer.
+      order: (a, b) => b.score - a.score || a.responded - b.responded,
+      firstBy: "highest-scoring",
+      columns: COLUMNS.concat([["Score", (row) => String(row.score)], ["Severity", (row) => row.severity]],
+        PHQ9_ITEMS.map((item, k) => [item[0], (row) => String(row.answers[k])])),
     },
-};
+    {
+      id: "breast-cancer-screening",
+      name: "Breast Cancer Screening",
+      group: "HEDIS-Related Assessments",
+      total: 11233,
+      actionable: 5432,
+      chartTitle: "Breast Cancer Screening Results",
+      categories: [
+        { label: "Has Breast Cancer", count: 3456, tone: 4 },
+        { label: "Does Not Have Breast Cancer", count: 2345, tone: 2 },
+        { label: "Awaiting Screening", count: 5432, actionable: true },
+      ],
+      clinics: BREAST_CLINICS,
+      answersTitle: "Screening details",
+      questions: [
+        answer("Last Screening", [["Within the past year", 31, 4], ["1 to 2 years ago", 21, 2], ["None on record", 48, "followup"]]),
+        answer("Mammogram Frequency", [["Yearly", 21, 4], ["Bi-Yearly", 31, 2], ["Not set", 48, 1]]),
+        answer("Treatment Plan", [["Chemotherapy", 34, 4], ["Radiation", 27, 3], ["Surgery", 22, 2], ["Hormone therapy", 17, 1]],
+          "Patients with breast cancer"),
+      ],
+      rows: PATIENTS.map((patient, i) => {
+        const given = BREAST_ANSWERS[i];
+        return Object.assign(person(i), {
+          status: given[0],
+          screened: given[1] == null ? "None on record" : daysAgo(given[1]),
+          plan: given[2],
+          frequency: given[3],
+          responded: given[4],
+          result: BREAST_RESULTS[given[0]],
+          actionable: given[0] === "Unknown",
+        });
+      }),
+      order: newestFirst,
+      firstBy: "most recent",
+      columns: COLUMNS.concat([
+        ["Breast Cancer Status", (row) => row.status],
+        ["Last Screening", (row) => row.screened],
+        ["Treatment Plan", (row) => row.plan],
+        ["Mammogram Frequency", (row) => row.frequency],
+      ]),
+    },
+    {
+      id: "fall-prevention",
+      name: "Fall Prevention",
+      group: "Incentive Programs",
+      total: 32015,
+      actionable: 6321,
+      payouts: 16075,
+      chartTitle: "Patient Risk Levels",
+      categories: [
+        { label: "Severe", count: 6321, actionable: true },
+        { label: "Moderate", count: 7495, tone: 3 },
+        { label: "Mild", count: 9463, tone: 2 },
+        { label: "None", count: 8736, tone: 1 },
+      ],
+      clinics: FALL_CLINICS,
+      answersTitle: "How patients answered",
+      questions: [
+        answer("Problems with Balance", [["Yes", 41, 4], ["No", 59, 1]]),
+        answer("Fallen Recently", [["Yes", 34, 4], ["No", 66, 1]]),
+        answer("Talked to Doctor", [["Yes", 39, 4], ["No", 61, 1]]),
+        answer("Watched Video", [["Nearly all of it", 78, 4], ["Half or more", 14, 2], ["Less than half", 8, 1]]),
+        answer("Reward Type", [["Target", 54, 4], ["Walgreens", 46, 2]]),
+      ],
+      rows: PATIENTS.map((patient, i) => {
+        const given = FALL_ANSWERS[i];
+        const risk = FALL_RISKS[(given[0] === "Yes") + (given[1] === "Yes") + (given[2] === "No")];
+        return Object.assign(person(i), {
+          risk: risk,
+          balance: given[0],
+          fallen: given[1],
+          doctor: given[2],
+          video: given[3] + "%",
+          reward: given[4],
+          responded: given[5],
+          result: risk === "None" ? "No fall risk" : risk + " fall risk",
+          actionable: risk === "Severe",
+        });
+      }),
+      order: newestFirst,
+      firstBy: "most recent",
+      columns: COLUMNS.concat([
+        ["Risk Level", (row) => row.risk],
+        ["Problems with Balance", (row) => row.balance],
+        ["Fallen Recently", (row) => row.fallen],
+        ["Talked to Doctor", (row) => row.doctor],
+        ["Watched Video", (row) => row.video],
+        ["Reward Type", (row) => row.reward],
+      ]),
+    },
+  ];
 
-function chartOptions() {
-    return {
-        responsive: true,
-        // Square, as wide as its box (.dash-chart__donut in style.css).
-        aspectRatio: 1,
-        cutout: "58%",
-        layout: { padding: 8 },
-        plugins: {
-            legend: { display: false },
-            tooltip: {
-                backgroundColor: THEME.ink,
-                padding: 12,
-                cornerRadius: 6,
-                boxPadding: 6,
-                bodyFont: { size: remPx },
-            },
-        },
-    };
-}
+  // Every screening the dashboard names, in its three groups. Only the three above are part of
+  // this demo; the rest are listed dimmed.
+  const groups = [
+    { name: "Mental Health Assessments", items: ["PHQ-9", "GAD-7", "PCL-5"] },
+    { name: "HEDIS-Related Assessments",
+      items: ["Breast Cancer Screening", "Colorectal Cancer Screening", "Comprehensive Diabetes Care"] },
+    { name: "Incentive Programs", items: ["Fall Prevention", "Incontinence", "Medication Adherence"] },
+  ];
+  const byName = (name) => programs.find((program) => program.name === name);
+  const notInDemo = groups.flatMap((group) => group.items).filter((name) => !byName(name));
+  const sum = (key) => programs.reduce((total, program) => total + (program[key] || 0), 0);
+  const totals = { total: sum("total"), actionable: sum("actionable"), payouts: sum("payouts") };
 
-// The pale slices are outlined in IHT blue. Every slice has a 2px border (the others in their
-// own colour), centred on its edge, so with 4px of spacing each gap shows 2px of white.
-function slices(data, colors) {
-    return {
-        data: data,
-        backgroundColor: colors,
-        borderColor: colors.map(function (c) { return OUTLINED.indexOf(c) !== -1 ? THEME.blue : c; }),
-        borderWidth: 2,
-        spacing: 4,
-        hoverOffset: 6,
-    };
-}
+  // ---------- Headline figures ----------
 
-function drawPHQ9Chart() {
-    var ctx = document.getElementById("phq9Chart").getContext("2d");
-    var myChart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-            labels: [
-                "20-27 (severe)",
-                "15-19 (moderately severe)",
-                "10-14 (moderate)",
-                "5-9 (mild)",
-                "0-4 (minimal)",
-            ],
-            datasets: [
-                // "20-27 (severe)" is the 23,456 shown as Actionable.
-                slices([23456, 12345, 15432, 35678, 36545], [
-                    THEME.followUp, THEME.data[3], THEME.data[2], THEME.data[1], THEME.data[0],
-                ]),
-            ],
-        },
-        options: chartOptions(),
-        plugins: [htmlLegend],
+  // A row of large numbers. kind "followup" gives the label the red key, "reward" the green one.
+  function figuresFor(numbers) {
+    const items = [
+      { label: "Total Responses", value: count(numbers.total) },
+      { label: "Actionable", value: count(numbers.actionable), kind: "followup",
+        note: share(numbers.actionable, numbers.total) + " of responses" },
+      numbers.payouts && { label: "Reward Payouts", value: "$" + count(numbers.payouts), kind: "reward" },
+    ].filter(Boolean);
+    return h("dl", { class: "dash-figures" }, items.map((item) =>
+      h("div", { class: "dash-figure" + (item.kind ? " dash-figure--" + item.kind : "") },
+        h("dt", null, item.label),
+        h("dd", null, item.value),
+        item.note && h("dd", { class: "dash-figure__note" }, item.note))));
+  }
+
+  // ---------- Bars ----------
+
+  const tone = (item) => "dash-tone--" + (item.actionable ? "followup" : item.tone);
+
+  // A bar per item, the longest as wide as the chart, each with its count and a share beside it.
+  // The bars are for the eye; the numbers are the text. An item: label, under (a smaller line
+  // below the label), size (what the bar measures), count and share (the text), and its tone.
+  function bars(items) {
+    const longest = Math.max.apply(null, items.map((item) => item.size));
+    const list = h("ul", { class: "dash-bars", role: "list" }, items.map((item) =>
+      h("li", { class: "dash-bar" },
+        h("span", { class: "dash-bar__label" }, item.label, item.under && h("small", null, item.under)),
+        h("span", { class: "dash-bar__track", "aria-hidden": "true" },
+          h("span", { class: "dash-bar__fill " + tone(item), style: "width: " + ((100 * item.size) / longest).toFixed(1) + "%" })),
+        h("span", { class: "dash-bar__count" }, item.count),
+        h("span", { class: "dash-bar__share" }, item.share))));
+    growOnce(list);
+    return list;
+  }
+
+  // A program's results: a bar per group, with its count and its share of the responses.
+  const results = (program) => bars(program.categories.map((category) => ({
+    label: category.label, size: category.count, count: count(category.count), share: share(category.count, program.total),
+    tone: category.tone, actionable: category.actionable,
+  })));
+
+  // The same count by clinic: the clinic with the most Actionable patients first, each with the
+  // share of its own responses that they are.
+  const byClinic = (program) => bars(program.clinics
+    .map((numbers, i) => ({
+      label: CLINICS[i], under: count(numbers[0]) + " responses", size: numbers[1], count: count(numbers[1]),
+      share: share(numbers[1], numbers[0]), tone: 4,
+    }))
+    .sort((a, b) => b.size - a.size));
+
+  // A program's groups as one thin strip, the Actionable group first, for comparing programs at
+  // a glance. Decoration: the numbers are always beside it.
+  function strip(program) {
+    const ordered = program.categories.filter((c) => c.actionable).concat(program.categories.filter((c) => !c.actionable));
+    return h("div", { class: "dash-strip", "aria-hidden": "true" }, ordered.map((category) =>
+      h("span", { class: tone(category), style: "flex-grow: " + category.count })));
+  }
+
+  // Bars grow from nothing the first time they come into view, unless the reader's device asks
+  // for less motion (then they're simply there). A list is in view once its top is 15% of the way
+  // up the window, so one taller than the window still gets drawn.
+  const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const grower = !calm && "IntersectionObserver" in window && new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        grower.unobserve(entry.target);
+        entry.target.classList.replace("is-waiting", "is-drawn");
+      }
     });
-}
+  }, { rootMargin: "0px 0px -15% 0px" });
 
-function drawBreastCancerChart() {
-    var ctx = document.getElementById("breastCancerChart").getContext("2d");
-    var myChart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-            labels: ["Has Breast Cancer", "Does Not Have Breast Cancer", "Awaiting Screening"],
-            datasets: [
-                // "Awaiting Screening" is the 5,432 shown as Actionable.
-                slices([3456, 2345, 5432], [THEME.data[3], THEME.data[1], THEME.followUp]),
-            ],
-        },
-        options: chartOptions(),
-        plugins: [htmlLegend],
-    });
-}
-
-function drawFallChart() {
-    var ctx = document.getElementById("fallChart").getContext("2d");
-    var myChart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-            labels: ["Severe", "Moderate", "Mild", "None"],
-            datasets: [
-                // "Severe" is the 6,321 shown as Actionable.
-                slices([6321, 7495, 9463, 8736], [
-                    THEME.followUp, THEME.data[2], THEME.data[1], THEME.data[0],
-                ]),
-            ],
-        },
-        options: chartOptions(),
-        plugins: [htmlLegend],
-    });
-}
-
-drawPHQ9Chart();
-drawBreastCancerChart();
-drawFallChart();
-
-// A chart is a picture, so screen readers get its numbers as text: each canvas is an image
-// named by the chart's title and every group with its count.
-document.querySelectorAll(".dash-chart").forEach(function (figure) {
-    var canvas = figure.querySelector("canvas");
-    var chart = Chart.getChart(canvas);
-    var counts = chart.data.labels.map(function (label, i) {
-        return label + ": " + chart.data.datasets[0].data[i].toLocaleString("en-US");
-    });
-    canvas.setAttribute("role", "img");
-    canvas.setAttribute("aria-label",
-        figure.querySelector(".dash-chart__title").textContent + ". " + counts.join("; ") + ".");
-});
-
-// ---------- Focus and the sticky bar ----------
-// The bar covers the top of the window. theme.css's scroll-margin keeps a control that takes
-// focus clear of it whenever the browser scrolls to the control. Firefox doesn't scroll to one
-// that is already inside the window, though, even when the bar covers part of it (a tab two
-// lines tall, with a large default font on a phone), so that one is moved down here.
-document.querySelector(".dash").addEventListener("focusin", function (event) {
-    // Keyboard focus only. A mouse press focuses a tab or button too, and scrolling before the
-    // button is released would move the control out from under the pointer and lose the click.
-    try {
-        if (!event.target.matches(":focus-visible")) {
-            return;
-        }
-    } catch (e) {
-        // No :focus-visible: keep the correction for every focus.
+  function growOnce(list) {
+    if (grower) {
+      list.classList.add("is-waiting");
+      grower.observe(list);
     }
-    requestAnimationFrame(function () {
-        var bar = document.querySelector(".iht-header").getBoundingClientRect().bottom;
-        var top = event.target.getBoundingClientRect().top;
-        if (top < bar) {
-            window.scrollBy({ top: top - bar - 8, behavior: "instant" });
-        }
-    });
-});
+  }
 
+  // ---------- Follow up first ----------
+
+  const URGENT = 8;
+
+  // What marks a patient as Actionable: the red key, and the word for screen readers.
+  const flagged = (text) => h("span", { class: "dash-flag" }, text, h("span", { class: "iht-sr-only" }, " (actionable)"));
+
+  // The few Actionable patients to contact first (the caption says in what order). The search
+  // finds any patient by name or ID, whatever their result. The button saves the whole list,
+  // which here is the sample.
+  function followUp(program) {
+    const urgent = program.rows.filter((row) => row.actionable).sort(program.order).slice(0, URGENT);
+    const body = h("tbody");
+    const caption = h("p", { class: "dash-follow__caption", role: "status" });
+    const find = h("input", { type: "search", id: "find-" + program.id, placeholder: "Name or patient ID",
+      autocomplete: "off", spellcheck: "false" });
+    const download = h("button", { type: "button", class: "iht-btn dash-quiet" }, "Download full list");
+    const table = h("div", { class: "dash-table-wrap", role: "region", "aria-label": program.name + " patients" },
+      h("table", { class: "dash-table" },
+        h("thead", null, h("tr", null, ["Name", "Result", "Responded", "Clinic", "Patient ID", "Age"]
+          .map((heading) => h("th", { scope: "col" }, heading)))),
+        body));
+
+    function draw() {
+      const asked = find.value.trim();
+      const query = asked.toLowerCase();
+      const list = query
+        ? program.rows.filter((row) => row.name.toLowerCase().includes(query) || row.id.includes(query)).sort(program.order)
+        : urgent;
+      caption.textContent = !query
+        ? "The " + urgent.length + " " + program.firstBy + " of " + count(program.actionable) + " Actionable patients."
+        : list.length === 0
+          ? "No sample patient matches “" + asked + "”."
+          : list.length + " of " + program.rows.length + " sample patients match" + (list.length === 1 ? "es" : "") +
+            " “" + asked + "”.";
+      table.hidden = list.length === 0;
+      body.replaceChildren.apply(body, list.map((row) =>
+        h("tr", null,
+          h("th", { scope: "row" }, row.name),
+          h("td", null, row.actionable ? flagged(row.result) : row.result),
+          h("td", null, ago(row.responded)),
+          h("td", null, row.clinic),
+          h("td", null, row.id),
+          h("td", null, String(row.age)))));
+    }
+
+    // Where the table is wider than its box, the box scrolls sideways, and takes focus so the
+    // arrow keys can scroll it. Where it fits, it's not a stop for Tab. (Without ResizeObserver
+    // it always is.)
+    function reach() {
+      if (!("ResizeObserver" in window) || table.scrollWidth > table.clientWidth) {
+        table.setAttribute("tabindex", "0");
+      } else {
+        table.removeAttribute("tabindex");
+      }
+    }
+
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(reach).observe(table);
+    }
+
+    find.addEventListener("input", () => {
+      draw();
+      reach();
+    });
+    download.addEventListener("click", () => {
+      saveCsv(program.id + "-patients.csv",
+        program.columns.map((column) => column[0]),
+        program.rows.slice().sort(program.order).map((row) => program.columns.map((column) => column[1](row))));
+    });
+    draw();
+    reach();
+
+    return h("section", { class: "dash-follow", "aria-labelledby": "follow-" + program.id },
+      h("div", { class: "dash-follow__head" },
+        h("h2", { class: "dash-h2", id: "follow-" + program.id }, "Follow up first"),
+        h("div", { class: "dash-follow__tools" },
+          h("label", { for: "find-" + program.id }, "Find a patient"),
+          find,
+          download)),
+      caption,
+      table);
+  }
+
+  // Save rows as a CSV file, the way a spreadsheet expects it.
+  function saveCsv(fileName, headings, rows) {
+    const cell = (value) => (/[",\r\n]/.test(value) ? '"' + value.replace(/"/g, '""') + '"' : value);
+    const text = [headings].concat(rows).map((line) => line.map(cell).join(",")).join("\r\n");
+    const link = h("a", { href: URL.createObjectURL(new Blob([text], { type: "text/csv" })), download: fileName });
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  }
+
+  // ---------- How patients answered ----------
+
+  // A strip per question, split by answer. With a shared key (PHQ-9's four answers) the shares
+  // are written in the strips and the key sits once above them; otherwise each question lists
+  // its own answers and shares under its strip. Shares under 10% are too narrow to write in, so
+  // every part also says what it is when the mouse rests on it.
+  function answers(program) {
+    const key = (parts, withShares) => h("ul", { class: "dash-key", role: "list" }, parts.map((part) =>
+      h("li", null,
+        h("span", { class: "dash-key__swatch dash-tone--" + part.tone, "aria-hidden": "true" }),
+        withShares ? [part.label + " ", h("b", null, part.share + "%")] : part.label)));
+    return h("div", { class: "dash-answers" },
+      program.sharedKey && key(program.questions[0].parts, false),
+      h("ul", { class: "dash-answer-list", role: "list" }, program.questions.map((question) =>
+        h("li", { class: "dash-answer" },
+          h("span", { class: "dash-answer__label" }, question.label, question.note && h("small", null, question.note)),
+          h("span", { class: "dash-answer__strip", "aria-hidden": "true" }, question.parts.map((part) =>
+            h("span", { class: "dash-tone--" + part.tone, style: "flex-grow: " + part.share,
+              title: part.label + ": " + part.share + "%" },
+              program.sharedKey && part.share >= 10 ? part.share + "%" : null))),
+          program.sharedKey
+            ? h("span", { class: "iht-sr-only" }, ": " + question.parts.map((part) => part.label + " " + part.share + "%").join(", "))
+            : key(question.parts, true)))));
+  }
+
+  // ---------- The views ----------
+
+  // Both are looked up by the address's #name, so they're bare objects: "#constructor" and the
+  // like must find nothing.
+  const views = Object.create(null);   // name -> its <section>
+  const links = Object.create(null);   // name -> its sidebar link
+  const sample = () => h("span", { class: "dash-sample" }, "Sample data");
+
+  // Everything at a glance: the totals, then a row per program that leads to its view.
+  function overview() {
+    return h("section", { id: "view-overview", class: "dash-view" },
+      h("div", { class: "dash-title" }, h("h1", { class: "dash-h1", tabindex: "-1" }, "Overview"), sample()),
+      figuresFor(totals),
+      h("h2", { class: "dash-h2 dash-view__h2" }, "Programs"),
+      h("ul", { class: "dash-programs", role: "list" }, programs.map((program) =>
+        h("li", { class: "dash-program" },
+          h("div", { class: "dash-program__name" },
+            h("a", { href: "#" + program.id }, program.name),
+            h("span", null, program.group)),
+          h("dl", { class: "dash-program__numbers" },
+            h("div", null, h("dt", null, "Total Responses"), h("dd", null, count(program.total))),
+            h("div", { class: "is-followup" }, h("dt", null, "Actionable"), h("dd", null, count(program.actionable)))),
+          strip(program)))),
+      h("p", { class: "dash-note" }, "Not part of this demo: " + notInDemo.join(", ") + "."));
+  }
+
+  // One program: its numbers, its results, who to follow up first, then the same by clinic and
+  // by question.
+  function programView(program) {
+    return h("section", { id: "view-" + program.id, class: "dash-view" },
+      h("p", { class: "dash-group" }, program.group),
+      h("div", { class: "dash-title" }, h("h1", { class: "dash-h1", tabindex: "-1" }, program.name), sample()),
+      figuresFor(program),
+      h("h2", { class: "dash-h2 dash-view__h2" }, program.chartTitle),
+      results(program),
+      followUp(program),
+      h("div", { class: "dash-pair" },
+        h("section", { "aria-labelledby": "clinics-" + program.id },
+          h("h2", { class: "dash-h2", id: "clinics-" + program.id }, "By clinic"),
+          h("p", { class: "dash-caption" }, "Actionable patients at each clinic, and their share of its responses."),
+          byClinic(program)),
+        h("section", { "aria-labelledby": "answers-" + program.id },
+          h("h2", { class: "dash-h2", id: "answers-" + program.id }, program.answersTitle),
+          answers(program))));
+  }
+
+  // ---------- The sidebar, and the phone's picker ----------
+
+  function sidebar() {
+    const link = (id, label, extra) => {
+      links[id] = h("a", { href: "#" + id }, h("span", null, label), extra);
+      return h("li", null, links[id]);
+    };
+    return h("div", { class: "dash-nav__inner" },
+      h("ul", { role: "list" }, link("overview", "Overview")),
+      groups.map((group, i) => [
+        h("p", { class: "dash-nav__group", id: "dash-group-" + i }, group.name),
+        h("ul", { role: "list", "aria-labelledby": "dash-group-" + i }, group.items.map((name) => {
+          const program = byName(name);
+          return program
+            ? link(program.id, name, h("span", { class: "dash-nav__count" }, count(program.actionable),
+              h("span", { class: "iht-sr-only" }, " actionable")))
+            : h("li", null, h("span", { class: "dash-nav__off" }, name,
+              h("span", { class: "iht-sr-only" }, " (not part of this demo)")));
+        })),
+      ]),
+      h("p", { class: "dash-nav__note" }, "Dimmed programs aren't part of this demo."));
+  }
+
+  const picker = document.getElementById("dash-program");
+
+  function fillPicker() {
+    picker.append(h("option", { value: "overview" }, "Overview"));
+    groups.forEach((group) => {
+      picker.append(h("optgroup", { label: group.name }, group.items.map((name) => {
+        const program = byName(name);
+        return h("option", { value: program ? program.id : null, disabled: program ? null : "" }, name);
+      })));
+    });
+    picker.addEventListener("change", () => {
+      location.hash = picker.value;
+    });
+  }
+
+  // ---------- Which view shows ----------
+
+  function show(name, arrived) {
+    Object.keys(views).forEach((key) => {
+      views[key].hidden = key !== name;
+      if (key === name) {
+        links[key].setAttribute("aria-current", "page");
+      } else {
+        links[key].removeAttribute("aria-current");
+      }
+    });
+    picker.value = name;
+    const title = views[name].querySelector("h1");
+    document.title = title.textContent + " | Dashboard | IHT";
+    if (arrived) {
+      // A view someone just chose starts at its top, and its title takes focus so it's read out.
+      // It starts there at once: the theme's smooth scrolling would slide the new view past.
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      } catch (error) {
+        window.scrollTo(0, 0);   // a browser that doesn't know "instant"
+      }
+      title.focus({ preventScroll: true });
+    }
+  }
+
+  // No #name at all means the overview (as when Back returns to the first address). A #name that
+  // isn't a view (the skip link's #main) leaves the view alone, or opens the overview on the
+  // first load.
+  function route(arrived) {
+    const name = location.hash.slice(1) || "overview";
+    if (views[name]) {
+      show(name, arrived);
+    } else if (!arrived) {
+      show("overview", false);
+    }
+  }
+
+  const root = document.getElementById("dash-views");
+  [overview()].concat(programs.map(programView)).forEach((view) => {
+    // A view's own id is "view-" plus its name, so the browser finds nothing to jump to for the
+    // address's #name and leaves the scrolling to show().
+    views[view.id.slice(5)] = view;
+    root.append(view);
+  });
+  document.getElementById("dash-nav").append(sidebar());
+  fillPicker();
+  window.addEventListener("hashchange", () => route(true));
+  route(false);
 })();
